@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos customizados que não são utilities do Tailwind — copiados do
+   projeto irmão (pseo_simulador/src/input.css), que já embute as lições
+   de acessibilidade/overflow relevantes aqui também (tooltip, toque
+   mínimo, redução de movimento, acordeão do FAQ). Nada específico de
+   imóvel neste arquivo, por isso a reutilização é direta. */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #020617;
+    background-image: radial-gradient(at 80% 0%, #1e293b 0px, transparent 50%), radial-gradient(at 0% 100%, #0f172a 0px, transparent 50%);
+    color: #f8fafc;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', serif;
+}
+
+.glass-panel {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+}
+
+.glass-panel-sky {
+    background: rgba(7, 38, 54, 0.4);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+}
+
+.currency-input {
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+/* Slider de valor/prazo (Zona de simulação interativa) — mesmo visual do
+   projeto irmão, adicionado de volta nesta v2 quando o recálculo ao vivo
+   entrou (a v1 desta página não tinha slider, então esta regra não
+   existia ainda no CSS compilado). */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 9999px;
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 0%, #cbd5e1, #64748b);
+    cursor: pointer;
+    border: 1px solid #334155;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 0%, #cbd5e1, #64748b);
+    cursor: pointer;
+    border: 1px solid #334155;
+}
+
+/* Tooltip educativo (ícone "i" com balão) — sem JS: hover no desktop,
+   toque/foco no mobile via :focus (o span tem tabindex="0").
+
+   A centralização horizontal usa margin-left (não transform: translateX)
+   de propósito: transform só afeta a posição PINTADA do elemento, não a
+   caixa de layout que o navegador usa pra calcular scrollWidth/overflow
+   da página — um deslocamento via transform podia ficar visualmente
+   correto mas ainda "contar" overflow horizontal na página (bug real já
+   encontrado e corrigido no projeto irmão, confirmado via scrollWidth >
+   clientWidth mesmo com o balão visualmente dentro da tela). margin-left
+   participa do layout de verdade, então o ajuste aqui elimina o overflow
+   na origem, não só na tela. */
+.tooltip-box {
+    --tt-shift: -112px; /* metade de w-56 (224px), centraliza por padrão */
+    left: 50%;
+    margin-left: var(--tt-shift);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s;
+    pointer-events: none;
+}
+.tooltip-wrap:hover .tooltip-box,
+.tooltip-wrap:focus .tooltip-box,
+.tooltip-wrap:focus-within .tooltip-box {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.tooltip-wrap { outline: none; cursor: help; }
+
+/* Micro-animação nos números do resultado: pulso rápido de cor.
+   Respeita prefers-reduced-motion (acessibilidade) — não usada ainda
+   nesta v1 estática (sem recálculo ao vivo no navegador), mas mantida
+   pronta pro dia em que um slider interativo for adicionado. */
+@keyframes pulseValor {
+    0% { color: #38bdf8; }
+    100% { color: inherit; }
+}
+.valor-pulse { animation: pulseValor .6s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+    .valor-pulse { animation: none; }
+}
+
+/* Favicon de banco com fallback silencioso: se o serviço de favicons
+   externo falhar, a imagem quebrada é escondida via CSS e o ícone de
+   banco genérico (irmão .favicon-fallback) assume o lugar. */
+.favicon-img.favicon-erro { display: none; }
+.favicon-fallback { display: none; }
+.favicon-img.favicon-erro + .favicon-fallback { display: inline-flex; }
+
+/* Acordeão do FAQ (<details>/<summary> nativo do HTML): reforço em CSS
+   puro, não dependente das variantes open:/group-open: do Tailwind. */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary span.faq-toggle-icon { transform: rotate(45deg); }
+details[open] { border-color: rgba(14, 165, 233, 0.3) !important; }
+

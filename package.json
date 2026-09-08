@@ -1,0 +1,12 @@
+{
+  "name": "datalab-veiculos-pseo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Build do CSS estático (Tailwind) para as páginas pSEO de financiamento de veículos da Datalab Global. Não é uma aplicação Node — só usa o Tailwind CLI como build tool.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./paginas_seo/styles.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

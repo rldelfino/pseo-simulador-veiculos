@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Financiamento Carro Usado: menor taxa entre os bancos | Datalab</title>
+    <meta name="description" content="Compare a taxa real de todos os bancos para financiamento carro usado — cenário de referência: 40 mil em 48 meses. Dados do Banco Central.">
+    <link rel="canonical" href="https://veiculos.datalabglobal.com/comparador-carro-usado.html" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Datalab Global">
+    <meta property="og:title" content="Comparador de Financiamento Carro Usado: menor taxa entre os bancos | Datalab">
+    <meta property="og:description" content="Compare a taxa real de todos os bancos para financiamento carro usado — cenário de referência: 40 mil em 48 meses. Dados do Banco Central.">
+    <meta property="og:url" content="https://veiculos.datalabglobal.com/comparador-carro-usado.html">
+    <meta property="og:image" content="https://veiculos.datalabglobal.com/logo.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Comparador de Financiamento Carro Usado: menor taxa entre os bancos | Datalab">
+    <meta name="twitter:description" content="Compare a taxa real de todos os bancos para financiamento carro usado — cenário de referência: 40 mil em 48 meses. Dados do Banco Central.">
+    <link rel="stylesheet" href="styles.css?v=20260908161704">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": "https://veiculos.datalabglobal.com/index.html"}, {"@type": "ListItem", "position": 2, "name": "Carro Usado", "item": "https://veiculos.datalabglobal.com/comparador-carro-usado.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Caixa"}, {"@type": "ListItem", "position": 2, "name": "Bradesco"}, {"@type": "ListItem", "position": 3, "name": "Santander"}, {"@type": "ListItem", "position": 4, "name": "Banco do Brasil"}, {"@type": "ListItem", "position": 5, "name": "Banco Inter"}, {"@type": "ListItem", "position": 6, "name": "C6 Bank"}, {"@type": "ListItem", "position": 7, "name": "Itaú"}, {"@type": "ListItem", "position": 8, "name": "BV Financeira"}, {"@type": "ListItem", "position": 9, "name": "Banco Pan"}, {"@type": "ListItem", "position": 10, "name": "Omni Financeira"}]}</script>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    <nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <a href="index.html" class="flex items-center"><img src="logo.svg" alt="Datalab Global" class="h-8 w-auto"></a>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9"></path></svg> <span class="hidden sm:inline">Início</span></a>
+                <a href="https://ftudo.com/rodolfo-financiamento-de-automoveis/" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                    Análise Grátis <svg class="inline-block align-[-0.125em] ml-1.5 text-xs" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <nav class="text-xs text-slate-500 mb-6 flex flex-wrap items-center gap-1.5" aria-label="breadcrumb"><a href="index.html" class="hover:text-sky-400 transition-colors">Datalab Global</a> <span class="text-slate-700">/</span> <span class="text-slate-300">Carro Usado</span></nav>
+        <div class="flex items-center gap-4 mb-2">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0"><svg viewBox="0 0 329.638 329.637" class="w-14 h-14" aria-hidden="true">
+            <defs><linearGradient id="il-grad-cmp-usado" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs>
+            <g fill="url(#il-grad-cmp-usado)"><path d="M324.873,165.878c0,0-0.823-13.567-2.485-18.543c-1.657-4.971-1.652-4.971,0.828-8.119c2.48-3.144-7.291-0.994-8.953-0.663c-1.657,0.337-0.994,1.491-0.994,1.491c-19.222,0.829-63.303-23.86-98.26-27.34c-34.958-3.475-69.097-0.161-81.69,2.817c-12.593,2.982-54.018,25.352-58.652,26.512c-4.635,1.16-2.651-1.16-2.651-1.16c-23.855,0.989-64.783,21.375-64.783,21.375c-1.657,1.16-2.983,7.953-2.983,7.953l0.829,2.32c-6.794,6.302-4.806,19.558-4.806,19.558l3.325-1.165c1.175,2.154,1.481,6.959,1.481,6.959c-5.629,2.651-1.491,4.972-1.491,4.972s2.49-2.149,12.593,0.999c3.904,1.212,12.599,1.636,21.805,1.704c-1.294-3.268-2.03-6.814-2.03-10.538c0-15.84,12.883-28.723,28.723-28.723c15.834,0,28.723,12.883,28.723,28.723c0,3.438-0.642,6.727-1.755,9.792l147.467-0.248c-1.056-2.994-1.662-6.193-1.662-9.544c0-15.84,12.884-28.723,28.724-28.723c15.834,0,28.723,12.883,28.723,28.723c0,2.946-0.45,5.794-1.279,8.472c14.675-3.392,31.769-5.769,31.769-5.769l3.147-4.143c0,0,2.485-17.729,0-20.547C326.048,170.212,324.873,165.878,324.873,165.878z"/>
+<path d="M64.672,218.42c9.419,0,17.487-5.598,21.205-13.618c1.382-2.988,2.211-6.286,2.211-9.803c0-12.935-10.486-23.42-23.42-23.42c-12.935,0-23.421,10.48-23.421,23.42c0,3.807,0.994,7.354,2.61,10.527C47.729,213.149,55.543,218.42,64.672,218.42z"/>
+<path d="M266.163,218.42c9.311,0,17.284-5.479,21.055-13.349c1.471-3.056,2.361-6.452,2.361-10.072c0-12.935-10.486-23.42-23.421-23.42c-12.936,0-23.421,10.48-23.421,23.42c0,3.402,0.761,6.618,2.066,9.533C248.47,212.704,256.636,218.42,266.163,218.42z"/></g>
+            <circle cx="315" cy="145" r="3.4" fill="#fef08a"/>
+        </svg></div>
+            <h1 class="font-serif text-2xl sm:text-3xl font-bold">Comparador de Financiamento Carro Usado</h1>
+        </div>
+        <p class="text-slate-400 text-sm mb-8">Posição de cada banco pelo CET, cenário de referência de 40 mil em 48 meses.</p>
+
+        <section class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mb-6">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-amber-400"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"></path></svg></span>
+                <span class="text-slate-300 text-[11px] font-bold uppercase tracking-widest">CET de mercado — Carro Usado</span>
+                <span class="tooltip-wrap relative inline-flex items-center justify-center ml-0.5 -my-2.5 p-2.5 align-middle" tabindex="0">
+        <svg class="inline-block align-[-0.125em] text-slate-500 hover:text-sky-400 transition-colors" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="11"></line><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"></circle></svg>
+        <span class="tooltip-box absolute z-20 bottom-full mb-1 w-56 max-w-[calc(100vw-2rem)] p-3 rounded-lg bg-slate-800 border border-white/10 text-[11px] leading-relaxed font-normal text-slate-300 shadow-2xl normal-case tracking-normal">Cada ícone é um banco, posicionado pelo CET real dele entre o menor e o maior que acompanhamos nessa categoria. Não é uma lista "do melhor pro pior" — clique num banco pra ver todas as simulações dele.</span>
+    </span>
+            </div>
+            <div class="relative h-2 rounded-full bg-gradient-to-r from-sky-500 via-amber-400 to-rose-500 mb-2">
+                <div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:2%; transform:translate(-50%,-50%)" title="Caixa: 15.67% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=caixa.gov.br&sz=64" alt="Logo Caixa" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:30%; transform:translate(-50%,-50%)" title="Bradesco: 26.89% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bradesco.com.br&sz=64" alt="Logo Bradesco" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:31%; transform:translate(-50%,-50%)" title="Santander: 27.19% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=santander.com.br&sz=64" alt="Logo Santander" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:32%; transform:translate(-50%,-50%)" title="Banco do Brasil: 27.65% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bb.com.br&sz=64" alt="Logo Banco do Brasil" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:33%; transform:translate(-50%,-50%)" title="Banco Inter: 28.11% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bancointer.com.br&sz=64" alt="Logo Banco Inter" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:35%; transform:translate(-50%,-50%)" title="C6 Bank: 28.88% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=c6bank.com.br&sz=64" alt="Logo C6 Bank" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:42%; transform:translate(-50%,-50%)" title="Itaú: 31.37% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=itau.com.br&sz=64" alt="Logo Itaú" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:50%; transform:translate(-50%,-50%)" title="BV Financeira: 34.22% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bv.com.br&sz=64" alt="Logo BV Financeira" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:78%; transform:translate(-50%,-50%)" title="Banco Pan: 44.68% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bancopan.com.br&sz=64" alt="Logo Banco Pan" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" style="left:98%; transform:translate(-50%,-50%)" title="Omni Financeira: 52.97% CET"><span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=omni.com.br&sz=64" alt="Logo Omni Financeira" width="24" height="24"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-500 uppercase tracking-wide mb-6">
+                <span>15.67% menor CET</span>
+                <span>52.97% maior CET</span>
+            </div>
+            <a href="https://ftudo.com/rodolfo-financiamento-de-automoveis/" target="_blank" rel="noopener sponsored" class="inline-flex items-center justify-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-8 py-3.5 rounded-2xl transition-all text-sm w-full shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                Peça uma análise gratuita com essas condições <svg class="inline-block align-[-0.125em] ml-2" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </section>
+
+        <div class="grid gap-2"><a href="hub-caixa-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=caixa.gov.br&sz=64" alt="Logo Caixa" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Caixa</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.01% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 15.67% a.a.</span>
+        </a>
+<a href="hub-bradesco-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bradesco.com.br&sz=64" alt="Logo Bradesco" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Bradesco</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.78% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 26.89% a.a.</span>
+        </a>
+<a href="hub-santander-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=santander.com.br&sz=64" alt="Logo Santander" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Santander</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.80% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 27.19% a.a.</span>
+        </a>
+<a href="hub-banco-do-brasil-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bb.com.br&sz=64" alt="Logo Banco do Brasil" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Banco do Brasil</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.83% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 27.65% a.a.</span>
+        </a>
+<a href="hub-banco-inter-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bancointer.com.br&sz=64" alt="Logo Banco Inter" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Banco Inter</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.86% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 28.11% a.a.</span>
+        </a>
+<a href="hub-c6-bank-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=c6bank.com.br&sz=64" alt="Logo C6 Bank" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">C6 Bank</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">1.91% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 28.88% a.a.</span>
+        </a>
+<a href="hub-itau-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=itau.com.br&sz=64" alt="Logo Itaú" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Itaú</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">2.07% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 31.37% a.a.</span>
+        </a>
+<a href="hub-bv-financeira-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bv.com.br&sz=64" alt="Logo BV Financeira" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">BV Financeira</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">2.25% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 34.22% a.a.</span>
+        </a>
+<a href="hub-banco-pan-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=bancopan.com.br&sz=64" alt="Logo Banco Pan" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Banco Pan</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">2.88% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 44.68% a.a.</span>
+        </a>
+<a href="hub-omni-financeira-carro-usado.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">
+                <span class="relative inline-flex items-center justify-center w-5 h-5 shrink-0">
+        <img src="https://www.google.com/s2/favicons?domain=omni.com.br&sz=64" alt="Logo Omni Financeira" width="24" height="24" loading="lazy"
+             class="favicon-img w-5 h-5 rounded object-contain"
+             onerror="this.classList.add('favicon-erro')">
+        <span class="favicon-fallback w-5 h-5 rounded bg-white/10 text-sky-400 items-center justify-center absolute inset-0"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10"></path><path d="M19 21V10"></path><path d="M9 21V10"></path><path d="M15 21V10"></path><path d="M3 10l9-6 9 6"></path></svg></span>
+    </span>
+                <span class="text-sm font-medium truncate">Omni Financeira</span>
+            </span>
+            <span class="text-xs text-slate-400 text-center">3.35% a.m.</span>
+            <span class="text-sm text-slate-300 text-right">CET 52.97% a.a.</span>
+        </a></div>
+    </main>
+    <footer class="border-t border-white/5 mt-16 py-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-500 leading-relaxed">
+            <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
+            <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
+        </div>
+    </footer>
+    
+    <script>
+        function ajustarTooltips() {
+            const margem = 8;
+            // clientWidth (não window.innerWidth) é a largura real
+            // renderizada da página: nesta página o <body> tem
+            // overflow-x:hidden, e nesse caso window.innerWidth pode
+            // devolver um valor maior que a área visível de verdade
+            // (confirmado ao vivo nesta sessão: innerWidth relatou 404px
+            // numa tela de 375px). Usar innerWidth aqui faria a correção
+            // clampar contra um limite errado maior que a tela real,
+            // deixando o balão ainda estourando por fora.
+            const larguraTela = document.documentElement.clientWidth;
+            document.querySelectorAll('.tooltip-box').forEach(box => {
+                const metade = box.offsetWidth / 2;
+                box.style.setProperty('--tt-shift', (-metade) + 'px');
+                const r = box.getBoundingClientRect();
+                let shift = 0;
+                if (r.right > larguraTela - margem) shift = (larguraTela - margem) - r.right;
+                else if (r.left < margem) shift = margem - r.left;
+                if (shift !== 0) box.style.setProperty('--tt-shift', (-metade + shift).toFixed(0) + 'px');
+            });
+        }
+        ajustarTooltips();
+        window.addEventListener('resize', ajustarTooltips);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(ajustarTooltips).catch(() => {});
+        }
+    </script>
+</body>
+</html>
