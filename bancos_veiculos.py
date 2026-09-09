@@ -4,9 +4,8 @@ para financiamento de veículos (carro novo, carro usado/seminovo, moto).
 
 Segue o mesmo padrão do projeto irmão (pseo_simulador/bancos.py): uma
 entrada por banco aqui, nada duplicado/hardcoded em outro lugar. Tanto o
-etl_taxas_veiculos.py (a criar, atualização periódica) quanto o
-gerador_veiculos.py (a criar, geração das páginas pSEO) devem importar
-deste módulo.
+etl_taxas_veiculos.py (atualização semanal automática) quanto o
+gerador_veiculos.py (geração das páginas pSEO) importam deste módulo.
 
 FONTE DAS TAXAS (campos taxa_am / taxa_aa)
 -------------------------------------------
@@ -56,6 +55,8 @@ primária do próprio Itaú — por isso NÃO está codificada como campo
 numérico aqui ainda. Ver nota em ITENS_A_VALIDAR no fim do arquivo.
 """
 
+import json
+import os
 import unicodedata
 
 PERIODO_REFERENCIA_TAXAS = "17/08/2026 a 21/08/2026"
@@ -152,12 +153,64 @@ BANCOS_VEICULOS = {
     },
 }
 
+# Achado real (08/set/2026, "implemente o ETL semanal" pedido pelo usuário
+# depois da auditoria de pronto-pra-subir): os taxa_am/taxa_aa acima são o
+# snapshot "bootstrap" curado à mão (17-21/ago/2026, ver docstring do
+# arquivo) — sem isso, o produto nasceria sem nenhum dado até a primeira
+# rodagem do ETL. A partir da primeira rodagem de etl_taxas_veiculos.py,
+# porém, a fonte de verdade passa a ser taxas_cache_veiculos.json (gerado
+# por ele), aplicado aqui por cima do bootstrap logo após BANCOS_VEICULOS
+# ser definido — mesmo princípio do projeto irmão (bancos.py guarda
+# taxa_padrao de bootstrap, dados.csv guarda a verdade corrente), só que
+# sem precisar de um CSV externo pra um produto que nunca teve um: aqui o
+# "arquivo externo" é só o cache do próprio ETL.
+#
+# Path resolvido via os.path.dirname(__file__), não relativo ao cwd: este
+# módulo é importado tanto por gerador_veiculos.py quanto pelos testes
+# (tests/test_*.py, que rodam de um cwd diferente da raiz do projeto) — um
+# path relativo ingênuo ("taxas_cache_veiculos.json" sem mais nada)
+# funcionaria só quando o processo é lançado da raiz do projeto, e falharia
+# silenciosamente (FileNotFoundError tratado como "cache não existe ainda")
+# rodando de qualquer outro diretório.
+_ARQUIVO_CACHE_TAXAS = os.path.join(os.path.dirname(__file__), "taxas_cache_veiculos.json")
+
+
+def _aplicar_cache_taxas():
+    """Sobrescreve taxa_am/taxa_aa em BANCOS_VEICULOS com o que
+    etl_taxas_veiculos.py encontrou de mais recente, se o arquivo de cache
+    existir. Nunca remove nem adiciona banco — só atualiza taxa de banco
+    que já está na matriz; um banco no cache que não existe mais aqui
+    (removido do produto) é ignorado silenciosamente, de propósito (a
+    matriz de BANCOS_VEICULOS é sempre quem decide QUAIS bancos existem,
+    o cache só decide a TAXA de quem já existe)."""
+    try:
+        with open(_ARQUIVO_CACHE_TAXAS, encoding="utf-8") as f:
+            cache = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return
+    for banco, dados in cache.items():
+        if banco not in BANCOS_VEICULOS:
+            continue
+        if "taxa_am" in dados:
+            BANCOS_VEICULOS[banco]["taxa_am"] = dados["taxa_am"]
+        if "taxa_aa" in dados:
+            BANCOS_VEICULOS[banco]["taxa_aa"] = dados["taxa_aa"]
+
+
+_aplicar_cache_taxas()
+
 REGRA_FALLBACK = {
     "nome_exibicao": None,
     # Média simples dos bancos universais listados acima (exclui as
     # financeiras cativas de moto) — usada só se um banco desconhecido for
     # consultado; nunca deveria aparecer em produção com a matriz completa.
-    "taxa_am": 2.07, "taxa_aa": 27.88,
+    # Achado real (08/set/2026, auditoria pedida pelo usuário): taxa_aa
+    # estava em 27.88 — igual ao Itaú, não a média real dos 10 bancos
+    # (28.23, recalculada e conferida à mão). taxa_am já estava correto
+    # (2.07 bate com a média real). Corrigido pra não mostrar uma taxa
+    # anual levada errada no caminho de fallback, mesmo ele hoje nunca
+    # sendo alcançado com a matriz completa.
+    "taxa_am": 2.07, "taxa_aa": 28.23,
     "prazo_max": PRAZO_MAX_PADRAO, "aplica_a": ["novo", "usado", "moto"],
     "dominio_favicon": "google.com",
 }
@@ -205,6 +258,8 @@ def bancos_para_categoria(categoria):
 
 
 def entrada_minima(categoria):
+    if categoria not in ENTRADA_MINIMA_POR_CATEGORIA:
+        raise ValueError(f"categoria inválida: {categoria!r}")
     return ENTRADA_MINIMA_POR_CATEGORIA[categoria]
 
 

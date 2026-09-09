@@ -72,6 +72,7 @@ de busca diferente):
   index.html -> linka os 3 comparadores de categoria.
 """
 
+import html
 import json
 import math
 import os
@@ -208,7 +209,20 @@ def calcular_cet_veiculo(valor_financiado, prazo_meses, taxa_am):
     # Bisseção: mesmo com o banco mais caro do mercado (Omni, ~3,35% a.m.
     # nominal) mais custos, a TIR mensal real fica com folga bem abaixo de
     # 8% a.m. — teto generoso o suficiente pra não estourar a busca.
-    lo, hi = 0.0, 0.08
+    #
+    # Achado real (08/set/2026, auditoria pedida pelo usuário): esse "banco
+    # mais caro" é uma garantia sobre taxa_am (fixa, vem do BACEN), mas
+    # valor/prazo NÃO são fixos do lado do simulador ao vivo (calculo.js)
+    # — o visitante pode arrastar o slider pra qualquer combinação dentro
+    # do range permitido. A bisseção não valida sinal oposto em vpl(lo)/
+    # vpl(hi) antes de buscar: se algum dia a TIR real passar de 8% a.m.,
+    # a busca converge silenciosamente perto do teto e devolve um CET
+    # errado (subestimado), sem nenhum sinal de falha. Teto dobrado pra
+    # 15% como margem de segurança mais folgada (o pior caso hoje mapeado
+    # — moto no valor mínimo do slider com o prazo mínimo — fica bem
+    # abaixo até de 8%, então 15% não muda nenhum resultado real, só
+    # afasta a borda). JS (calculo.js) espelha o mesmo teto.
+    lo, hi = 0.0, 0.15
     for _ in range(60):
         mid = (lo + hi) / 2
         if vpl(mid) > 0:
@@ -548,7 +562,7 @@ function calcularCetVeiculo(valorFinanciado, prazoMeses, taxaAm) {
         for (let i = 0; i < fluxo.length; i++) total += fluxo[i] / Math.pow(1 + r, i + 1);
         return total;
     };
-    let lo = 0, hi = 0.08;
+    let lo = 0, hi = 0.15; // teto com margem de segurança maior — ver comentário em calcular_cet_veiculo (Python)
     for (let i = 0; i < 60; i++) {
         const mid = (lo + hi) / 2;
         if (vpl(mid) > 0) lo = mid; else hi = mid;
@@ -673,15 +687,17 @@ function iniciarSimulador(dados) {
         atualizarValor('res_renda', formatarReais(rendaSugerida));
         labelPrazo.innerText = prazo + ' meses';
 
-        const tabela = gerarTabelaAmortizacao(financiado, prazo, dados.taxaAm);
-        const tbodyVisivel = document.getElementById('tabela_visivel');
-        const tbodyResto = document.getElementById('tabela_resto');
-        const blocoResto = document.getElementById('bloco_tabela_resto');
-        const resumoResto = document.getElementById('resumo_tabela_resto');
-        if (tbodyVisivel) tbodyVisivel.innerHTML = tabela.slice(0, 6).map(linhaTabelaHtml).join('');
-        if (tbodyResto) tbodyResto.innerHTML = tabela.slice(6).map(linhaTabelaHtml).join('');
-        if (blocoResto) blocoResto.hidden = tabela.length <= 6;
-        if (resumoResto) resumoResto.innerText = 'Ver tabela completa (' + prazo + ' meses)';
+        // Achado real (08/set/2026, auditoria pedida pelo usuário): esta
+        // função escrevia em #tabela_visivel/#tabela_resto/
+        // #bloco_tabela_resto/#resumo_tabela_resto, mas a página não tem
+        // NENHUM desses elementos desde que a tabela mês a mês foi
+        // removida (pedido do usuário comparando com o projeto irmão,
+        // "mantém a tabela de amortização... tudo errado") — os
+        // guardas `if (elemento) ...` mascaravam isso silenciosamente
+        // (nunca lançava erro, só não fazia nada). gerarTabelaAmortizacao
+        // continua existindo e testada (tests/test_calculo_js.mjs,
+        // paridade com gerar_tabela_amortizacao do Python) por ainda ser
+        // uma função pura útil, só não é mais chamada daqui.
 
         // Amortização extra recorrente (Zona "Valor a Amortizar"): a cada N
         // meses, abate um valor fixo do saldo devedor, mantendo a MESMA
@@ -757,6 +773,20 @@ def render_json_ld(*blocos):
 def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
     if len(meta_description) > 160:
         meta_description = meta_description[:157].rstrip() + "..."
+    # Achado real (08/set/2026, auditoria de segurança pedida pelo
+    # usuário): titulo/meta_description chegam aqui via f-string sem
+    # nenhum escape — hoje inofensivo porque todo texto vem de
+    # BANCOS_VEICULOS (dicionário 100% hardcoded à mão neste arquivo),
+    # mas bancos_veiculos.py já documenta a intenção de um
+    # etl_taxas_veiculos.py futuro que alimentaria nome_exibicao a partir
+    # de texto raspado do relatório do BACEN — no dia em que isso
+    # acontecer, uma razão social com aspas/`&`/`<` no meio quebraria o
+    # atributo HTML (ou pior, injetaria HTML/JS) em toda página que cita
+    # aquele banco. html.escape() aqui é a defesa mínima nesse chokepoint
+    # (todo <title>/<meta> de toda página passa por render_head), sem
+    # precisar escapar individualmente cada f-string do arquivo inteiro.
+    titulo = html.escape(titulo)
+    meta_description = html.escape(meta_description)
     return f'''<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{titulo}</title>
@@ -838,14 +868,39 @@ def renderizar_faixa_mercado(banco, banco_exib, cet_banco, ranking_ordenado, men
     cet_banco_fmt = f"{cet_banco:.2f}".replace('.', ',')
     cet_min_fmt = f"{cet_min:.2f}".replace('.', ',')
     cet_max_fmt = f"{cet_max:.2f}".replace('.', ',')
+    # Achado real (08/set/2026, auditoria pedida pelo usuário): o JS
+    # (calculo.js:atualizar(), bloco "faixa_texto") já troca esta mensagem
+    # e o texto do CTA quando marcador_pct <= 15 (banco entre os mais
+    # baratos do mercado) — mas essa função SSR sempre renderizava a
+    # mensagem genérica "varia entre X e Y", nunca a variante "está entre
+    # as mais competitivas". Resultado: todo crawler (Googlebot incluso,
+    # liberado no robots.txt) e todo visitante sem JS via a mensagem
+    # ERRADA pra ~1/6 dos bancos de cada categoria (os mais baratos,
+    # justamente onde a mensagem mais forte importa mais) — só quem tinha
+    # JS habilitado via a versão correta, depois de um "flash" de texto
+    # trocando na tela. Corrigido calculando aqui o MESMO branch que o JS
+    # usa, pra SSR e client-side sempre concordarem desde o primeiro
+    # paint (parâmetro `mensagem` continua aceito pra quem quiser
+    # sobrescrever explicitamente, mas nenhum chamador atual faz isso).
     if mensagem is None:
-        mensagem = (
-            f"Nas condições simuladas, o CET no mercado costuma variar entre "
-            f"<strong class='text-sky-400'>{cet_min_fmt}%</strong> e "
-            f"<strong class='text-sky-400'>{cet_max_fmt}%</strong> — aqui no {banco_exib} está em "
-            f"{cet_banco_fmt}%. Encontrar e negociar manualmente a melhor condição pode levar semanas de idas "
-            f"e vindas ao banco."
-        )
+        if marcador_pct <= 15:
+            mensagem = (
+                f"O {banco_exib} está entre as condições <strong class='text-sky-400'>mais competitivas</strong> "
+                f"que acompanhamos ({cet_banco_fmt}% de CET). Vale confirmar essa condição e agilizar a aprovação "
+                f"sem custo."
+            )
+            texto_cta = "Falar com um especialista →"
+        else:
+            mensagem = (
+                f"Nas condições simuladas, o CET no mercado costuma variar entre "
+                f"<strong class='text-sky-400'>{cet_min_fmt}%</strong> e "
+                f"<strong class='text-sky-400'>{cet_max_fmt}%</strong> — aqui no {banco_exib} está em "
+                f"{cet_banco_fmt}%. Encontrar e negociar manualmente a melhor condição pode levar semanas de idas "
+                f"e vindas ao banco."
+            )
+            texto_cta = "É esse trabalho que fazemos por você, sem custo →"
+    else:
+        texto_cta = "É esse trabalho que fazemos por você, sem custo →"
     return f'''<div class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6">
         <div class="flex items-center gap-2 mb-4">
             <span class="text-amber-400">{icone('lightbulb')}</span>
@@ -864,7 +919,7 @@ def renderizar_faixa_mercado(banco, banco_exib, cet_banco, ranking_ordenado, men
         </div>
         <p class="text-slate-300 text-xs font-light leading-relaxed mt-4" id="faixa_texto">
             {mensagem}
-            <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="text-sky-400 underline hover:text-sky-300 block mt-2 font-semibold">É esse trabalho que fazemos por você, sem custo →</a>
+            <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="text-sky-400 underline hover:text-sky-300 block mt-2 font-semibold">{texto_cta}</a>
         </p>
     </div>'''
 
@@ -1028,6 +1083,7 @@ def favicon_com_fallback(url_logo, banco_exib, classe_tamanho="w-6 h-6", lazy=Tr
     a bolinha vazia). Nas linhas de lista mais abaixo na página (fora da
     dobra em telas menores), lazy=True continua fazendo sentido."""
     lazy_attr = ' loading="lazy"' if lazy else ""
+    banco_exib = html.escape(banco_exib)  # ver nota de segurança em render_head — mesmo chokepoint, texto de banco em atributo HTML
     return f'''<span class="relative inline-flex items-center justify-center {classe_tamanho} shrink-0">
         <img src="{url_logo}" alt="Logo {banco_exib}" width="24" height="24"{lazy_attr}
              class="favicon-img {classe_tamanho} rounded object-contain"
@@ -1066,6 +1122,16 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     valor, prazo = p["valor_veiculo"], p["prazo"]
     entrada, financiado = p["entrada"], p["valor_financiado"]
     taxa_am, taxa_aa, parcela, cet = p["taxa_am"], p["taxa_aa"], p["parcela"], p["cet"]
+    # Achado real (08/set/2026, auditoria pedida pelo usuário): formatar
+    # aqui, uma vez, e reusar — achado no mesmo levantamento que vários
+    # pontos da página (meta description, resultado da simulação,
+    # respostas do FAQ) usavam {cet:.2f}%/{taxa_aa:.2f}% direto, sem o
+    # .replace('.', ',') que o padrão brasileiro (e o resto do arquivo,
+    # ex. cet_banco_fmt em renderizar_faixa_mercado) usa — saía "12.83%"
+    # com PONTO em vez de "12,83%", visível no card de resultado e no
+    # snippet do Google.
+    cet_fmt = f"{cet:.2f}".replace('.', ',')
+    taxa_aa_fmt = f"{taxa_aa:.2f}".replace('.', ',')
 
     valor_curto = formatar_valor_curto(valor)
     total_pago = parcela * prazo
@@ -1079,14 +1145,14 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: {valor_curto} em {prazo}x | Simulador Datalab"
     meta_description = (
         f"Simule o financiamento de {CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} pelo {banco_exib} "
-        f"em {prazo} meses: parcela de {formatar_reais(parcela)}, CET estimado {cet:.2f}% a.a., "
+        f"em {prazo} meses: parcela de {formatar_reais(parcela)}, CET estimado {cet_fmt}% a.a., "
         f"com base na taxa média real do Banco Central."
     )
 
     faq_q1 = f"O que é o CET no financiamento {label_categoria.lower()} do {banco_exib}?"
     faq_a1 = (f"CET (Custo Efetivo Total) é o custo real do financiamento — inclui a taxa de juros, o IOF "
               f"(imposto sobre a operação de crédito) e tarifas, não só a taxa anunciada. Neste cenário, o CET "
-              f"estimado é {cet:.2f}% ao ano, acima da taxa nominal de {taxa_aa:.2f}% ao ano.")
+              f"estimado é {cet_fmt}% ao ano, acima da taxa nominal de {taxa_aa_fmt}% ao ano.")
     faq_q2 = f"Por que a parcela do {banco_exib} é fixa do início ao fim?"
     faq_a2 = ("Financiamento de veículo no Brasil (CDC) usa a Tabela Price: a parcela é fixa do primeiro ao "
               "último mês, mudando só a proporção entre juros e amortização a cada mês. É diferente do SAC do "
@@ -1214,7 +1280,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
                                 CET Real (a.a.)
                                 {tooltip('Custo Efetivo Total: a taxa de juros somada ao IOF, à tarifa de registro de contrato e ao seguro prestamista típico de mercado. É o número mais honesto pra comparar o custo entre bancos diferentes.')}
                             </p>
-                            <p class="text-white font-medium text-lg" id="res_cet">{cet:.2f}% a.a.</p>
+                            <p class="text-white font-medium text-lg" id="res_cet">{cet_fmt}% a.a.</p>
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center">
@@ -1357,7 +1423,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
                 </div>
                 <div class="py-5 md:border-b md:border-white/10">
                     <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('home', 'mr-2')} De Onde Vem essa Taxa</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">A taxa de {taxa_aa:.2f}% a.a. mostrada aqui é a taxa média efetivamente contratada pelo {banco_exib} nessa modalidade, apurada mensalmente pelo Banco Central (BACEN) — não é uma taxa promocional "a partir de". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito.</p>
+                    <p class="text-slate-300 text-sm font-light leading-relaxed">A taxa de {taxa_aa_fmt}% a.a. mostrada aqui é a taxa média efetivamente contratada pelo {banco_exib} nessa modalidade, apurada mensalmente pelo Banco Central (BACEN) — não é uma taxa promocional "a partir de". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito.</p>
                 </div>
                 <div class="py-5 pb-0 md:pb-0 md:border-b md:border-white/10">
                     <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('percent', 'mr-2')} Renda Mínima Necessária</p>
@@ -1430,11 +1496,15 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     url_canonica = f"{DOMINIO}/{slug_pagina}.html"
     href_comparador = f"{slug_comparador(categoria)}.html"
     dados_banco = obter_regra(banco)
+    # Ver nota de padrão brasileiro (vírgula decimal) em
+    # gerar_pagina_individual — mesmo achado de auditoria, mesmo fix.
+    taxa_am_fmt = f"{dados_banco['taxa_am']:.2f}".replace('.', ',')
+    taxa_aa_fmt = f"{dados_banco['taxa_aa']:.2f}".replace('.', ',')
 
     titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: todas as simulações | Datalab"
     meta_description = (
         f"Todas as simulações de financiamento {label_categoria.lower()} do {banco_exib}: taxa média real de "
-        f"{dados_banco['taxa_am']:.2f}% a.m., prazo até {dados_banco['prazo_max']} meses, parcelas por valor e prazo."
+        f"{taxa_am_fmt}% a.m., prazo até {dados_banco['prazo_max']} meses, parcelas por valor e prazo."
     )
 
     paginas_por_valor = {}
@@ -1479,7 +1549,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         {breadcrumb}
         <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento {label_categoria} pelo {banco_exib}</h1>
-        <p class="text-slate-400 text-sm mb-8">Taxa média real: {dados_banco['taxa_am']:.2f}% a.m. ({dados_banco['taxa_aa']:.2f}% a.a.) · Prazo máximo: {dados_banco['prazo_max']} meses. Escolha um valor e prazo para ver a simulação completa.</p>
+        <p class="text-slate-400 text-sm mb-8">Taxa média real: {taxa_am_fmt}% a.m. ({taxa_aa_fmt}% a.a.) · Prazo máximo: {dados_banco['prazo_max']} meses. Escolha um valor e prazo para ver a simulação completa.</p>
 
         <div class="mb-8">{faixa_html}</div>
 
@@ -1553,9 +1623,10 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         pct = round(((r["cet"] - cet_min) / spread_mercado) * 100) if spread_mercado > 0 else 50
         pct = max(2, min(98, pct))
         url_logo = f"https://www.google.com/s2/favicons?domain={r['dominio_favicon']}&sz=64"
+        r_cet_fmt = f"{r['cet']:.2f}".replace('.', ',')  # padrão brasileiro — ver nota em gerar_pagina_individual
         marcadores.append(
             f'<div class="absolute top-1/2 z-10 rounded-full bg-slate-950 border-2 border-white shadow-[0_1px_4px_rgba(0,0,0,0.4)] p-0.5" '
-            f'style="left:{pct}%; transform:translate(-50%,-50%)" title="{r["nome_exibicao"]}: {r["cet"]:.2f}% CET">'
+            f'style="left:{pct}%; transform:translate(-50%,-50%)" title="{r["nome_exibicao"]}: {r_cet_fmt}% CET">'
             f'{favicon_com_fallback(url_logo, r["nome_exibicao"], "w-5 h-5", lazy=False)}'
             f'</div>'
         )
@@ -1580,14 +1651,31 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     # cai exatamente na mesma posição horizontal em toda linha,
     # independente do tamanho do nome — mesmo princípio que a página do
     # projeto irmão já usa na tabela de comparação de bancos.
+    #
+    # Achado real (08/set/2026, auditoria mobile pedida pelo usuário):
+    # 110px + 150px fixos era mais largura do que sobrava numa tela de
+    # 375px depois do padding/gap do card — a coluna de nome (1fr) ficava
+    # com ~5px reais, truncando "Bradesco"/"Santander" pra 1 letra só
+    # (confirmado via scrollWidth > offsetWidth no DOM). Trocado pra
+    # colunas 'auto' (largura = conteúdo real, não um pixel fixo
+    # arbitrário) — como cada linha é seu PRÓPRIO grid independente (não
+    # uma grid-table compartilhada entre as linhas), 'auto' não herda o
+    # bug antigo do flex: taxa_am e CET são sempre formatados com o MESMO
+    # número de dígitos ("X.XX% a.m.", "CET XX.XX% a.a."), então a
+    # largura de cada coluna já não varia de forma perceptível de uma
+    # linha pra outra — o alinhamento reto do fix original é preservado
+    # sem precisar reservar espaço fixo maior que o conteúdo, que é
+    # exatamente o que quebrava no mobile. Mesma técnica que o projeto
+    # irmão já usa (colunas 'auto' pra conteúdo numérico de largura
+    # quase-constante, só o nome variável vira '1fr').
     linhas_lista = "\n".join(
-        f'''<a href="{slug_hub(categoria, r["banco"])}.html" class="grid grid-cols-[1fr_110px_150px] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+        f'''<a href="{slug_hub(categoria, r["banco"])}.html" class="grid grid-cols-[1fr_auto_auto] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
             <span class="flex items-center gap-2 min-w-0">
                 {favicon_com_fallback(f"https://www.google.com/s2/favicons?domain={r['dominio_favicon']}&sz=64", r["nome_exibicao"], "w-5 h-5")}
                 <span class="text-sm font-medium truncate">{r["nome_exibicao"]}</span>
             </span>
-            <span class="text-xs text-slate-400 text-center">{r["taxa_am"]:.2f}% a.m.</span>
-            <span class="text-sm text-slate-300 text-right">CET {r["cet"]:.2f}% a.a.</span>
+            <span class="text-xs text-slate-400 text-right whitespace-nowrap">{f"{r['taxa_am']:.2f}".replace('.', ',')}% a.m.</span>
+            <span class="text-sm text-slate-300 text-right whitespace-nowrap">CET {f"{r['cet']:.2f}".replace('.', ',')}% a.a.</span>
         </a>'''
         for r in ranking
     )
@@ -1632,8 +1720,8 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
                 {marcadores_html}
             </div>
             <div class="flex justify-between text-[10px] text-slate-500 uppercase tracking-wide mb-6">
-                <span>{cet_min:.2f}% menor CET</span>
-                <span>{cet_max:.2f}% maior CET</span>
+                <span>{f"{cet_min:.2f}".replace('.', ',')}% menor CET</span>
+                <span>{f"{cet_max:.2f}".replace('.', ',')}% maior CET</span>
             </div>
             <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="inline-flex items-center justify-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-8 py-3.5 rounded-2xl transition-all text-sm w-full shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                 Peça uma análise gratuita com essas condições {icone('arrow-right', 'ml-2')}

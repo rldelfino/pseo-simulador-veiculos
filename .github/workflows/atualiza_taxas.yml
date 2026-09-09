@@ -1,0 +1,64 @@
+name: ETL Semanal de Taxas de Juros e Rebuild do Site
+
+on:
+  schedule:
+    # Toda segunda-feira, 8h UTC (pedido do usuário, 08/set/2026: "ETL
+    # periódico, mas aqui semanal"). Diferente do projeto irmão
+    # (imobiliário, que roda 1x/mês porque a fonte só publica agregado
+    # mensal): a modalidade de veículo (401101) publica uma janela móvel
+    # de ~5 dias úteis A CADA dia útil (ver docstring de
+    # etl_taxas_veiculos.py) — rodar 1x/semana já garante nunca ficar mais
+    # de ~1 semana desatualizado, sem precisar rodar todo dia útil.
+    - cron: '0 8 * * 1'
+  workflow_dispatch: # Permite rodar manualmente no GitHub
+
+# ISSO AQUI RESOLVE O ERRO 128 (Dá permissão de gravação pro robô) — mesma
+# nota do projeto irmão, mesmo motivo.
+permissions:
+  contents: write
+
+jobs:
+  atualiza-dados:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar Dependências Python
+        run: pip install -r requirements.txt
+
+      - name: Rodar Extrator (atualiza taxas_cache_veiculos.json com taxas do BACEN)
+        run: python etl_taxas_veiculos.py
+
+      - name: Regerar as páginas pSEO (gerador_veiculos.py)
+        run: python gerador_veiculos.py
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Tailwind CLI
+        run: npm install
+
+      - name: Compilar CSS estático (substitui o CDN do Tailwind em produção)
+        run: npm run build:css
+
+      - name: Atualizar Site (Commit e Push)
+        run: |
+          git config --global user.name "Robô Datalab"
+          git config --global user.email "bot@datalabglobal.com"
+          # taxas_cache_veiculos.json e relatorio_atualizacao_taxas.txt
+          # PRECISAM ser commitados: o cache é o que permite à próxima
+          # semana "lembrar" a última taxa confirmada de cada banco quando
+          # o BACEN falhar/estiver fora do ar (mesma regra do projeto
+          # irmão) — sem commitar, cada execução do Actions parte de um
+          # checkout limpo e o cache nasce vazio de novo.
+          git add paginas_seo taxas_cache_veiculos.json relatorio_atualizacao_taxas.txt ultima_atualizacao_taxas.txt
+          git commit -m "auto: atualização semanal de taxas e rebuild do site" || echo "Sem mudanças"
+          git push

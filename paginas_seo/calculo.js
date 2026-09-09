@@ -71,7 +71,7 @@ function calcularCetVeiculo(valorFinanciado, prazoMeses, taxaAm) {
         for (let i = 0; i < fluxo.length; i++) total += fluxo[i] / Math.pow(1 + r, i + 1);
         return total;
     };
-    let lo = 0, hi = 0.08;
+    let lo = 0, hi = 0.15; // teto com margem de segurança maior — ver comentário em calcular_cet_veiculo (Python)
     for (let i = 0; i < 60; i++) {
         const mid = (lo + hi) / 2;
         if (vpl(mid) > 0) lo = mid; else hi = mid;
@@ -196,15 +196,17 @@ function iniciarSimulador(dados) {
         atualizarValor('res_renda', formatarReais(rendaSugerida));
         labelPrazo.innerText = prazo + ' meses';
 
-        const tabela = gerarTabelaAmortizacao(financiado, prazo, dados.taxaAm);
-        const tbodyVisivel = document.getElementById('tabela_visivel');
-        const tbodyResto = document.getElementById('tabela_resto');
-        const blocoResto = document.getElementById('bloco_tabela_resto');
-        const resumoResto = document.getElementById('resumo_tabela_resto');
-        if (tbodyVisivel) tbodyVisivel.innerHTML = tabela.slice(0, 6).map(linhaTabelaHtml).join('');
-        if (tbodyResto) tbodyResto.innerHTML = tabela.slice(6).map(linhaTabelaHtml).join('');
-        if (blocoResto) blocoResto.hidden = tabela.length <= 6;
-        if (resumoResto) resumoResto.innerText = 'Ver tabela completa (' + prazo + ' meses)';
+        // Achado real (08/set/2026, auditoria pedida pelo usuário): esta
+        // função escrevia em #tabela_visivel/#tabela_resto/
+        // #bloco_tabela_resto/#resumo_tabela_resto, mas a página não tem
+        // NENHUM desses elementos desde que a tabela mês a mês foi
+        // removida (pedido do usuário comparando com o projeto irmão,
+        // "mantém a tabela de amortização... tudo errado") — os
+        // guardas `if (elemento) ...` mascaravam isso silenciosamente
+        // (nunca lançava erro, só não fazia nada). gerarTabelaAmortizacao
+        // continua existindo e testada (tests/test_calculo_js.mjs,
+        // paridade com gerar_tabela_amortizacao do Python) por ainda ser
+        // uma função pura útil, só não é mais chamada daqui.
 
         // Amortização extra recorrente (Zona "Valor a Amortizar"): a cada N
         // meses, abate um valor fixo do saldo devedor, mantendo a MESMA
