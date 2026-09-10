@@ -79,10 +79,14 @@ def test_calculo_js_existe_e_e_referenciado_pelas_paginas_individuais():
 
 def test_toda_pagina_tem_o_cta_de_afiliado():
     """O CTA de análise gratuita (link de afiliado) precisa aparecer em
-    toda página — é o único caminho de conversão do site (modelo de
-    negócio é por indicação, não por venda direta)."""
+    toda página de conteúdo — é o único caminho de conversão do site
+    (modelo de negócio é por indicação, não por venda direta). 404.html
+    é excluída de propósito: é página de erro (noindex), sem conteúdo de
+    produto, não deveria empurrar conversão — mesmo padrão do projeto
+    irmão."""
     LINK = "https://ftudo.com/rodolfo-financiamento-de-automoveis/"
-    sem_cta = [n for n in _arquivos_html() if LINK not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
+    paginas = [n for n in _arquivos_html() if n != "404.html"]
+    sem_cta = [n for n in paginas if LINK not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
     assert not sem_cta, f"{len(sem_cta)} página(s) sem o link de afiliado: {sem_cta[:10]}"
 
 
@@ -155,7 +159,10 @@ def test_todo_bloco_json_ld_e_json_valido():
 
 
 def test_toda_pagina_tem_pelo_menos_um_json_ld():
-    sem_schema = [n for n in _arquivos_html() if "application/ld+json" not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
+    """404.html excluída — página de erro (noindex) não precisa de schema,
+    o Google nem deveria indexar ela pra usar esse dado."""
+    paginas = [n for n in _arquivos_html() if n != "404.html"]
+    sem_schema = [n for n in paginas if "application/ld+json" not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
     assert not sem_schema, f"páginas sem nenhum JSON-LD: {sem_schema[:10]}"
 
 
@@ -179,6 +186,8 @@ def test_dominio_correto_em_todas_as_paginas():
     DOMINIO_ESPERADO = "https://veiculos.datalabglobal.com"
     problemas = []
     for nome_arquivo in _arquivos_html():
+        if nome_arquivo == "404.html":
+            continue  # página de erro genérica, sem canonical de propósito (não é uma URL "real" a indexar)
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
             conteudo = f.read()
         m = re.search(r'rel="canonical" href="([^"]+)"', conteudo)
@@ -203,9 +212,22 @@ def test_sitemap_robots_llms_existem_e_citam_o_dominio_certo():
 
 
 def test_sitemap_lista_todas_as_paginas_geradas():
+    """404.html excluída de propósito: não é uma URL de conteúdo real, o
+    Cloudflare Pages só a serve automaticamente como fallback de erro —
+    colocar ela no sitemap ativamente convidaria o Google a indexar uma
+    página de erro, o oposto do que o meta robots=noindex dela já pede."""
     with open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8") as f:
         sitemap = f.read()
     urls_no_sitemap = set(re.findall(r"<loc>(.*?)</loc>", sitemap))
-    arquivos_esperados = {f"https://veiculos.datalabglobal.com/{n}" for n in _arquivos_html()}
+    arquivos_esperados = {f"https://veiculos.datalabglobal.com/{n}" for n in _arquivos_html() if n != "404.html"}
     faltando = arquivos_esperados - urls_no_sitemap
     assert not faltando, f"{len(faltando)} página(s) gerada(s) mas ausente(s) do sitemap: {list(faltando)[:10]}"
+
+
+def test_pagina_404_tem_noindex():
+    """Mesmo teste do projeto irmão: garante que 404.html nunca perde o
+    meta robots=noindex — sem ele, o Google poderia tentar indexar a
+    página de erro genérica como se fosse conteúdo de verdade."""
+    with open(os.path.join(PASTA_SAIDA, "404.html"), encoding="utf-8") as f:
+        conteudo = f.read()
+    assert 'name="robots" content="noindex"' in conteudo, "404.html sem noindex — Google poderia tentar indexar a página de erro"

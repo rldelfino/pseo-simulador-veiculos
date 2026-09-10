@@ -1829,6 +1829,47 @@ def gerar_sitemap(urls, data_atualizacao):
     return "\n".join(partes)
 
 
+def gerar_404():
+    """Achado real (10/set/2026, checagem final pedida pelo usuário depois
+    do primeiro deploy em produção): sem esse arquivo, o Cloudflare Pages
+    cai no comportamento padrão de app single-page — qualquer URL sem
+    arquivo correspondente (link quebrado, erro de digitação, `ads.txt`
+    que nem existe de propósito) devolve a home inteira com status 200 em
+    vez de um 404 de verdade. Confirmado ao vivo: `curl` numa URL
+    inventada respondia 200 com o HTML da home. Isso é ruim pra SEO (o
+    Google trata como "soft 404", sinal de conteúdo duplicado/qualidade
+    baixa) e esconde link quebrado de verdade, que passaria a mostrar
+    "200 OK" mesmo estando errado. Basta esse arquivo existir na raiz
+    pro Cloudflare Pages servir ele com status 404 de verdade pra
+    qualquer caminho sem match — mesmo mecanismo do projeto irmão
+    (ver 404.html em pseo_simulador), adaptado pra identidade visual e
+    copy do produto de veículo."""
+    return '''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página não encontrada | Datalab Global</title>
+    <meta name="description" content="Essa página não existe mais ou nunca existiu. Veja os comparadores de financiamento de veículo ou volte pra home do simulador.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
+    <a href="/" class="mb-10"><img src="logo.svg" alt="Datalab Global" class="h-12 w-auto mx-auto"></a>
+    <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
+    <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
+    <div class="flex flex-wrap gap-3 justify-center">
+        <a href="/" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">Ir pra home</a>
+        <a href="/comparador-carro-novo.html" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver comparador de carro novo</a>
+    </div>
+</body>
+</html>'''
+
+
 def gerar_robots_txt():
     return (
         "User-agent: *\nAllow: /\n\n"
@@ -1941,6 +1982,9 @@ def gerar_site(pasta_saida='paginas_seo'):
 
     with open(os.path.join(pasta_saida, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(gerar_robots_txt())
+
+    with open(os.path.join(pasta_saida, "404.html"), "w", encoding="utf-8") as f:
+        f.write(gerar_404())
 
     with open(os.path.join(pasta_saida, "llms.txt"), "w", encoding="utf-8") as f:
         f.write(gerar_llms_txt(len(paginas), data_atualizacao))
