@@ -970,6 +970,7 @@ def render_footer():
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-500 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
+            <p class="mt-3"><a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a></p>
         </div>
     </footer>'''
 
@@ -1801,9 +1802,18 @@ def gerar_index(data_atualizacao):
         "@context": "https://schema.org", "@type": "WebSite",
         "name": "Datalab Global", "url": url_home, "dateModified": data_atualizacao,
     }
+    # Achado real (12/set/2026, pesquisa sobre E-E-A-T/YMYL pedida pelo
+    # usuário — conteúdo financeiro é avaliado pelo Google com padrão mais
+    # alto de confiança do que conteúdo comum): "founder"/"contactPoint"
+    # são sinais legíveis por máquina de que existe gente real, com
+    # contato real, por trás do site. Mesmo dado aplicado no imobiliário
+    # (ver gerador.py) — Rodolfo Delfino é o fundador real, e-mail é o
+    # contato real do domínio (Google Workspace).
     schema_organization = {
         "@context": "https://schema.org", "@type": "Organization",
         "name": "Datalab Global", "url": url_home, "logo": f"{DOMINIO}/logo-schema.png",
+        "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
+        "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
 
     head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization])
@@ -1823,6 +1833,64 @@ def gerar_index(data_atualizacao):
     {corpo}
     {render_footer()}
     {SCRIPT_AJUSTA_TOOLTIPS}
+</body>
+</html>'''
+
+
+def gerar_pagina_sobre():
+    """Página institucional "Sobre" — mesmo achado do projeto irmão (ver
+    gerador.py:gerar_pagina_sobre): conteúdo financeiro (YMYL) é avaliado
+    pelo Google com padrão de confiança mais alto que conteúdo comum, e
+    sinais de quem está por trás do site (fundador, contato) pesam nisso.
+    Conteúdo real fornecido pelo usuário (12/set/2026) — não inventado."""
+    url_home = f"{DOMINIO}/"
+    url_canonica = f"{DOMINIO}/sobre"
+    titulo_pagina = "Sobre a Datalab Global | Simulador de Financiamento de Veículos"
+    meta_description = (
+        "Conheça a Datalab Global, criada por Rodolfo Delfino para usar dados e IA na resolução de "
+        "problemas reais — incluindo este simulador de financiamento de veículos com taxas do Banco Central."
+    )
+    schema_sobre = {
+        "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
+        "mainEntity": {
+            "@type": "Organization", "name": "Datalab Global", "url": url_home,
+            "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
+            "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
+        },
+    }
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_sobre])
+    corpo = f'''<main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <h1 class="font-serif text-3xl font-bold mb-8">Sobre a Datalab Global</h1>
+
+        <div class="glass-panel-sky rounded-2xl p-6 md:p-10 space-y-6 text-slate-300 leading-relaxed">
+            <p>A Datalab Global foi criada por <strong class="text-white">Rodolfo Delfino</strong> com um objetivo direto: usar dados e as melhores técnicas de inteligência artificial disponíveis hoje para facilitar a vida das pessoas. Isso já tomou forma de produtos bem diferentes entre si — de SaaS a jogos, de relatórios a sistemas de ERP — mas todos guiados pela mesma pergunta: <strong class="text-sky-400">qual dor podemos resolver hoje?</strong></p>
+
+            <p>Este simulador de financiamento de veículos nasceu dessa mesma lógica. Em vez de taxa promocional de material de marketing, usamos a taxa média <strong class="text-white">real</strong> apurada pelo Banco Central do Brasil — atualizada semanalmente, a mesma fonte que qualquer analista de crédito consultaria. O objetivo é simples: você saber, antes de entrar num banco, quanto um financiamento realmente custa.</p>
+
+            <div class="border-t border-white/10 pt-6">
+                <h2 class="font-serif text-xl text-white mb-3">Como funciona a Datalab Global</h2>
+                <p>Este site é mantido por indicação: quando você pede uma análise gratuita através dos nossos parceiros credenciados, podemos receber uma comissão — sem nenhum custo extra pra você. Não somos um banco nem instituição financeira, e nenhuma simulação aqui é uma oferta de crédito; é uma estimativa educativa baseada em dados reais de mercado.</p>
+            </div>
+
+            <div class="border-t border-white/10 pt-6">
+                <h2 class="font-serif text-xl text-white mb-3">Contato</h2>
+                <p>E-mail: <a href="mailto:contato@datalabglobal.com" class="text-sky-400 hover:text-sky-300 underline">contato@datalabglobal.com</a></p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mt-8">
+            <a href="/" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">Ir pro simulador</a>
+        </div>
+    </main>'''
+    return f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
 </body>
 </html>'''
 
@@ -1973,6 +2041,10 @@ def gerar_site(pasta_saida='paginas_seo'):
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
         f.write(gerar_index(data_atualizacao))
+
+    with open(os.path.join(pasta_saida, "sobre.html"), "w", encoding="utf-8") as f:
+        f.write(gerar_pagina_sobre())
+    urls_sitemap.append(f"{DOMINIO}/sobre")
 
     with open(os.path.join(pasta_saida, "logo.svg"), "w", encoding="utf-8") as f:
         f.write(gerar_logo_svg())
