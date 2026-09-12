@@ -815,9 +815,9 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
 def render_nav():
     return f'''<nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="index.html" class="flex items-center"><img src="logo.svg" alt="Datalab Global" class="h-8 w-auto"></a>
+            <a href="/" class="flex items-center"><img src="logo.svg" alt="Datalab Global" class="h-8 w-auto"></a>
             <div class="flex items-center gap-2">
-                <a href="index.html" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
+                <a href="/" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
                 <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                     Análise Grátis {icone('arrow-right', 'ml-1.5 text-xs')}
                 </a>
@@ -1138,9 +1138,20 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     total_juros = total_pago - financiado
     renda_sugerida = calcular_renda_sugerida(parcela)
     label_categoria = CATEGORIA_LABEL[categoria]
-    url_canonica = f"{DOMINIO}/{p['slug']}.html"
-    href_hub = f"{slug_hub(categoria, banco)}.html"
-    href_comparador = f"{slug_comparador(categoria)}.html"
+    # Achado real (10/set/2026, checagem final de SEO pedida pelo
+    # usuário): canonical/hrefs internos apontavam pra URL COM ".html",
+    # mas o Cloudflare Pages redireciona (308) automaticamente a versão
+    # com ".html" pra sem extensão (confirmado ao vivo em produção) — ou
+    # seja, o canonical apontava pra uma URL que a própria plataforma
+    # redireciona, exatamente o padrão que o Google desaconselha. O
+    # projeto irmão (imobiliário) já usa URL sem extensão em tudo (canonical,
+    # sitemap, links internos) e não tem esse problema — replicado aqui.
+    # O arquivo em disco continua se chamando "slug.html" (é como o
+    # Cloudflare Pages localiza o arquivo estático); só as REFERÊNCIAS
+    # (href, canonical, sitemap) deixam de citar a extensão.
+    url_canonica = f"{DOMINIO}/{p['slug']}"
+    href_hub = f"{slug_hub(categoria, banco)}"
+    href_comparador = f"{slug_comparador(categoria)}"
 
     titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: {valor_curto} em {prazo}x | Simulador Datalab"
     meta_description = (
@@ -1173,7 +1184,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/index.html"},
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
             {"@type": "ListItem", "position": 2, "name": label_categoria, "item": f"{DOMINIO}/{href_comparador}"},
             {"@type": "ListItem", "position": 3, "name": banco_exib, "item": f"{DOMINIO}/{href_hub}"},
             {"@type": "ListItem", "position": 4, "name": f"{valor_curto} em {prazo} meses", "item": url_canonica},
@@ -1205,7 +1216,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         key=lambda q: q["prazo"],
     )
     outros_prazos_html = "\n".join(
-        f'<a href="{q["slug"]}.html" class="px-3 py-2 rounded-lg border border-white/10 hover:border-sky-500/50 text-xs transition-all whitespace-nowrap">{q["prazo"]}x de {formatar_reais(q["parcela"])}</a>'
+        f'<a href="{q["slug"]}" class="px-3 py-2 rounded-lg border border-white/10 hover:border-sky-500/50 text-xs transition-all whitespace-nowrap">{q["prazo"]}x de {formatar_reais(q["parcela"])}</a>'
         for q in outros_prazos
     )
 
@@ -1225,7 +1236,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
 
     head = render_head(titulo_pagina, meta_description, url_canonica, [schema_faq, schema_breadcrumb, schema_software])
     breadcrumb = render_breadcrumb([
-        ("Datalab Global", "index.html"),
+        ("Datalab Global", "/"),
         (label_categoria, href_comparador),
         (banco_exib, href_hub),
         (f"{valor_curto} em {prazo}x", None),
@@ -1493,8 +1504,8 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
 def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     label_categoria = CATEGORIA_LABEL[categoria]
     slug_pagina = slug_hub(categoria, banco)
-    url_canonica = f"{DOMINIO}/{slug_pagina}.html"
-    href_comparador = f"{slug_comparador(categoria)}.html"
+    url_canonica = f"{DOMINIO}/{slug_pagina}"
+    href_comparador = f"{slug_comparador(categoria)}"
     dados_banco = obter_regra(banco)
     # Ver nota de padrão brasileiro (vírgula decimal) em
     # gerar_pagina_individual — mesmo achado de auditoria, mesmo fix.
@@ -1514,7 +1525,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     blocos_valor = []
     for valor, paginas in paginas_por_valor.items():
         links = "\n".join(
-            f'<a href="{p["slug"]}.html" class="flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">'
+            f'<a href="{p["slug"]}" class="flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">'
             f'<span class="text-sm">{p["prazo"]} meses</span><span class="text-sm font-semibold text-sky-400">{formatar_reais(p["parcela"])}/mês</span></a>'
             for p in paginas
         )
@@ -1537,14 +1548,14 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/index.html"},
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
             {"@type": "ListItem", "position": 2, "name": label_categoria, "item": f"{DOMINIO}/{href_comparador}"},
             {"@type": "ListItem", "position": 3, "name": banco_exib, "item": url_canonica},
         ],
     }
 
     head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb])
-    breadcrumb = render_breadcrumb([("Datalab Global", "index.html"), (label_categoria, href_comparador), (banco_exib, None)])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, href_comparador), (banco_exib, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         {breadcrumb}
@@ -1581,7 +1592,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
 def gerar_comparador(categoria, lookup, data_atualizacao):
     label_categoria = CATEGORIA_LABEL[categoria]
     slug_pagina = slug_comparador(categoria)
-    url_canonica = f"{DOMINIO}/{slug_pagina}.html"
+    url_canonica = f"{DOMINIO}/{slug_pagina}"
     valor_referencia = VALORES_POR_CATEGORIA[categoria][len(VALORES_POR_CATEGORIA[categoria]) // 2]
     prazo_referencia = 48
 
@@ -1669,7 +1680,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     # irmão já usa (colunas 'auto' pra conteúdo numérico de largura
     # quase-constante, só o nome variável vira '1fr').
     linhas_lista = "\n".join(
-        f'''<a href="{slug_hub(categoria, r["banco"])}.html" class="grid grid-cols-[1fr_auto_auto] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+        f'''<a href="{slug_hub(categoria, r["banco"])}" class="grid grid-cols-[1fr_auto_auto] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
             <span class="flex items-center gap-2 min-w-0">
                 {favicon_com_fallback(f"https://www.google.com/s2/favicons?domain={r['dominio_favicon']}&sz=64", r["nome_exibicao"], "w-5 h-5")}
                 <span class="text-sm font-medium truncate">{r["nome_exibicao"]}</span>
@@ -1683,7 +1694,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/index.html"},
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
             {"@type": "ListItem", "position": 2, "name": label_categoria, "item": url_canonica},
         ],
     }
@@ -1700,7 +1711,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     }
 
     head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_item_list])
-    breadcrumb = render_breadcrumb([("Datalab Global", "index.html"), (label_categoria, None)])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         {breadcrumb}
@@ -1751,7 +1762,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
 # ---------------------------------------------------------------------------
 
 def gerar_index(data_atualizacao):
-    url_home = f"{DOMINIO}/index.html"
+    url_home = f"{DOMINIO}/"
     titulo_pagina = "Simulador de Financiamento de Veículos: Carro Novo, Usado e Moto | Datalab"
     meta_description = (
         "Compare taxas reais de financiamento de carro novo, carro usado e moto entre os principais bancos "
@@ -1762,7 +1773,7 @@ def gerar_index(data_atualizacao):
     for categoria in CATEGORIAS:
         label = CATEGORIA_LABEL[categoria]
         n_bancos = len(bancos_para_categoria(categoria))
-        cards.append(f'''<a href="{slug_comparador(categoria)}.html" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
+        cards.append(f'''<a href="{slug_comparador(categoria)}" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
             <div class="mb-3 flex justify-center">{ilustracao_categoria(categoria, f'il-grad-{categoria}')}</div>
             <h2 class="font-serif text-xl font-bold mb-1">{label}</h2>
             <p class="text-sm text-slate-400 mb-4">Compare {n_bancos} bancos e simule sua parcela.</p>
@@ -1822,7 +1833,7 @@ def gerar_index(data_atualizacao):
 
 def gerar_sitemap(urls, data_atualizacao):
     partes = ['<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    partes.append(f"  <url>\n    <loc>{DOMINIO}/index.html</loc>\n    <lastmod>{data_atualizacao}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>")
+    partes.append(f"  <url>\n    <loc>{DOMINIO}/</loc>\n    <lastmod>{data_atualizacao}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>")
     for url in urls:
         partes.append(f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{data_atualizacao}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>")
     partes.append('</urlset>')
@@ -1864,7 +1875,7 @@ def gerar_404():
     <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
     <div class="flex flex-wrap gap-3 justify-center">
         <a href="/" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">Ir pra home</a>
-        <a href="/comparador-carro-novo.html" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver comparador de carro novo</a>
+        <a href="/comparador-carro-novo" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver comparador de carro novo</a>
     </div>
 </body>
 </html>'''
@@ -1890,14 +1901,14 @@ Dados atualizados em: {data_atualizacao}
 Total de páginas de simulação: {total_paginas}
 
 ## Páginas
-- [Home]({DOMINIO}/index.html)
-- [Comparador Carro Novo]({DOMINIO}/{slug_comparador('novo')}.html)
-- [Comparador Carro Usado]({DOMINIO}/{slug_comparador('usado')}.html)
-- [Comparador Moto]({DOMINIO}/{slug_comparador('moto')}.html)
+- [Home]({DOMINIO}/)
+- [Comparador Carro Novo]({DOMINIO}/{slug_comparador('novo')})
+- [Comparador Carro Usado]({DOMINIO}/{slug_comparador('usado')})
+- [Comparador Moto]({DOMINIO}/{slug_comparador('moto')})
 - [Sitemap completo]({DOMINIO}/sitemap.xml)
 
 ## Sobre os dados
-Taxa de juros e prazo máximo são específicos de cada instituição e categoria de veículo. Prazo máximo e entrada mínima seguem convenção geral de mercado (ainda não confirmada banco a banco em fonte oficial — ver bancos_veiculos.py). Cada página de simulação (padrão de URL: /financiamento-{{categoria}}-{{banco}}-{{valor}}-mil-{{prazo}}-meses.html) traz parcela, CET e tabela de amortização completa para o cenário daquele banco/valor/prazo específico. As taxas são simulações representativas, não uma cotação — a taxa final de cada cliente depende de fatores fora do nosso controle (relacionamento bancário, histórico de crédito, seguradora escolhida).
+Taxa de juros e prazo máximo são específicos de cada instituição e categoria de veículo. Prazo máximo e entrada mínima seguem convenção geral de mercado (ainda não confirmada banco a banco em fonte oficial — ver bancos_veiculos.py). Cada página de simulação (padrão de URL: /financiamento-{{categoria}}-{{banco}}-{{valor}}-mil-{{prazo}}-meses) traz parcela, CET e tabela de amortização completa para o cenário daquele banco/valor/prazo específico. As taxas são simulações representativas, não uma cotação — a taxa final de cada cliente depende de fatores fora do nosso controle (relacionamento bancário, histórico de crédito, seguradora escolhida).
 """
 
 
@@ -1942,7 +1953,7 @@ def gerar_site(pasta_saida='paginas_seo'):
         html = gerar_pagina_individual(p, paginas, lookup, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{p['slug']}.html"), "w", encoding="utf-8") as f:
             f.write(html)
-        urls_sitemap.append(f"{DOMINIO}/{p['slug']}.html")
+        urls_sitemap.append(f"{DOMINIO}/{p['slug']}")
 
     hubs = {}
     for p in paginas:
@@ -1952,13 +1963,13 @@ def gerar_site(pasta_saida='paginas_seo'):
         slug_pagina, html = gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{slug_pagina}.html"), "w", encoding="utf-8") as f:
             f.write(html)
-        urls_sitemap.append(f"{DOMINIO}/{slug_pagina}.html")
+        urls_sitemap.append(f"{DOMINIO}/{slug_pagina}")
 
     for categoria in CATEGORIAS:
         slug_pagina, html = gerar_comparador(categoria, lookup, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{slug_pagina}.html"), "w", encoding="utf-8") as f:
             f.write(html)
-        urls_sitemap.append(f"{DOMINIO}/{slug_pagina}.html")
+        urls_sitemap.append(f"{DOMINIO}/{slug_pagina}")
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
         f.write(gerar_index(data_atualizacao))

@@ -54,14 +54,32 @@ class VerificadorBalanceamento(html.parser.HTMLParser):
 
 
 def test_todo_link_interno_resolve_para_arquivo_existente():
-    arquivos = set(_arquivos_html()) | {"styles.css", "logo.svg", "sitemap.xml", "calculo.js", "favicon.svg"}
+    """Achado real (10/set/2026, checagem final de SEO): depois de tirar a
+    extensão ".html" de canonical/hrefs internos (pra bater com o
+    redirect automático do Cloudflare Pages, ver comentário em
+    gerar_pagina_individual), a regex original desta função só
+    reconhecia href/src terminado em extensão (.html/.css/.svg/.js) —
+    href="{slug}" sem extensão nenhuma passava batido, SEM checagem
+    nenhuma de link quebrado. Corrigido pra também validar href de
+    página (sem extensão, ou "/" pra home) contra {slug}.html em disco —
+    é a mesma verificação de sempre, só reconhecendo o formato de URL
+    novo."""
+    paginas_por_slug = {n[:-len(".html")] for n in _arquivos_html()}
+    assets = {"styles.css", "logo.svg", "sitemap.xml", "calculo.js", "favicon.svg", "favicon.ico", "apple-touch-icon.png"}
     faltando = []
     for nome_arquivo in _arquivos_html():
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
             conteudo = f.read()
-        referencias = re.findall(r'(?:href|src)="([a-zA-Z0-9_.-]+\.(?:html|css|svg|js))"', conteudo)
-        for ref in referencias:
-            if ref not in arquivos:
+        for ref in re.findall(r'(?:href|src)="([^"#]*)"', conteudo):
+            if not ref or ref.startswith(("http://", "https://", "mailto:", "tel:", "#", "data:")):
+                continue  # link externo/âncora — fora do escopo desta checagem
+            if ref == "/":
+                continue  # home — sempre resolve (index.html sempre existe)
+            ref_sem_query = ref.split("?", 1)[0]  # styles.css?v=... — cache-busting não é parte do path real
+            if "." in ref_sem_query.rsplit("/", 1)[-1]:  # tem extensão: asset (.css/.svg/.js/.ico/.png) ou .html direto
+                if ref_sem_query not in assets and ref_sem_query not in set(_arquivos_html()):
+                    faltando.append(f"{nome_arquivo} -> {ref}")
+            elif ref_sem_query.lstrip("/") not in paginas_por_slug:  # slug sem extensão: precisa ter {slug}.html em disco
                 faltando.append(f"{nome_arquivo} -> {ref}")
     assert not faltando, f"{len(faltando)} link(s)/asset(s) interno(s) quebrado(s): {faltando[:20]}"
 
@@ -130,7 +148,10 @@ def test_comparador_linka_para_hub_de_todos_os_bancos_da_categoria():
     imobiliário) sempre fez assim; aqui tinha ficado restritivo demais."""
     comparadores = [n for n in _arquivos_html() if n.startswith("comparador-")]
     assert comparadores, "nenhuma página de comparador encontrada pra checar"
-    arquivos_existentes = set(_arquivos_html())
+    # hrefs de página agora são sem ".html" (ver test_todo_link_interno_
+    # resolve_para_arquivo_existente) — compara contra o slug, não o
+    # nome de arquivo em disco.
+    slugs_existentes = {n[:-len(".html")] for n in _arquivos_html()}
     problemas = []
     for nome_arquivo in comparadores:
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
@@ -139,7 +160,7 @@ def test_comparador_linka_para_hub_de_todos_os_bancos_da_categoria():
         if not hrefs_hub:
             problemas.append(f"{nome_arquivo}: nenhum link pra hub de banco (página fica um beco sem saída)")
             continue
-        quebrados = [h for h in hrefs_hub if h not in arquivos_existentes]
+        quebrados = [h for h in hrefs_hub if h not in slugs_existentes]
         if quebrados:
             problemas.append(f"{nome_arquivo}: link(s) pra hub que não existe(m): {quebrados}")
     assert not problemas, f"{len(problemas)} problema(s) de navegação comparador->hub: {problemas}"
@@ -215,11 +236,21 @@ def test_sitemap_lista_todas_as_paginas_geradas():
     """404.html excluída de propósito: não é uma URL de conteúdo real, o
     Cloudflare Pages só a serve automaticamente como fallback de erro —
     colocar ela no sitemap ativamente convidaria o Google a indexar uma
-    página de erro, o oposto do que o meta robots=noindex dela já pede."""
+    página de erro, o oposto do que o meta robots=noindex dela já pede.
+
+    URLs no sitemap SEM ".html" (achado real, 10/set/2026 — ver comentário
+    em gerar_pagina_individual): o Cloudflare Pages redireciona a versão
+    com extensão pra sem extensão, então listar a versão com extensão no
+    sitemap mandaria o Google bater num redirect em vez da URL final. A
+    home é o único caso especial: vira "{DOMINIO}/", não "{DOMINIO}/index"."""
     with open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8") as f:
         sitemap = f.read()
     urls_no_sitemap = set(re.findall(r"<loc>(.*?)</loc>", sitemap))
-    arquivos_esperados = {f"https://veiculos.datalabglobal.com/{n}" for n in _arquivos_html() if n != "404.html"}
+    dominio = "https://veiculos.datalabglobal.com"
+    arquivos_esperados = {
+        f"{dominio}/" if n == "index.html" else f"{dominio}/{n[:-len('.html')]}"
+        for n in _arquivos_html() if n != "404.html"
+    }
     faltando = arquivos_esperados - urls_no_sitemap
     assert not faltando, f"{len(faltando)} página(s) gerada(s) mas ausente(s) do sitemap: {list(faltando)[:10]}"
 

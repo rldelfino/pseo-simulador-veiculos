@@ -6,11 +6,11 @@ Dados atualizados em: 2026-09-08
 Total de páginas de simulação: 840
 
 ## Páginas
-- [Home](https://veiculos.datalabglobal.com/index.html)
-- [Comparador Carro Novo](https://veiculos.datalabglobal.com/comparador-carro-novo.html)
-- [Comparador Carro Usado](https://veiculos.datalabglobal.com/comparador-carro-usado.html)
-- [Comparador Moto](https://veiculos.datalabglobal.com/comparador-moto.html)
+- [Home](https://veiculos.datalabglobal.com/)
+- [Comparador Carro Novo](https://veiculos.datalabglobal.com/comparador-carro-novo)
+- [Comparador Carro Usado](https://veiculos.datalabglobal.com/comparador-carro-usado)
+- [Comparador Moto](https://veiculos.datalabglobal.com/comparador-moto)
 - [Sitemap completo](https://veiculos.datalabglobal.com/sitemap.xml)
 
 ## Sobre os dados
-Taxa de juros e prazo máximo são específicos de cada instituição e categoria de veículo. Prazo máximo e entrada mínima seguem convenção geral de mercado (ainda não confirmada banco a banco em fonte oficial — ver bancos_veiculos.py). Cada página de simulação (padrão de URL: /financiamento-{categoria}-{banco}-{valor}-mil-{prazo}-meses.html) traz parcela, CET e tabela de amortização completa para o cenário daquele banco/valor/prazo específico. As taxas são simulações representativas, não uma cotação — a taxa final de cada cliente depende de fatores fora do nosso controle (relacionamento bancário, histórico de crédito, seguradora escolhida).
+Taxa de juros e prazo máximo são específicos de cada instituição e categoria de veículo. Prazo máximo e entrada mínima seguem convenção geral de mercado (ainda não confirmada banco a banco em fonte oficial — ver bancos_veiculos.py). Cada página de simulação (padrão de URL: /financiamento-{categoria}-{banco}-{valor}-mil-{prazo}-meses) traz parcela, CET e tabela de amortização completa para o cenário daquele banco/valor/prazo específico. As taxas são simulações representativas, não uma cotação — a taxa final de cada cliente depende de fatores fora do nosso controle (relacionamento bancário, histórico de crédito, seguradora escolhida).
