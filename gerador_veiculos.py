@@ -1220,6 +1220,21 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         f'<a href="{q["slug"]}" class="px-3 py-2 rounded-lg border border-white/10 hover:border-sky-500/50 text-xs transition-all whitespace-nowrap">{q["prazo"]}x de {formatar_reais(q["parcela"])}</a>'
         for q in outros_prazos
     )
+    # Achado real (12/set/2026, erro real do GitHub Actions em produção —
+    # "SyntaxError: f-string: unmatched '['", Python 3.10): o bloco
+    # "Outros prazos" era montado como uma f-string ANINHADA (delimitada
+    # por ''', igual à f-string gigante da página inteira) dentro de uma
+    # expressão condicional, dentro de uma lista de 1 item só passada pra
+    # "".join([...]) — complexidade sem propósito (.join numa lista de 1
+    # elemento só devolve o próprio elemento) que quebrava a análise de
+    # colchetes/aspas do parser em versões antigas do Python. Calculado
+    # aqui como variável simples, fora da f-string grande da página — a
+    # referência lá embaixo vira só {bloco_outros_prazos}, uma
+    # substituição de variável comum, sem nenhum aninhamento.
+    bloco_outros_prazos = (
+        f'<div class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Outros prazos no {banco_exib}</h2>'
+        f'<div class="flex flex-wrap gap-2">{outros_prazos_html}</div></div>'
+    ) if outros_prazos_html else ""
 
     # Aporte padrão da Zona "Valor a Amortizar": 5% do valor financiado
     # desta página (piso de R$ 500, arredondado pra R$ 100 mais próximo —
@@ -1334,7 +1349,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
             </div>
         </div>
 
-        {"".join([f'''<div class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Outros prazos no {banco_exib}</h2><div class="flex flex-wrap gap-2">{outros_prazos_html}</div></div>'''] ) if outros_prazos_html else ""}
+        {bloco_outros_prazos}
 
         <!-- ZONA B: A AMORTIZAÇÃO -->
         <div class="mt-8 glass-panel-sky rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-[0_10px_40px_rgba(14,165,233,0.1)] border-t border-sky-500/30" id="card_amortizacao">
