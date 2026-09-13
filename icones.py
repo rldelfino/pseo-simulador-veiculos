@@ -36,11 +36,20 @@ _ICONES = {
 
 
 def icone(nome, classes_extra=""):
+    """Achado real (13/set/2026, auditoria PageSpeed Insights mobile em
+    veiculos.datalabglobal.com): "Os links não têm um nome compreensível" —
+    ícones decorativos (sempre ao lado de texto visível, exceto onde há
+    aria-label explícito no <a>) estavam expostos à árvore de acessibilidade
+    sem nome nenhum, fazendo leitor de tela anunciar "imagem" vazio a cada
+    ícone. aria-hidden remove o SVG do cômputo de nome acessível do link,
+    deixando o texto adjacente (ou o aria-label do <a>, quando não há texto
+    visível) ser a única fonte — correção na raiz porque cobre as ~200
+    chamadas de icone() no site inteiro de uma vez, sem tocar cada call site."""
     svg = _ICONES.get(nome, "")
     if not svg:
         return ""
     classe = f'inline-block align-[-0.125em] {classes_extra}'.strip()
-    return svg.replace("<svg ", f'<svg class="{classe}" style="width:1em;height:1em" ', 1)
+    return svg.replace("<svg ", f'<svg class="{classe}" style="width:1em;height:1em" aria-hidden="true" focusable="false" ', 1)
 
 
 def tooltip(texto):

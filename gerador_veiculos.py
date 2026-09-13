@@ -107,6 +107,26 @@ DOMINIO = 'https://veiculos.datalabglobal.com'
 VERSAO_BUILD = datetime.now().strftime('%Y%m%d%H%M%S')
 ARQUIVO_ULTIMA_ATUALIZACAO = 'ultima_atualizacao_taxas.txt'
 
+_URL_GOOGLE_FONTS = (
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700"
+    "&family=Inter:wght@300;400;500;600;700&display=swap"
+)
+# Achado real (13/set/2026, PageSpeed Insights mobile em veiculos.data-
+# labglobal.com): o <link rel="stylesheet"> síncrono pro Google Fonts era
+# o maior item de "solicitações que bloqueiam a renderização" (~1970ms de
+# economia estimada) — o navegador para de renderizar a página até baixar
+# o CSS da fonte de um domínio terceiro antes mesmo de saber quais glifos
+# vai precisar. Troca pelo padrão "loadCSS" (preload + media=print que
+# vira media=all no onload): o CSS da fonte carrega em paralelo sem
+# bloquear o first paint, com <noscript> como rede de segurança pra quem
+# desabilita JS. O onload inline funciona sob o CSP do site porque
+# script-src já inclui 'unsafe-inline' (ver gerar_headers()).
+GOOGLE_FONTS_LINK_ASSINCRONO = (
+    f'<link rel="preload" as="style" href="{_URL_GOOGLE_FONTS}">\n'
+    f'    <link rel="stylesheet" href="{_URL_GOOGLE_FONTS}" media="print" onload="this.media=\'all\'">\n'
+    f'    <noscript><link rel="stylesheet" href="{_URL_GOOGLE_FONTS}"></noscript>'
+)
+
 # Link de afiliado (correspondente bancário) — passado pelo usuário
 # verbatim. NÃO alterar o domínio/formato sem confirmar com ele: um erro
 # aqui custa comissão real, não é um detalhe cosmético.
@@ -808,16 +828,16 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
     <meta name="twitter:title" content="{titulo}">
     <meta name="twitter:description" content="{meta_description}">
     <link rel="stylesheet" href="styles.css?v={VERSAO_BUILD}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {GOOGLE_FONTS_LINK_ASSINCRONO}
     {render_json_ld(*json_ld_blocos)}'''
 
 
 def render_nav():
     return f'''<nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center"><img src="logo.svg" alt="Datalab Global" class="h-8 w-auto"></a>
+            <a href="/" class="flex items-center"><img src="logo.svg" alt="Datalab Global" width="96" height="32" class="h-8 w-auto"></a>
             <div class="flex items-center gap-2">
-                <a href="/" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
+                <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
                 <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                     Análise Grátis {icone('arrow-right', 'ml-1.5 text-xs')}
                 </a>
@@ -1953,7 +1973,7 @@ def gerar_404():
     qualquer caminho sem match — mesmo mecanismo do projeto irmão
     (ver 404.html em pseo_simulador), adaptado pra identidade visual e
     copy do produto de veículo."""
-    return '''<!DOCTYPE html>
+    return f'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -1965,10 +1985,10 @@ def gerar_404():
     <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {GOOGLE_FONTS_LINK_ASSINCRONO}
 </head>
 <body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
-    <a href="/" class="mb-10"><img src="logo.svg" alt="Datalab Global" class="h-12 w-auto mx-auto"></a>
+    <a href="/" class="mb-10"><img src="logo.svg" alt="Datalab Global" width="144" height="48" class="h-12 w-auto mx-auto"></a>
     <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
     <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
     <div class="flex flex-wrap gap-3 justify-center">
