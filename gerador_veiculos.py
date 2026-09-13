@@ -1680,17 +1680,32 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     # exatamente o que quebrava no mobile. Mesma técnica que o projeto
     # irmão já usa (colunas 'auto' pra conteúdo numérico de largura
     # quase-constante, só o nome variável vira '1fr').
-    linhas_lista = "\n".join(
-        f'''<a href="{slug_hub(categoria, r["banco"])}" class="grid grid-cols-[1fr_auto_auto] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+    # Achado real (12/set/2026, workflow do GitHub Actions falhando com
+    # exit code 1 — CI usa Python 3.10, aqui em dev usávamos 3.14): esta
+    # função tinha uma f-string ANINHADA dentro da f-string grande de
+    # cada linha (delimitada por '''): ex. {f"{r['taxa_am']:.2f}".
+    # replace('.', ',')}. Confirmado contra o texto oficial do PEP 701
+    # (peps.python.org/pep-0701): antes do Python 3.12, reusar o MESMO
+    # CARACTERE de aspas usado pela f-string externa dentro da expressão
+    # — mesmo se a externa usa aspas triplas e a interna usa aspas
+    # simples — é SyntaxError; aspas triplas não são exceção a essa
+    # regra. Corrigido calculando os valores formatados ANTES da
+    # f-string grande, num loop explícito (não dá pra usar variável
+    # intermediária dentro de uma expressão geradora) — mesmo padrão já
+    # usado em r_cet_fmt (comparar_bancos_categoria) acima.
+    linhas_lista_partes = []
+    for r in ranking:
+        taxa_am_fmt = f"{r['taxa_am']:.2f}".replace('.', ',')
+        cet_fmt = f"{r['cet']:.2f}".replace('.', ',')
+        linhas_lista_partes.append(f'''<a href="{slug_hub(categoria, r["banco"])}" class="grid grid-cols-[1fr_auto_auto] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
             <span class="flex items-center gap-2 min-w-0">
                 {favicon_com_fallback(f"https://www.google.com/s2/favicons?domain={r['dominio_favicon']}&sz=64", r["nome_exibicao"], "w-5 h-5")}
                 <span class="text-sm font-medium truncate">{r["nome_exibicao"]}</span>
             </span>
-            <span class="text-xs text-slate-400 text-right whitespace-nowrap">{f"{r['taxa_am']:.2f}".replace('.', ',')}% a.m.</span>
-            <span class="text-sm text-slate-300 text-right whitespace-nowrap">CET {f"{r['cet']:.2f}".replace('.', ',')}% a.a.</span>
-        </a>'''
-        for r in ranking
-    )
+            <span class="text-xs text-slate-400 text-right whitespace-nowrap">{taxa_am_fmt}% a.m.</span>
+            <span class="text-sm text-slate-300 text-right whitespace-nowrap">CET {cet_fmt}% a.a.</span>
+        </a>''')
+    linhas_lista = "\n".join(linhas_lista_partes)
 
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
