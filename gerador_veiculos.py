@@ -877,6 +877,7 @@ def render_nav():
             <a href="/" class="flex items-center"><img src="logo.svg" alt="Datalab Global" width="96" height="32" class="h-8 w-auto"></a>
             <div class="flex items-center gap-2">
                 <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
+                <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('book-open')} <span class="hidden sm:inline">Aprenda</span></a>
                 <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                     Análise Grátis {icone('arrow-right', 'ml-1.5 text-xs')}
                 </a>
