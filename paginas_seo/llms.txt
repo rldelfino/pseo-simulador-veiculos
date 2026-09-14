@@ -2,7 +2,7 @@
 
 > Simulador de financiamento de veículos (carro novo, carro usado e moto) para os principais bancos do Brasil (Caixa, Banco do Brasil, Bradesco, Santander, Itaú, Banco Inter, C6 Bank, BV Financeira, Banco Pan, Omni Financeira, Banco Honda, Banco Yamaha). Taxas com base no Relatório de Taxas de Juros por Instituição Financeira do Banco Central. Calcula parcela (Tabela Price), CET estimado (incluindo IOF) e tabela de amortização.
 
-Dados atualizados em: 2026-09-13
+Dados atualizados em: 2026-09-14
 Total de páginas de simulação: 840
 
 ## Páginas
