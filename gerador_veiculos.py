@@ -790,6 +790,45 @@ def render_json_ld(*blocos):
     return "\n".join(f'<script type="application/ld+json">{json.dumps(b, ensure_ascii=False)}</script>' for b in blocos)
 
 
+def render_faq_visual(perguntas):
+    """Bloco de FAQ visível (accordion <details>, sem JS) + schema.org
+    FAQPage correspondente — as duas coisas nascem sempre JUNTAS aqui de
+    propósito: a diretriz do Google pra FAQPage exige que a marcação
+    reflita conteúdo que o usuário de fato vê na página (senão é tratada
+    como manipulativa e não gera o rich result, podendo até levar a ação
+    manual). `perguntas` é uma lista de tuplas (pergunta, resposta), ambas
+    com dado real da página (taxa, prazo, banco) — nunca genérico
+    inventado.
+
+    Achado real (13/set/2026, auditoria de SEO): a página individual de
+    simulação já tinha esse exato padrão (schema_faq + <details> inline,
+    ver gerar_pagina_individual) — só não existia nas páginas de hub
+    (por banco), comparador (por categoria) e na home, que são páginas
+    de MAIS valor de SEO (termos de cabeça, mais link equity) e ficaram
+    de fora. Extraído aqui pra essas 3 não duplicarem o bloco 3x cada."""
+    itens_html = "\n".join(f'''<details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
+                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                        <h4 class="text-sky-400 font-bold text-sm">{q}</h4>
+                        <span class="faq-toggle-icon shrink-0 text-slate-500 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+                    </summary>
+                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{a}</p>
+                </details>''' for q, a in perguntas)
+    html = f'''<div class="mt-16 mb-8">
+            <h3 class="text-2xl font-serif text-white mb-6 text-center">Perguntas Frequentes</h3>
+            <div class="space-y-3 max-w-3xl mx-auto">
+                {itens_html}
+            </div>
+        </div>'''
+    schema = {
+        "@context": "https://schema.org", "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
+            for q, a in perguntas
+        ],
+    }
+    return html, schema
+
+
 def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
     if len(meta_description) > 160:
         meta_description = meta_description[:157].rstrip() + "..."
@@ -1580,6 +1619,31 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     ranking_ref = comparar_bancos_categoria(categoria, valor_referencia, prazo_referencia)
     cet_banco_ref = next(r["cet"] for r in ranking_ref if r["banco"] == banco)
     faixa_html = renderizar_faixa_mercado(banco, banco_exib, cet_banco_ref, ranking_ref)
+    cets_ref_ordenados = sorted(r["cet"] for r in ranking_ref)
+    cet_min_ref_fmt = f"{cets_ref_ordenados[0]:.2f}".replace('.', ',')
+    cet_max_ref_fmt = f"{cets_ref_ordenados[-1]:.2f}".replace('.', ',')
+
+    faq_html, schema_faq = render_faq_visual([
+        (
+            f"Qual a taxa de financiamento de {label_categoria.lower()} no {banco_exib}?",
+            f"A taxa média real do {banco_exib} para financiamento de {CATEGORIA_ARTIGO[categoria]} é {taxa_am_fmt}% "
+            f"ao mês ({taxa_aa_fmt}% ao ano), segundo dados do Banco Central. O CET (Custo Efetivo Total, que já "
+            f"inclui IOF e tarifas) varia conforme o valor e o prazo escolhidos — veja as simulações abaixo.",
+        ),
+        (
+            f"Qual o prazo máximo pra financiar {label_categoria.lower()} no {banco_exib}?",
+            f"O {banco_exib} financia {CATEGORIA_ARTIGO[categoria]} em até {dados_banco['prazo_max']} meses nesta "
+            f"modalidade. Quanto maior o prazo, menor a parcela mensal, mas maior o total de juros pago no fim — "
+            f"compare as opções na grade abaixo.",
+        ),
+        (
+            f"O CET do {banco_exib} está competitivo em relação a outros bancos?",
+            f"Na faixa de mercado atual para {label_categoria.lower()}, os CETs variam entre {cet_min_ref_fmt}% e "
+            f"{cet_max_ref_fmt}% ao ano — a barra acima mostra onde o {banco_exib} está nessa faixa. A Datalab não "
+            f"indica um banco \"vencedor\": a taxa final de cada cliente depende de relacionamento bancário, "
+            f"histórico de crédito e entrada, então vale simular mais de uma opção antes de decidir.",
+        ),
+    ])
 
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -1590,7 +1654,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         ],
     }
 
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb])
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_faq])
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, href_comparador), (banco_exib, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
@@ -1602,6 +1666,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
 
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
         <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-500 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
+        {faq_html}
     </main>'''
 
     html = f'''<!DOCTYPE html>
@@ -1742,6 +1807,31 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         </a>''')
     linhas_lista = "\n".join(linhas_lista_partes)
 
+    cet_min_fmt = f"{cet_min:.2f}".replace('.', ',')
+    cet_max_fmt = f"{cet_max:.2f}".replace('.', ',')
+
+    faq_html, schema_faq = render_faq_visual([
+        (
+            f"Qual banco tem a menor taxa pra financiar {label_categoria.lower()}?",
+            f"No cenário de referência de {formatar_valor_curto(valor_referencia)} em {prazo_referencia} meses, o "
+            f"CET varia entre {cet_min_fmt}% e {cet_max_fmt}% ao ano entre os bancos que acompanhamos — veja a "
+            f"posição de cada um na barra acima. A Datalab não indica um banco \"vencedor\": a taxa final de cada "
+            f"cliente depende de relacionamento bancário, histórico de crédito e entrada, então vale simular mais "
+            f"de uma opção antes de decidir.",
+        ),
+        (
+            "O que é CET e por que ele é melhor que só olhar a taxa de juros?",
+            "CET (Custo Efetivo Total) é o custo real do financiamento por ano — inclui a taxa de juros, o IOF, a "
+            "tarifa de registro de contrato e o seguro prestamista típico de mercado, sempre maior que a taxa "
+            "anunciada isoladamente. É o número certo pra comparar propostas de bancos diferentes de forma justa.",
+        ),
+        (
+            f"Como simulo o financiamento {label_categoria.lower()} num banco específico?",
+            "Clique no banco desejado na lista abaixo pra ver todas as simulações de valor e prazo disponíveis "
+            "dele, com parcela e CET calculados a partir da taxa média real apurada pelo Banco Central.",
+        ),
+    ])
+
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
@@ -1761,7 +1851,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         ],
     }
 
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_item_list])
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_item_list, schema_faq])
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
@@ -1791,6 +1881,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         </section>
 
         <div class="grid gap-2">{linhas_lista}</div>
+        {faq_html}
     </main>'''
 
     html = f'''<!DOCTYPE html>
@@ -1866,11 +1957,32 @@ def gerar_index(data_atualizacao):
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
 
-    head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization])
+    faq_html, schema_faq = render_faq_visual([
+        (
+            "Como funciona o simulador de financiamento de veículos da Datalab?",
+            "Você escolhe a categoria do veículo (carro novo, carro usado ou moto), compara a taxa real de cada "
+            "banco e simula a parcela pro valor e prazo que quiser. Os dados de taxa vêm direto do Banco Central "
+            "e são atualizados semanalmente.",
+        ),
+        (
+            "As taxas mostradas são reais ou só uma estimativa de marketing?",
+            "São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada mensalmente pelo "
+            "Banco Central (BACEN) — não é uma taxa promocional \"a partir de\". Sua taxa final depende do seu "
+            "relacionamento com o banco e da análise de crédito.",
+        ),
+        (
+            "O simulador cobra alguma coisa pra usar?",
+            "Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede "
+            "uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe.",
+        ),
+    ])
+
+    head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization, schema_faq])
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
         <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
         <div class="grid sm:grid-cols-3 gap-4">{cards_html}</div>
+        {faq_html}
     </main>'''
 
     return f'''<!DOCTYPE html>
