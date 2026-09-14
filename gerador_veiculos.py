@@ -1029,7 +1029,10 @@ def render_footer():
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-500 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
-            <p class="mt-3"><a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a></p>
+            <p class="mt-3 flex items-center justify-center gap-4">
+                <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
+                <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
+            </p>
         </div>
     </footer>'''
 
@@ -1999,6 +2002,234 @@ def gerar_index(data_atualizacao):
 </html>'''
 
 
+def gerar_pagina_aprenda(art, data_atualizacao):
+    """Página de conteúdo evergreen (educativo, sem calculadora) —
+    segunda camada de profundidade de conteúdo, complementar às páginas
+    de cálculo. Achado real (13/set/2026, pedido explícito do usuário
+    depois da auditoria de SEO): o site inteiro só tinha página de
+    CÁLCULO — nenhuma prova, legível por humano OU pelo Google, de que
+    existe conhecimento real por trás da calculadora. Isso pesa duplo:
+    no Helpful Content (avaliado no domínio inteiro, não por página) e
+    na experiência de quem busca "o que é CET" sem estar pronto pra
+    simular ainda. `art` é um dict do ARTIGOS_APRENDA (slug, títulos,
+    corpo, CTA) — sempre com Article schema (headline = a própria
+    pergunta/tema, não inventado) e um link de volta pro simulador
+    relevante no fim, sem forçar (mantém o visitante no funil sem virar
+    uma calculadora disfarçada de artigo)."""
+    url_canonica = f"{DOMINIO}/{art['slug']}"
+    schema_article = {
+        "@context": "https://schema.org", "@type": "Article",
+        "headline": art["titulo_h1"], "url": url_canonica,
+        "author": {"@type": "Organization", "name": "Datalab Global"},
+        "publisher": {
+            "@type": "Organization", "name": "Datalab Global",
+            "logo": {"@type": "ImageObject", "url": f"{DOMINIO}/logo-schema.png"},
+        },
+        "dateModified": data_atualizacao, "mainEntityOfPage": url_canonica,
+    }
+    schema_breadcrumb = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+            {"@type": "ListItem", "position": 2, "name": "Aprenda", "item": f"{DOMINIO}/aprenda"},
+            {"@type": "ListItem", "position": 3, "name": art["titulo_h1"], "item": url_canonica},
+        ],
+    }
+    head = render_head(art["titulo_pagina"], art["meta_description"], url_canonica, [schema_article, schema_breadcrumb])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Aprenda", "aprenda"), (art["titulo_h1"], None)])
+    corpo = f'''<main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-3xl font-bold mb-8">{art["titulo_h1"]}</h1>
+        <div class="glass-panel-sky rounded-2xl p-6 md:p-10 space-y-6 text-slate-300 leading-relaxed">
+            {art["corpo_html"]}
+        </div>
+        <div class="flex flex-wrap gap-3 mt-8">
+            <a href="{art['cta_href']}" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">{art['cta_texto']}</a>
+            <a href="aprenda" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver todos os artigos</a>
+        </div>
+    </main>'''
+    return f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+
+
+def gerar_hub_aprenda(artigos, data_atualizacao):
+    """Índice /aprenda listando os artigos evergreen — o único caminho de
+    navegação normal (clicando) até eles além do link no rodapé de toda
+    página, mesmo cuidado que já tomamos com as páginas de simulação
+    (achado real de 07/set/2026: conteúdo só alcançável via sitemap.xml
+    é órfão de verdade pro visitante humano)."""
+    url_canonica = f"{DOMINIO}/aprenda"
+    cards_html = "\n".join(
+        f'''<a href="{a['slug']}" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
+            <h2 class="font-serif text-lg font-bold mb-2 group-hover:text-sky-400 transition-colors">{a['titulo_h1']}</h2>
+            <p class="text-sm text-slate-400">{a['resumo_card']}</p>
+        </a>'''
+        for a in artigos
+    )
+    schema_breadcrumb = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+            {"@type": "ListItem", "position": 2, "name": "Aprenda", "item": url_canonica},
+        ],
+    }
+    head = render_head(
+        "Aprenda: guias sobre financiamento de veículos | Datalab Global",
+        "Guias educativos sobre financiamento de veículos: CDC, Tabela Price, IOF, CET, amortização extra e "
+        "consórcio — explicados sem juridiquês, com base em dados reais do Banco Central.",
+        url_canonica, [schema_breadcrumb],
+    )
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Aprenda", None)])
+    corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Aprenda sobre financiamento de veículos</h1>
+        <p class="text-slate-400 text-sm mb-8">Guias educativos, sem juridiquês, pra você entender o que está simulando antes de decidir.</p>
+        <div class="grid sm:grid-cols-2 gap-4">{cards_html}</div>
+    </main>'''
+    return "aprenda", f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+
+
+# Conteúdo evergreen (educativo) — 2ª camada de profundidade além das
+# páginas de cálculo, ver docstring de gerar_pagina_aprenda(). Baseado em
+# definição técnica real e estabelecida (BACEN, legislação do IOF,
+# mesma terminologia já usada no glossário "Entenda os Termos" de cada
+# página individual) — nunca inventado. Aprovado pelo usuário
+# (13/set/2026) como a lista de 6 temas antes de escrever.
+ARTIGOS_APRENDA = [
+    {
+        "slug": "aprenda-o-que-e-cdc",
+        "titulo_h1": "O que é CDC (Crédito Direto ao Consumidor)?",
+        "titulo_pagina": "O que é CDC? Como funciona o financiamento de veículo | Datalab Global",
+        "meta_description": "CDC é a modalidade usada pra financiar carro e moto no Brasil: entenda como funciona a alienação fiduciária, quem fica com o documento do veículo e por que a parcela é sempre fixa.",
+        "resumo_card": "A modalidade por trás de todo financiamento de veículo no Brasil — e por que o banco fica com o documento até o fim.",
+        "corpo_html": '''<p>CDC — Crédito Direto ao Consumidor — é a modalidade de crédito usada em praticamente todo financiamento de veículo no Brasil. Na prática, o banco empresta o dinheiro direto pra você comprar o carro, a moto ou o veículo usado à vista da loja ou do vendedor, e você devolve esse valor ao banco em parcelas fixas, com juros.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Por que o veículo fica "preso" ao financiamento</h2>
+            <p>A garantia do CDC de veículo é a <strong class="text-white">alienação fiduciária</strong>: o veículo passa a ser, juridicamente, propriedade do banco até a última parcela ser paga — você usa o carro normalmente, mas o documento (CRLV) fica com uma restrição financeira registrada. Só depois de quitado o financiamento é que a propriedade plena passa pra você. É por isso que o banco consegue oferecer uma taxa de juros menor que a de um empréstimo sem garantia: se as parcelas param de ser pagas, o veículo pode ser retomado.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">CDC não é a única opção</h2>
+            <p>Existe também o consórcio (sem juros, mas sem previsão certa de quando você recebe o veículo) e, em alguns casos, o leasing (mais comum pra empresas). Pra a maioria das pessoas físicas comprando um veículo pra uso próprio, o CDC é o caminho mais direto — é o que este simulador calcula.</p>
+        </div>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Simular financiamento de carro novo",
+    },
+    {
+        "slug": "aprenda-tabela-price",
+        "titulo_h1": "Tabela Price: por que a parcela do financiamento de veículo é sempre fixa",
+        "titulo_pagina": "Tabela Price no financiamento de veículo: como funciona | Datalab Global",
+        "meta_description": "Entenda a Tabela Price, o sistema de amortização usado em todo CDC de veículo no Brasil: por que a parcela nunca muda, e como a proporção entre juros e amortização se transforma mês a mês.",
+        "resumo_card": "O sistema por trás da parcela fixa — e por que, no fim do contrato, você paga mais amortização e menos juros.",
+        "corpo_html": '''<p>Todo financiamento de veículo (CDC) no Brasil usa a <strong class="text-white">Tabela Price</strong> — também chamada de sistema francês de amortização. A característica mais visível dela é simples: a parcela é <strong class="text-white">idêntica do primeiro ao último mês</strong>, do início ao fim do contrato.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">O que muda, se a parcela não muda</h2>
+            <p>O valor fixo esconde uma composição que muda todo mês: no começo do financiamento, a maior parte da parcela é <strong class="text-white">juros</strong> (porque o saldo devedor ainda é alto); perto do fim, a maior parte já é <strong class="text-white">amortização</strong> (abatimento do saldo devedor em si), porque o saldo já diminuiu bastante. A soma das duas partes é sempre a mesma parcela — só a proporção interna muda.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Diferente do financiamento imobiliário</h2>
+            <p>Vale notar que financiamento de imóvel no Brasil pode usar Tabela Price OU o sistema SAC (parcela decrescente, maior no início) — o cliente escolhe. No financiamento de veículo, a Tabela Price é praticamente universal: é o formato que todo banco usa, então não é uma escolha que você faz na hora de simular.</p>
+        </div>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Ver simulação com parcela fixa",
+    },
+    {
+        "slug": "aprenda-iof-financiamento-veiculo",
+        "titulo_h1": "IOF no financiamento de veículo: como é calculado",
+        "titulo_pagina": "IOF no financiamento de veículo: como é calculado | Datalab Global",
+        "meta_description": "O IOF incide sobre todo financiamento de veículo: entenda a alíquota fixa e a diária, como ele é cobrado uma única vez e por que já está embutido no CET calculado neste simulador.",
+        "resumo_card": "O imposto que incide sobre todo financiamento — cobrado uma vez só, e já embutido no CET que você vê aqui.",
+        "corpo_html": '''<p>IOF — Imposto sobre Operações Financeiras — incide sobre praticamente todo crédito concedido no Brasil, incluindo o financiamento de veículo. Ele é cobrado <strong class="text-white">uma única vez</strong>, descontado do valor liberado na operação (não é uma cobrança mensal recorrente).</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Como a conta é feita</h2>
+            <p>A alíquota tem duas partes: uma taxa <strong class="text-white">fixa de 0,38%</strong> sobre o valor financiado, mais uma taxa <strong class="text-white">diária</strong> que se acumula conforme o prazo do contrato, limitada a 365 dias (financiamentos mais longos que um ano não pagam IOF diário adicional além desse teto). Na prática, quanto maior o prazo escolhido, maior a fatia do IOF no custo total — mais um motivo pra olhar o CET (que já inclui o IOF) em vez de só a taxa de juros isolada ao comparar prazos diferentes.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Você não precisa calcular isso à parte</h2>
+            <p>Todo valor de CET mostrado neste simulador já inclui o IOF da operação — você não precisa somar nada por fora. É exatamente por isso que o CET, e não a taxa de juros nominal, é o número certo pra comparar duas propostas de bancos diferentes.</p>
+        </div>''',
+        "cta_href": "aprenda-o-que-e-cet",
+        "cta_texto": "Entender o CET completo",
+    },
+    {
+        "slug": "aprenda-o-que-e-cet",
+        "titulo_h1": "O que é CET (Custo Efetivo Total) e por que ele importa mais que a taxa de juros",
+        "titulo_pagina": "O que é CET no financiamento de veículo? | Datalab Global",
+        "meta_description": "CET é o custo real do financiamento de veículo por ano: entenda o que entra nessa conta (juros, IOF, tarifas, seguro) e por que ele é o número certo pra comparar bancos diferentes.",
+        "resumo_card": "O número que soma tudo — juros, IOF, tarifas e seguro — e por isso é o único jeito justo de comparar dois bancos.",
+        "corpo_html": '''<p>CET — Custo Efetivo Total — é o custo real e completo de um financiamento, expresso em percentual ao ano. Diferente da taxa de juros anunciada isoladamente, o CET soma <strong class="text-white">tudo</strong> que você efetivamente paga pra ter o crédito: a taxa de juros em si, o IOF, a tarifa de registro de contrato e o seguro prestamista típico de mercado.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Por que dois bancos com a "mesma taxa" podem custar diferente</h2>
+            <p>É comum dois bancos anunciarem taxas de juros parecidas, mas cobrarem tarifas e seguros diferentes — o CET é o único número que captura essa diferença de uma vez, porque já soma todos esses componentes num percentual único e comparável. Comparar só a taxa de juros nominal esconde justamente a parte que mais varia de banco pra banco.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">O CET não é uma promessa</h2>
+            <p>O CET mostrado neste simulador é calculado com a taxa média real apurada pelo Banco Central pra cada banco — não é uma taxa promocional de campanha. Sua taxa final aprovada ainda depende do seu relacionamento com o banco, do seu histórico de crédito e da entrada que você der; o CET daqui é a referência mais honesta que existe pra você comparar antes de negociar.</p>
+        </div>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Comparar CET entre bancos",
+    },
+    {
+        "slug": "aprenda-amortizacao-extra-veiculo",
+        "titulo_h1": "Amortização extra no financiamento de veículo: como funciona",
+        "titulo_pagina": "Amortização extra no financiamento de veículo | Datalab Global",
+        "meta_description": "Entenda como um pagamento extra fora do cronograma reduz o saldo devedor do financiamento de veículo, encurta o prazo ou diminui a parcela, e quanto isso pode economizar em juros.",
+        "resumo_card": "Um pagamento fora do cronograma que ataca o saldo devedor direto — e pode economizar meses inteiros de juros.",
+        "corpo_html": '''<p>Amortização extra é um pagamento feito <strong class="text-white">fora</strong> do cronograma normal de parcelas, com o objetivo específico de abater o saldo devedor do financiamento — não é uma parcela adiantada nem uma antecipação do próximo mês, é um valor que reduz diretamente quanto você ainda deve ao banco.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Por que isso economiza mais do que parece</h2>
+            <p>Como o financiamento usa Tabela Price (parcela fixa, mas juros calculados sobre o saldo devedor a cada mês), reduzir esse saldo mais cedo significa pagar juros sobre um valor menor em todos os meses seguintes. Na prática, R$ 1.000 amortizados hoje "economizam" mais do que R$ 1.000 pagos normalmente ao longo do contrato, porque cortam os juros que incidiriam sobre esse valor pelo tempo que faltava.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Reduzir prazo ou reduzir parcela?</h2>
+            <p>Ao amortizar, o banco costuma oferecer duas opções: manter a parcela do mesmo jeito e encurtar o número de meses restantes, ou manter o prazo original e diminuir o valor da parcela. Reduzir o prazo geralmente economiza mais juros no total — mas reduzir a parcela alivia mais o orçamento mês a mês. A escolha certa depende do seu momento financeiro, não existe resposta universal.</p>
+        </div>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Simular meu financiamento",
+    },
+    {
+        "slug": "aprenda-financiamento-x-consorcio-veiculo",
+        "titulo_h1": "Financiamento x Consórcio de veículo: qual a diferença",
+        "titulo_pagina": "Financiamento x Consórcio de veículo: diferenças | Datalab Global",
+        "meta_description": "Compare financiamento (CDC) e consórcio de veículo: quem leva o carro pra casa primeiro, quem paga juros, e em que situação cada modalidade faz mais sentido.",
+        "resumo_card": "Um te dá o carro agora com juros; o outro é mais barato, mas sem data certa. Veja qual combina com seu momento.",
+        "corpo_html": '''<p>Financiamento (CDC) e consórcio resolvem o mesmo problema — comprar um veículo sem pagar tudo à vista — de formas bem diferentes, e a escolha certa depende principalmente de uma coisa: você precisa do veículo <strong class="text-white">agora</strong>, ou pode esperar?</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Financiamento: veículo já, com juros</h2>
+            <p>No CDC, o banco libera o valor na hora, você sai com o veículo no mesmo dia, e paga de volta em parcelas fixas com juros — é o que este simulador calcula. A certeza de ter o veículo imediatamente tem um custo: o CET (juros + IOF + tarifas) que você vê em cada simulação.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Consórcio: sem juros, mas sem data certa</h2>
+            <p>No consórcio, você entra num grupo de pessoas que pagam mensalidades numa espécie de poupança coletiva, sem juros — só correção monetária e uma taxa de administração. Você só recebe o veículo quando é sorteado ou dá um lance vencedor num dos encontros mensais do grupo, o que pode acontecer logo no início ou só perto do fim do prazo contratado. O custo total costuma ser menor que o do financiamento, mas em troca de não saber exatamente quando o veículo chega.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Qual escolher</h2>
+            <p>Se você precisa do veículo pra trabalhar ou por uma necessidade imediata, o financiamento resolve isso — o custo do CET é, na prática, o preço de não esperar. Se você tem flexibilidade de tempo e quer pagar menos no total, o consórcio tende a sair mais barato.</p>
+        </div>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Simular financiamento de carro novo",
+    },
+]
+
+
 def gerar_pagina_sobre():
     """Página institucional "Sobre" — mesmo achado do projeto irmão (ver
     gerador.py:gerar_pagina_sobre): conteúdo financeiro (YMYL) é avaliado
@@ -2207,6 +2438,16 @@ def gerar_site(pasta_saida='paginas_seo'):
     with open(os.path.join(pasta_saida, "sobre.html"), "w", encoding="utf-8") as f:
         f.write(gerar_pagina_sobre())
     urls_sitemap.append(f"{DOMINIO}/sobre")
+
+    for art in ARTIGOS_APRENDA:
+        with open(os.path.join(pasta_saida, f"{art['slug']}.html"), "w", encoding="utf-8") as f:
+            f.write(gerar_pagina_aprenda(art, data_atualizacao))
+        urls_sitemap.append(f"{DOMINIO}/{art['slug']}")
+
+    slug_aprenda, html_aprenda = gerar_hub_aprenda(ARTIGOS_APRENDA, data_atualizacao)
+    with open(os.path.join(pasta_saida, f"{slug_aprenda}.html"), "w", encoding="utf-8") as f:
+        f.write(html_aprenda)
+    urls_sitemap.append(f"{DOMINIO}/{slug_aprenda}")
 
     with open(os.path.join(pasta_saida, "logo.svg"), "w", encoding="utf-8") as f:
         f.write(gerar_logo_svg())
