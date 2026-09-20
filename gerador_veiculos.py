@@ -1958,7 +1958,7 @@ def gerar_index(data_atualizacao):
     schema_website = {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": "Datalab Global", "url": url_home, "dateModified": data_atualizacao,
-        "publisher": {"@type": "Organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"},
+        "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"},
     }
     # Achado real (12/set/2026, pesquisa sobre E-E-A-T/YMYL pedida pelo
     # usuário — conteúdo financeiro é avaliado pelo Google com padrão mais
@@ -1968,7 +1968,7 @@ def gerar_index(data_atualizacao):
     # (ver gerador.py) — Rodolfo Delfino é o fundador real, e-mail é o
     # contato real do domínio (Google Workspace).
     schema_organization = {
-        "@context": "https://schema.org", "@type": "Organization",
+        "@context": "https://schema.org", "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization",
         "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": f"{DOMINIO}/logo-schema.png",
         "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
@@ -2260,7 +2260,7 @@ def gerar_pagina_sobre():
     schema_sobre = {
         "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
         "mainEntity": {
-            "@type": "Organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/",
+            "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/",
             "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
             "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
         },
