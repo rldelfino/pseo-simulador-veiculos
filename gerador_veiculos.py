@@ -830,6 +830,17 @@ def render_faq_visual(perguntas):
 
 
 def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
+    # Achado real (21/set/2026, auditoria de SEO): 593 das 884 páginas
+    # saíam com <title> acima de 65 caracteres (o sufixo de marca "|
+    # Simulador Datalab" empurrava pra 70-80) — o Google corta em ~60 e o
+    # que é cortado é justamente o final. O que identifica a página
+    # (categoria, banco, valor, prazo) fica no começo; a marca sai só
+    # quando não cabe. Feito aqui, no chokepoint de todo <title>.
+    if len(titulo) > 60:
+        for sufixo in (" | Simulador Datalab", " | Datalab Global", " | Datalab"):
+            if titulo.endswith(sufixo):
+                titulo = titulo[: -len(sufixo)]
+                break
     if len(meta_description) > 160:
         meta_description = meta_description[:157].rstrip() + "..."
     # Achado real (08/set/2026, auditoria de segurança pedida pelo
@@ -1031,6 +1042,7 @@ def render_footer():
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
             <p class="mt-3 flex items-center justify-center gap-4">
+                <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
                 <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
             </p>
@@ -1701,7 +1713,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
     valor_referencia = VALORES_POR_CATEGORIA[categoria][len(VALORES_POR_CATEGORIA[categoria]) // 2]
     prazo_referencia = 48
 
-    titulo_pagina = f"Comparador de Financiamento {label_categoria}: menor taxa entre os bancos | Datalab"
+    titulo_pagina = f"Comparador de Financiamento {label_categoria}: taxas dos bancos | Datalab"
     meta_description = (
         f"Compare a taxa real de todos os bancos para financiamento {label_categoria.lower()} — cenário de "
         f"referência: {formatar_valor_curto(valor_referencia)} em {prazo_referencia} meses. Dados do Banco Central."
@@ -1946,6 +1958,7 @@ def gerar_index(data_atualizacao):
     schema_website = {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": "Datalab Global", "url": url_home, "dateModified": data_atualizacao,
+        "publisher": {"@type": "Organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"},
     }
     # Achado real (12/set/2026, pesquisa sobre E-E-A-T/YMYL pedida pelo
     # usuário — conteúdo financeiro é avaliado pelo Google com padrão mais
@@ -1956,7 +1969,7 @@ def gerar_index(data_atualizacao):
     # contato real do domínio (Google Workspace).
     schema_organization = {
         "@context": "https://schema.org", "@type": "Organization",
-        "name": "Datalab Global", "url": url_home, "logo": f"{DOMINIO}/logo-schema.png",
+        "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": f"{DOMINIO}/logo-schema.png",
         "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
@@ -2247,7 +2260,7 @@ def gerar_pagina_sobre():
     schema_sobre = {
         "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
         "mainEntity": {
-            "@type": "Organization", "name": "Datalab Global", "url": url_home,
+            "@type": "Organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/",
             "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
             "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
         },
