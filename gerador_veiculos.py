@@ -2393,16 +2393,18 @@ def gerar_headers():
     """_headers (formato Cloudflare Pages) — mesma política de segurança
     do projeto irmão, auditada contra o que esta página de fato carrega
     (fonts.googleapis.com/gstatic.com; nenhum outro domínio externo nesta
-    v1, sem AdSense ainda)."""
+    v1, sem AdSense ainda) + o beacon do Cloudflare Web Analytics (static.cloudflareinsights.com / cloudflareinsights.com),
+    que o Pages injeta sozinho e o CSP antigo bloqueava (achado real 21/set/2026, console do navegador)."""
     return (
         "/*\n"
         "  X-Frame-Options: DENY\n"
         "  X-Content-Type-Options: nosniff\n"
+        "  Strict-Transport-Security: max-age=31536000; includeSubDomains\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n"
         "  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()\n"
-        "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; "
+        "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; "
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; "
-        "img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; "
+        "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'\n\n"
         "/styles.css\n"
         "  Cache-Control: public, max-age=3600, must-revalidate\n\n"

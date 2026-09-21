@@ -262,3 +262,13 @@ def test_pagina_404_tem_noindex():
     with open(os.path.join(PASTA_SAIDA, "404.html"), encoding="utf-8") as f:
         conteudo = f.read()
     assert 'name="robots" content="noindex"' in conteudo, "404.html sem noindex — Google poderia tentar indexar a página de erro"
+
+
+def test_headers_tem_hsts_e_libera_beacon_do_cloudflare_analytics():
+    """Achado real (21/set/2026, auditoria do site no ar): faltava Strict-Transport-Security e o CSP bloqueava o beacon
+    do Cloudflare Web Analytics (static.cloudflareinsights.com), que o Pages injeta sozinho."""
+    with open(os.path.join(PASTA_SAIDA, "_headers"), encoding="utf-8") as f:
+        conteudo = f.read()
+    assert "Strict-Transport-Security: max-age=31536000" in conteudo
+    assert "https://static.cloudflareinsights.com" in conteudo.split("script-src", 1)[1].split(";", 1)[0]
+    assert "https://cloudflareinsights.com" in conteudo.split("connect-src", 1)[1].split(";", 1)[0]
