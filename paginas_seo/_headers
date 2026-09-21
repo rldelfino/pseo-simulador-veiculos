@@ -8,8 +8,11 @@
 /styles.css
   Cache-Control: public, max-age=3600, must-revalidate
 
-/logo.svg
-  Cache-Control: public, max-age=3600, must-revalidate
+/logo-full.png
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-image.png
+  Cache-Control: public, max-age=86400, must-revalidate
 
 /calculo.js
   Cache-Control: public, max-age=3600, must-revalidate

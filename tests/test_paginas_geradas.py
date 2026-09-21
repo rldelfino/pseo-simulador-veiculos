@@ -65,7 +65,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
     é a mesma verificação de sempre, só reconhecendo o formato de URL
     novo."""
     paginas_por_slug = {n[:-len(".html")] for n in _arquivos_html()}
-    assets = {"styles.css", "logo.svg", "sitemap.xml", "calculo.js", "favicon.svg", "favicon.ico", "apple-touch-icon.png"}
+    assets = {"styles.css", "logo-full.png", "sitemap.xml", "calculo.js", "favicon-32.png", "favicon-192.png", "og-image.png", "favicon.ico", "apple-touch-icon.png"}
     faltando = []
     for nome_arquivo in _arquivos_html():
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
