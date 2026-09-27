@@ -1339,19 +1339,9 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     frase_entrada = (f"Com {round((entrada_pct_min + 0.10) * 100)}% de entrada ({formatar_reais(entrada_mais)}) em vez de "
                      f"{round(entrada_pct_min * 100)}%, a parcela cai para {formatar_reais(parcela_mais)} e você paga "
                      f"{formatar_reais(total_juros - juros_mais)} a menos de juros.")
-    pos_ranking = next((i + 1 for i, r in enumerate(ranking) if r["banco"] == banco), None)
-    mais_barato = ranking[0] if ranking else None
-    if pos_ranking == 1:
-        frase_ranking = (f"Neste cenário, {banco_exib} tem o menor custo efetivo entre os {len(ranking)} bancos que "
-                         f"acompanhamos para {label_categoria.lower()}.")
-    elif mais_barato:
-        dif_total = (parcela * prazo) - (mais_barato["parcela"] * mais_barato["prazo"])
-        # sem artigo antes do nome do banco ("o Caixa" / "no Caixa" soaria errado): a frase funciona para qualquer banco
-        frase_ranking = (f"{banco_exib} fica em {pos_ranking}º de {len(ranking)} bancos em custo efetivo para este caso. "
-                         f"O mais barato é {mais_barato['nome_exibicao']}: parcela de {formatar_reais(mais_barato['parcela'])}"
-                         + (f" e total pago {formatar_reais(dif_total)} menor." if dif_total > 0 else "."))
-    else:
-        frase_ranking = ""
+    # 27/set/2026, decisão do usuário: nada de ranking nomeado nem de "o mais barato é X" — um ranking pode influenciar
+    # o cliente a escolher um banco, e não é esse o papel do simulador (mesma decisão já registrada no imobiliário). A
+    # comparação com o mercado fica só na faixa sem nomes (renderizar_faixa_mercado).
     analise_html = (
         '<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Análise desta simulação</h2>'
         '<div class="glass-panel rounded-2xl p-6 md:p-8">'
@@ -1361,30 +1351,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         f'{frase_prazo}</p>'
         f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_entrada} Para essa parcela caber na regra de 30% '
         f'de comprometimento, a renda familiar precisa ser de pelo menos {formatar_reais(renda_sugerida)} por mês.</p>'
-        + (f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_ranking}</p>' if frase_ranking else '')
         + '</div></section>'
-    )
-    linhas_ranking = []
-    for i, r in enumerate(ranking):
-        destaque = ' bg-sky-500/10' if r["banco"] == banco else ''
-        nome = (f'<a href="{r["slug"]}" class="hover:text-sky-400 transition-colors">{r["nome_exibicao"]}</a>'
-                if r["slug"] and r["banco"] != banco else r["nome_exibicao"])
-        prazo_obs = f' <span class="text-slate-500 text-xs">({r["prazo"]}x)</span>' if r["prazo"] != prazo else ''
-        cet_r = f'{r["cet"]:.2f}'.replace('.', ',')
-        linhas_ranking.append(
-            f'<tr class="border-t border-white/5{destaque}"><td class="py-2.5 pr-2 text-slate-500">{i + 1}º</td>'
-            f'<td class="py-2.5 pr-3 text-white font-medium">{nome}</td>'
-            f'<td class="py-2.5 pr-3 text-slate-300 whitespace-nowrap">{formatar_reais(r["parcela"])}{prazo_obs}</td>'
-            f'<td class="py-2.5 text-slate-300 whitespace-nowrap">{cet_r}%</td></tr>')
-    ranking_html = (
-        f'<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Ranking dos bancos para {valor_curto} em '
-        f'{prazo}x ({label_categoria.lower()})</h2><div class="glass-panel rounded-2xl p-4 md:p-6 overflow-x-auto">'
-        '<table class="w-full text-sm tabular-nums"><thead><tr class="text-[10px] uppercase tracking-widest text-slate-500">'
-        '<th class="text-left pb-2 pr-2 font-bold">#</th><th class="text-left pb-2 font-bold">Banco</th>'
-        '<th class="text-left pb-2 font-bold">Parcela</th><th class="text-left pb-2 font-bold whitespace-nowrap">CET a.a.</th></tr></thead>'
-        f'<tbody>{"".join(linhas_ranking)}</tbody></table>'
-        f'<p class="text-slate-500 text-xs mt-3">Mesma entrada ({round(entrada_pct_min * 100)}%) e mesmo valor; bancos com prazo '
-        'máximo menor aparecem com o prazo deles.</p></div></section>'
     )
     faq_html, schema_faq = render_faq_visual([
         (f"Qual a parcela de {valor_curto} em {prazo}x no {banco_exib}?",
@@ -1574,8 +1541,6 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         </section>
 
         {analise_html}
-
-        {ranking_html}
 
         <!-- ZONA E: GLOSSÁRIO / HUB DE AJUDA -->
         <div class="mt-16">
