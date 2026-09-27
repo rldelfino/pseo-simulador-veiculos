@@ -1242,23 +1242,11 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     faq_a1 = (f"CET (Custo Efetivo Total) é o custo real do financiamento — inclui a taxa de juros, o IOF "
               f"(imposto sobre a operação de crédito) e tarifas, não só a taxa anunciada. Neste cenário, o CET "
               f"estimado é {cet_fmt}% ao ano, acima da taxa nominal de {taxa_aa_fmt}% ao ano.")
-    faq_q2 = f"Por que a parcela do {banco_exib} é fixa do início ao fim?"
-    faq_a2 = ("Financiamento de veículo no Brasil (CDC) usa a Tabela Price: a parcela é fixa do primeiro ao "
-              "último mês, mudando só a proporção entre juros e amortização a cada mês. É diferente do SAC do "
-              "financiamento imobiliário, onde a parcela começa mais alta e cai com o tempo.")
     faq_q3 = "A taxa exibida é exatamente o que eu vou pagar?"
     faq_a3 = (f"Não necessariamente — é a taxa média real praticada pelo {banco_exib} nessa modalidade, segundo "
               f"o Banco Central, não uma proposta. A taxa final de cada cliente varia com relacionamento "
               f"bancário, histórico de crédito, entrada e seguradora escolhida.")
 
-    schema_faq = {
-        "@context": "https://schema.org", "@type": "FAQPage",
-        "mainEntity": [
-            {"@type": "Question", "name": faq_q1, "acceptedAnswer": {"@type": "Answer", "text": faq_a1}},
-            {"@type": "Question", "name": faq_q2, "acceptedAnswer": {"@type": "Answer", "text": faq_a2}},
-            {"@type": "Question", "name": faq_q3, "acceptedAnswer": {"@type": "Answer", "text": faq_a3}},
-        ],
-    }
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
@@ -1326,6 +1314,92 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
 
     dominio_favicon_atual = p["dominio_favicon"]
     url_logo_atual = f"https://www.google.com/s2/favicons?domain={dominio_favicon_atual}&sz=128"
+
+    # Achado real (27/set/2026, Search Console + medicao de texto): duas paginas individuais quaisquer eram 96% identicas
+    # (so os numeros do resultado mudavam) e parte delas ficava em "Rastreada, mas nao indexada" — o Google as tratava
+    # como copias. Cada pagina ganha conteudo que so ela tem, calculado com os dados reais dela (nunca texto reescrito):
+    # uma analise do cenario, o ranking dos bancos para o MESMO caso e perguntas frequentes com os numeros da pagina.
+    prazo_max_banco = max(q["prazo"] for q in todas_paginas if q["banco"] == banco and q["categoria"] == categoria)
+    prazo_alt = prazo + 12 if prazo + 12 <= prazo_max_banco else (prazo - 12 if prazo - 12 >= 12 else None)
+    frase_prazo = ""
+    if prazo_alt:
+        parcela_alt = calcular_pmt_price(financiado, prazo_alt, taxa_am)
+        juros_alt = parcela_alt * prazo_alt - financiado
+        if prazo_alt > prazo:
+            frase_prazo = (f"Esticar para {prazo_alt} meses baixa a parcela em {formatar_reais(parcela - parcela_alt)}, "
+                           f"mas soma {formatar_reais(juros_alt - total_juros)} de juros ao contrato.")
+        else:
+            frase_prazo = (f"Encurtar para {prazo_alt} meses sobe a parcela em {formatar_reais(parcela_alt - parcela)} "
+                           f"e economiza {formatar_reais(total_juros - juros_alt)} de juros.")
+    entrada_pct_min = entrada / valor if valor else 0
+    entrada_mais = valor * (entrada_pct_min + 0.10)
+    financiado_mais = valor - entrada_mais
+    parcela_mais = calcular_pmt_price(financiado_mais, prazo, taxa_am)
+    juros_mais = parcela_mais * prazo - financiado_mais
+    frase_entrada = (f"Com {round((entrada_pct_min + 0.10) * 100)}% de entrada ({formatar_reais(entrada_mais)}) em vez de "
+                     f"{round(entrada_pct_min * 100)}%, a parcela cai para {formatar_reais(parcela_mais)} e você paga "
+                     f"{formatar_reais(total_juros - juros_mais)} a menos de juros.")
+    pos_ranking = next((i + 1 for i, r in enumerate(ranking) if r["banco"] == banco), None)
+    mais_barato = ranking[0] if ranking else None
+    if pos_ranking == 1:
+        frase_ranking = (f"Neste cenário, {banco_exib} tem o menor custo efetivo entre os {len(ranking)} bancos que "
+                         f"acompanhamos para {label_categoria.lower()}.")
+    elif mais_barato:
+        dif_total = (parcela * prazo) - (mais_barato["parcela"] * mais_barato["prazo"])
+        # sem artigo antes do nome do banco ("o Caixa" / "no Caixa" soaria errado): a frase funciona para qualquer banco
+        frase_ranking = (f"{banco_exib} fica em {pos_ranking}º de {len(ranking)} bancos em custo efetivo para este caso. "
+                         f"O mais barato é {mais_barato['nome_exibicao']}: parcela de {formatar_reais(mais_barato['parcela'])}"
+                         + (f" e total pago {formatar_reais(dif_total)} menor." if dif_total > 0 else "."))
+    else:
+        frase_ranking = ""
+    analise_html = (
+        '<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Análise desta simulação</h2>'
+        '<div class="glass-panel rounded-2xl p-6 md:p-8">'
+        f'<p class="text-slate-300 text-sm leading-relaxed font-light">Financiando {formatar_reais(financiado)} de '
+        f'{CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} em {prazo}x no {banco_exib}, você paga {prazo} parcelas de '
+        f'<strong class="text-white font-medium">{formatar_reais(parcela)}</strong> e {formatar_reais(total_juros)} de juros no total. '
+        f'{frase_prazo}</p>'
+        f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_entrada} Para essa parcela caber na regra de 30% '
+        f'de comprometimento, a renda familiar precisa ser de pelo menos {formatar_reais(renda_sugerida)} por mês.</p>'
+        + (f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_ranking}</p>' if frase_ranking else '')
+        + '</div></section>'
+    )
+    linhas_ranking = []
+    for i, r in enumerate(ranking):
+        destaque = ' bg-sky-500/10' if r["banco"] == banco else ''
+        nome = (f'<a href="{r["slug"]}" class="hover:text-sky-400 transition-colors">{r["nome_exibicao"]}</a>'
+                if r["slug"] and r["banco"] != banco else r["nome_exibicao"])
+        prazo_obs = f' <span class="text-slate-500 text-xs">({r["prazo"]}x)</span>' if r["prazo"] != prazo else ''
+        cet_r = f'{r["cet"]:.2f}'.replace('.', ',')
+        linhas_ranking.append(
+            f'<tr class="border-t border-white/5{destaque}"><td class="py-2.5 pr-2 text-slate-500">{i + 1}º</td>'
+            f'<td class="py-2.5 pr-3 text-white font-medium">{nome}</td>'
+            f'<td class="py-2.5 pr-3 text-slate-300 whitespace-nowrap">{formatar_reais(r["parcela"])}{prazo_obs}</td>'
+            f'<td class="py-2.5 text-slate-300 whitespace-nowrap">{cet_r}%</td></tr>')
+    ranking_html = (
+        f'<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Ranking dos bancos para {valor_curto} em '
+        f'{prazo}x ({label_categoria.lower()})</h2><div class="glass-panel rounded-2xl p-4 md:p-6 overflow-x-auto">'
+        '<table class="w-full text-sm tabular-nums"><thead><tr class="text-[10px] uppercase tracking-widest text-slate-500">'
+        '<th class="text-left pb-2 pr-2 font-bold">#</th><th class="text-left pb-2 font-bold">Banco</th>'
+        '<th class="text-left pb-2 font-bold">Parcela</th><th class="text-left pb-2 font-bold whitespace-nowrap">CET a.a.</th></tr></thead>'
+        f'<tbody>{"".join(linhas_ranking)}</tbody></table>'
+        f'<p class="text-slate-500 text-xs mt-3">Mesma entrada ({round(entrada_pct_min * 100)}%) e mesmo valor; bancos com prazo '
+        'máximo menor aparecem com o prazo deles.</p></div></section>'
+    )
+    faq_html, schema_faq = render_faq_visual([
+        (f"Qual a parcela de {valor_curto} em {prazo}x no {banco_exib}?",
+         f"Com a entrada mínima de {round(entrada_pct_min * 100)}% ({formatar_reais(entrada)}), o valor financiado é "
+         f"{formatar_reais(financiado)} e a parcela fica em {formatar_reais(parcela)} por mês, fixa pela Tabela Price, "
+         f"com a taxa média de {taxa_aa_fmt}% ao ano do {banco_exib} apurada pelo Banco Central."),
+        (f"Quanto pago de juros financiando {valor_curto} em {prazo} meses?",
+         f"O total pago é {formatar_reais(total_pago)}, sendo {formatar_reais(total_juros)} de juros. Somando IOF, "
+         f"tarifa de registro e seguro prestamista típico, o custo efetivo total estimado é {cet_fmt}% ao ano."),
+        (f"Qual renda preciso para financiar {valor_curto} no {banco_exib}?",
+         f"Os bancos costumam limitar a parcela a 30% da renda bruta: para {formatar_reais(parcela)} por mês, a renda "
+         f"familiar precisa ser de pelo menos {formatar_reais(renda_sugerida)}. Dá para somar a renda do cônjuge ou companheiro(a)."),
+        (faq_q1, faq_a1),
+        (faq_q3, faq_a3),
+    ])
 
     head = render_head(titulo_pagina, meta_description, url_canonica, [schema_faq, schema_breadcrumb, schema_software])
     breadcrumb = render_breadcrumb([
@@ -1499,6 +1573,10 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
             <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-3 text-xs text-slate-500 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
         </section>
 
+        {analise_html}
+
+        {ranking_html}
+
         <!-- ZONA E: GLOSSÁRIO / HUB DE AJUDA -->
         <div class="mt-16">
             <div class="flex items-center gap-3 mb-2 justify-center">
@@ -1536,33 +1614,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
             </div>
         </div>
 
-        <!-- ZONA D: FAQ VISUAL -->
-        <div class="mt-16 mb-8">
-            <h3 class="text-2xl font-serif text-white mb-6 text-center">Perguntas Frequentes</h3>
-            <div class="space-y-3 max-w-3xl mx-auto">
-                <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">{faq_q1}</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-500 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{faq_a1}</p>
-                </details>
-                <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">{faq_q2}</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-500 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{faq_a2}</p>
-                </details>
-                <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">{faq_q3}</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-500 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{faq_a3}</p>
-                </details>
-            </div>
-        </div>
+        {faq_html}
     </main>'''
 
     dados_pagina_js = json.dumps({
