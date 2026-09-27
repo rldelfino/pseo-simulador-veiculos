@@ -809,7 +809,7 @@ def render_faq_visual(perguntas):
     itens_html = "\n".join(f'''<details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
                     <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
                         <h4 class="text-sky-400 font-bold text-sm">{q}</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-500 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+                        <span class="faq-toggle-icon shrink-0 text-slate-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
                     </summary>
                     <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{a}</p>
                 </details>''' for q, a in perguntas)
@@ -886,7 +886,7 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
 def render_nav():
     return f'''<nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center"><img src="logo-full.png" alt="Datalab Global" width="114" height="32" class="h-8 w-auto"></a>
+            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="114" height="32" class="h-8 w-auto"></a>
             <div class="flex items-center gap-2">
                 <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
                 <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('book-open')} <span class="hidden sm:inline">Aprenda</span></a>
@@ -984,7 +984,7 @@ def renderizar_faixa_mercado(banco, banco_exib, cet_banco, ranking_ordenado, men
             <div class="relative h-2 rounded-full bg-gradient-to-r from-sky-500 via-amber-400 to-rose-500">
                 <div id="faixa_marcador" class="absolute top-1/2 h-4 w-4 rounded-full bg-white border-2 border-sky-950 shadow-[0_0_0_3px_rgba(14,165,233,0.35)]" style="left:{marcador_pct}%; transform:translate(-50%,-50%)" title="{banco_exib}: {cet_banco_fmt}%"></div>
             </div>
-            <div class="flex justify-between text-[10px] text-slate-500 uppercase tracking-wide">
+            <div class="flex justify-between text-[10px] text-slate-400 uppercase tracking-wide">
                 <span id="faixa_min">{cet_min_fmt}% menor CET</span>
                 <span id="faixa_max">{cet_max_fmt}% maior CET</span>
             </div>
@@ -1039,7 +1039,7 @@ SCRIPT_AJUSTA_TOOLTIPS = '''
 
 def render_footer():
     return '''<footer class="border-t border-white/5 mt-16 py-8">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-500 leading-relaxed">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
             <p class="mt-3 flex items-center justify-center gap-4">
@@ -1180,7 +1180,7 @@ def render_breadcrumb(itens):
         else:
             partes.append(f'<span class="text-slate-300">{label}</span>')
     separador = ' <span class="text-slate-700">/</span> '
-    return f'<nav class="text-xs text-slate-500 mb-6 flex flex-wrap items-center gap-1.5" aria-label="breadcrumb">{separador.join(partes)}</nav>'
+    return f'<nav class="text-xs text-slate-400 mb-6 flex flex-wrap items-center gap-1.5" aria-label="breadcrumb">{separador.join(partes)}</nav>'
 
 
 def linha_tabela_amortizacao_html(l):
@@ -1382,7 +1382,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
             <a href="{href_hub}" class="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 hover:border-sky-500/40 hover:bg-white/10 rounded-full pl-2 pr-4 py-1.5 mb-6 transition-colors group">
                 {favicon_com_fallback(url_logo_atual, banco_exib, "w-6 h-6")}
                 <span class="text-xs font-bold text-slate-200 group-hover:text-sky-400 tracking-wide transition-colors">{banco_exib}</span>
-                <span class="text-[10px] text-slate-500 uppercase tracking-widest border-l border-white/10 pl-2">CDC {label_categoria}</span>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest border-l border-white/10 pl-2">CDC {label_categoria}</span>
                 <span class="text-[10px] text-sky-500/70 group-hover:text-sky-400 uppercase tracking-widest border-l border-white/10 pl-2 transition-colors">Ver taxas e condições →</span>
             </a>
             <h1 class="font-serif text-3xl md:text-4xl font-bold mb-3 leading-tight px-4">Financiamento {label_categoria} {banco_exib}: {formatar_reais(valor)} em {prazo}x</h1>
@@ -1395,30 +1395,30 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
             <h2 class="text-xs font-bold text-slate-300 uppercase tracking-widest mb-1 flex items-center relative z-10">
                 {icone('invoice', 'mr-3')} 1. Estratégia
             </h2>
-            <p class="text-slate-500 text-[11px] mb-8 pb-4 border-b border-white/10 relative z-10">Defina os parâmetros do seu financiamento {banco_exib.lower()}.</p>
+            <p class="text-slate-400 text-[11px] mb-8 pb-4 border-b border-white/10 relative z-10">Defina os parâmetros do seu financiamento {banco_exib.lower()}.</p>
             <div class="flex flex-col lg:flex-row lg:items-start gap-10 relative z-10">
                 <div class="w-full lg:w-1/2 space-y-4">
                     <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 hover:border-sky-500/30 transition-colors">
                         <div class="flex justify-between items-end mb-2">
                             <label class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center">
-                                {icone('car' if categoria != 'moto' else 'motorcycle', 'mr-1.5 text-slate-500')} Valor do Veículo
+                                {icone('car' if categoria != 'moto' else 'motorcycle', 'mr-1.5 text-slate-400')} Valor do Veículo
                                 {tooltip('A partir dele calculamos a entrada mínima e o valor financiado, usando a regra de entrada da categoria (' + f'{int(entrada_minima(categoria)*100)}' + '%).')}
                             </label>
-                            <input type="text" id="input_valor" class="currency-input w-40 text-right bg-transparent font-medium text-white text-2xl outline-none border-b border-transparent focus:border-sky-500 transition-colors" value="{formatar_reais(valor)[3:]}">
+                            <input type="text" id="input_valor" aria-label="Valor do veículo em reais" class="currency-input w-40 text-right bg-transparent font-medium text-white text-2xl outline-none border-b border-transparent focus:border-sky-500 transition-colors" value="{formatar_reais(valor)[3:]}">
                         </div>
-                        <input type="range" id="slider_valor" min="{valor_min_slider}" max="{valor_max_slider}" step="{passo_slider}" value="{valor}" class="w-full mt-2">
+                        <input type="range" id="slider_valor" aria-label="Valor do veículo" min="{valor_min_slider}" max="{valor_max_slider}" step="{passo_slider}" value="{valor}" class="w-full mt-2">
                     </div>
                     <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 hover:border-sky-500/30 transition-colors">
                         <div class="flex justify-between items-end mb-2">
                             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center">
-                                {icone('calendar', 'mr-1.5 text-slate-500')} Prazo
+                                {icone('calendar', 'mr-1.5 text-slate-400')} Prazo
                                 {tooltip(f'Quantidade de parcelas mensais. O {banco_exib} permite no máximo {p["prazo_max_banco"]} meses nessa modalidade.')}
                             </label>
                             <span id="label_prazo" class="font-medium text-white text-lg">{prazo} meses</span>
                         </div>
-                        <input type="range" id="slider_prazo" min="12" max="{p['prazo_max_banco']}" step="1" value="{prazo}" class="w-full mt-2">
+                        <input type="range" id="slider_prazo" aria-label="Prazo em meses" min="12" max="{p['prazo_max_banco']}" step="1" value="{prazo}" class="w-full mt-2">
                     </div>
-                    <p class="text-[10px] text-slate-500 pl-2">Entrada mínima da categoria: {int(entrada_minima(categoria)*100)}% do valor do veículo.</p>
+                    <p class="text-[10px] text-slate-400 pl-2">Entrada mínima da categoria: {int(entrada_minima(categoria)*100)}% do valor do veículo.</p>
                     <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 flex flex-wrap items-start justify-between gap-6">
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center">
@@ -1448,13 +1448,13 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
                             <p class="text-white text-3xl font-light tracking-tight currency-input break-words" id="res_parcela">{formatar_reais(parcela)}</p>
                         </div>
                         <div class="pt-6 border-t border-white/5 grid grid-cols-2 gap-6">
-                            <div><p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Valor Financiado</p><p class="text-white font-medium text-lg currency-input" id="res_financiado">{formatar_reais(financiado)}</p></div>
-                            <div><p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Entrada</p><p class="text-white font-medium text-lg currency-input" id="res_entrada">{formatar_reais(entrada)}</p></div>
-                            <div><p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total Pago</p><p class="text-white font-medium text-lg currency-input" id="res_total_pago">{formatar_reais(total_pago)}</p></div>
-                            <div><p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total de Juros</p><p class="text-white font-medium text-lg currency-input" id="res_total_juros">{formatar_reais(total_juros)}</p></div>
+                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Valor Financiado</p><p class="text-white font-medium text-lg currency-input" id="res_financiado">{formatar_reais(financiado)}</p></div>
+                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Entrada</p><p class="text-white font-medium text-lg currency-input" id="res_entrada">{formatar_reais(entrada)}</p></div>
+                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total Pago</p><p class="text-white font-medium text-lg currency-input" id="res_total_pago">{formatar_reais(total_pago)}</p></div>
+                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total de Juros</p><p class="text-white font-medium text-lg currency-input" id="res_total_juros">{formatar_reais(total_juros)}</p></div>
                         </div>
                         <div class="pt-6 border-t border-white/5">
-                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">Composição do custo total</p>
+                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">Composição do custo total</p>
                             {svg_donut_capital_juros(financiado, total_juros)}
                         </div>
                     </div>
@@ -1482,15 +1482,15 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
                     </label>
                     <div class="relative mb-6">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 font-light text-sky-500/50 text-3xl">R$</span>
-                        <input type="text" id="input_amortizar" class="currency-input w-full bg-black/50 border border-sky-500/30 rounded-2xl pl-16 pr-4 py-5 focus:border-sky-400 font-medium text-sky-400 text-4xl outline-none transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" value="{aporte_padrao_fmt}">
+                        <input type="text" id="input_amortizar" aria-label="Valor da amortização extra em reais" class="currency-input w-full bg-black/50 border border-sky-500/30 rounded-2xl pl-16 pr-4 py-5 focus:border-sky-400 font-medium text-sky-400 text-4xl outline-none transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" value="{aporte_padrao_fmt}">
                     </div>
-                    <input type="range" id="slider_amortizar" min="0" max="{slider_amortizar_max}" step="100" value="{aporte_padrao}" class="w-full mb-6">
+                    <input type="range" id="slider_amortizar" aria-label="Valor da amortização extra" min="0" max="{slider_amortizar_max}" step="100" value="{aporte_padrao}" class="w-full mb-6">
                     <div class="bg-slate-800/60 p-4 rounded-2xl border border-white/10">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center">
-                            {icone('repeat', 'mr-1.5 text-slate-500')} A Cada Quantos Meses?
+                            {icone('repeat', 'mr-1.5 text-slate-400')} A Cada Quantos Meses?
                         </label>
                         <div class="flex items-center gap-3">
-                            <input type="range" id="slider_periodicidade" min="1" max="24" step="1" value="{periodicidade_padrao}" class="w-full">
+                            <input type="range" id="slider_periodicidade" aria-label="A cada quantos meses" min="1" max="24" step="1" value="{periodicidade_padrao}" class="w-full">
                             <span class="text-white font-medium text-sm whitespace-nowrap w-24 text-right" id="label_periodicidade">a cada {periodicidade_padrao} meses</span>
                         </div>
                     </div>
@@ -1537,7 +1537,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         <section class="mt-8">
             <h2 class="font-serif text-lg font-semibold mb-3">Compare com o mercado</h2>
             {faixa_html}
-            <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-3 text-xs text-slate-500 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
+            <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-3 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
         </section>
 
         {analise_html}
@@ -1548,7 +1548,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
                 {icone('book-open', 'text-sky-500 text-xl')}
                 <h3 class="text-2xl font-serif text-white text-center">Entenda os Termos Antes de Decidir</h3>
             </div>
-            <p class="text-slate-500 text-sm text-center max-w-2xl mx-auto mb-8">
+            <p class="text-slate-400 text-sm text-center max-w-2xl mx-auto mb-8">
                 Mais do que uma calculadora: reunimos aqui o que cada termo do seu financiamento {banco_exib.lower()} significa na prática.
             </p>
             <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-x-12 divide-y divide-white/10 md:divide-y-0">
@@ -1700,7 +1700,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         <div class="mb-8">{faixa_html}</div>
 
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
-        <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-500 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
+        <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
         {faq_html}
     </main>'''
 
@@ -1906,7 +1906,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
             <div class="relative h-2 rounded-full bg-gradient-to-r from-sky-500 via-amber-400 to-rose-500 mb-2">
                 {marcadores_html}
             </div>
-            <div class="flex justify-between text-[10px] text-slate-500 uppercase tracking-wide mb-6">
+            <div class="flex justify-between text-[10px] text-slate-400 uppercase tracking-wide mb-6">
                 <span>{f"{cet_min:.2f}".replace('.', ',')}% menor CET</span>
                 <span>{f"{cet_max:.2f}".replace('.', ',')}% maior CET</span>
             </div>
@@ -2365,7 +2365,7 @@ def gerar_404():
     {GOOGLE_FONTS_LINK_ASSINCRONO}
 </head>
 <body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
-    <a href="/" class="mb-10"><img src="logo-full.png" alt="Datalab Global" width="171" height="48" class="h-12 w-auto mx-auto"></a>
+    <a href="/" class="mb-10"><img src="logo-header.webp" alt="Datalab Global" width="171" height="48" class="h-12 w-auto mx-auto"></a>
     <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
     <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
     <div class="flex flex-wrap gap-3 justify-center">
@@ -2425,7 +2425,9 @@ def gerar_headers():
         "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'\n\n"
         "/styles.css\n"
-        "  Cache-Control: public, max-age=3600, must-revalidate\n\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/logo-header.webp\n"
+        "  Cache-Control: public, max-age=86400, must-revalidate\n\n"
         "/logo-full.png\n"
         "  Cache-Control: public, max-age=86400, must-revalidate\n\n"
         "/og-image.png\n"
