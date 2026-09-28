@@ -1,86 +1,86 @@
 {
   "BV Financeira": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 30.93,
-    "taxa_am": 2.27
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 30.55,
+    "taxa_am": 2.25
   },
   "Banco Honda": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 33.61,
-    "taxa_am": 2.44
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 34.61,
+    "taxa_am": 2.51
   },
   "Banco Inter": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 21.69,
-    "taxa_am": 1.65
-  },
-  "Banco Pan": {
-    "atualizado_em": "2026-09-21",
-    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 39.75,
-    "taxa_am": 2.83
-  },
-  "Banco Yamaha": {
-    "atualizado_em": "2026-09-21",
-    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 35.38,
-    "taxa_am": 2.56
-  },
-  "Banco do Brasil": {
-    "atualizado_em": "2026-09-21",
-    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 21.96,
-    "taxa_am": 1.67
-  },
-  "Bradesco": {
-    "atualizado_em": "2026-09-21",
-    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 22.89,
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 22.8,
     "taxa_am": 1.73
   },
-  "C6 Bank": {
-    "atualizado_em": "2026-09-21",
+  "Banco Pan": {
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 26.3,
-    "taxa_am": 1.97
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 39.41,
+    "taxa_am": 2.81
+  },
+  "Banco Yamaha": {
+    "atualizado_em": "2026-09-28",
+    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 36.95,
+    "taxa_am": 2.66
+  },
+  "Banco do Brasil": {
+    "atualizado_em": "2026-09-28",
+    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 21.47,
+    "taxa_am": 1.63
+  },
+  "Bradesco": {
+    "atualizado_em": "2026-09-28",
+    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 23.33,
+    "taxa_am": 1.76
+  },
+  "C6 Bank": {
+    "atualizado_em": "2026-09-28",
+    "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 26.65,
+    "taxa_am": 1.99
   },
   "Caixa": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 12.72,
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 12.71,
     "taxa_am": 1.0
   },
   "Itau": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 27.36,
-    "taxa_am": 2.04
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 26.85,
+    "taxa_am": 2.0
   },
   "Omni Financeira": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 47.21,
-    "taxa_am": 3.28
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 48.16,
+    "taxa_am": 3.33
   },
   "Santander": {
-    "atualizado_em": "2026-09-21",
+    "atualizado_em": "2026-09-28",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "31/08/2026 a 04/09/2026",
-    "taxa_aa": 24.57,
-    "taxa_am": 1.85
+    "periodo": "08/09/2026 a 14/09/2026",
+    "taxa_aa": 26.02,
+    "taxa_am": 1.95
   }
 }
