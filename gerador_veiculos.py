@@ -1045,6 +1045,7 @@ def render_footer():
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
+                <a href="https://dados.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Lente B2B: dados de empresas</a>
                 <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
                 <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
             </p>
