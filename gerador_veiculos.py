@@ -886,7 +886,7 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos):
 def render_nav():
     return f'''<nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="114" height="32" class="h-8 w-auto"></a>
+            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="80" height="40" class="h-10 w-auto"></a>
             <div class="flex items-center gap-2">
                 <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
                 <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('book-open')} <span class="hidden sm:inline">Aprenda</span></a>
@@ -2366,7 +2366,7 @@ def gerar_404():
     {GOOGLE_FONTS_LINK_ASSINCRONO}
 </head>
 <body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
-    <a href="/" class="mb-10"><img src="logo-header.webp" alt="Datalab Global" width="171" height="48" class="h-12 w-auto mx-auto"></a>
+    <a href="/" class="mb-10"><img src="logo-header.webp" alt="Datalab Global" width="96" height="48" class="h-12 w-auto mx-auto"></a>
     <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
     <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
     <div class="flex flex-wrap gap-3 justify-center">
