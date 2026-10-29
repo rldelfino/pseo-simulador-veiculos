@@ -85,6 +85,8 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
             if ref == "/":
                 continue  # home — sempre resolve (index.html sempre existe)
             ref_sem_query = ref.split("?", 1)[0]  # styles.css?v=... — cache-busting não é parte do path real
+            if ref_sem_query.startswith("dados/") and os.path.isfile(os.path.join(PASTA_SAIDA, ref_sem_query)):
+                continue  # arquivos de dados abertos publicados em dados/ (csv, json, md)
             if "." in ref_sem_query.rsplit("/", 1)[-1]:  # tem extensão: asset (.css/.svg/.js/.ico/.png) ou .html direto
                 if ref_sem_query not in assets and ref_sem_query not in set(_arquivos_html()):
                     faltando.append(f"{nome_arquivo} -> {ref}")

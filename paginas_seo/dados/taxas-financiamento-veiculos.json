@@ -1,0 +1,2305 @@
+{
+ "titulo": "Taxas médias de juros do financiamento de veículos por banco (BACEN)",
+ "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
+ "licenca": "CC BY 4.0",
+ "atualizado_em": "2026-10-26",
+ "organizacao": "Datalab Global",
+ "dados": [
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.49
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.59
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.6,
+   "taxa_juros_aa_pct": 21.01
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.0,
+   "taxa_juros_aa_pct": 42.6
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.47,
+   "taxa_juros_aa_pct": 33.98
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.85,
+   "taxa_juros_aa_pct": 24.65
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.59,
+   "taxa_juros_aa_pct": 20.89
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.92,
+   "taxa_juros_aa_pct": 25.61
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.03,
+   "taxa_juros_aa_pct": 27.23
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.92,
+   "taxa_juros_aa_pct": 25.64
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.32,
+   "taxa_juros_aa_pct": 47.93
+  },
+  {
+   "mes_referencia": "2024-10",
+   "periodo_inicio": "2024-10-25",
+   "periodo_fim": "2024-10-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.49
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 30.06
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.26,
+   "taxa_juros_aa_pct": 30.71
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.41,
+   "taxa_juros_aa_pct": 18.27
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.0,
+   "taxa_juros_aa_pct": 42.54
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.47,
+   "taxa_juros_aa_pct": 34.04
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.88,
+   "taxa_juros_aa_pct": 25.1
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.62,
+   "taxa_juros_aa_pct": 21.31
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.95,
+   "taxa_juros_aa_pct": 26.01
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.59,
+   "taxa_juros_aa_pct": 20.77
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.2
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.37,
+   "taxa_juros_aa_pct": 48.79
+  },
+  {
+   "mes_referencia": "2024-11",
+   "periodo_inicio": "2024-11-25",
+   "periodo_fim": "2024-11-29",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.44
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.39,
+   "taxa_juros_aa_pct": 32.82
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.28,
+   "taxa_juros_aa_pct": 31.12
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.61,
+   "taxa_juros_aa_pct": 21.16
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.33,
+   "taxa_juros_aa_pct": 48.16
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.51,
+   "taxa_juros_aa_pct": 34.71
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.41
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.79,
+   "taxa_juros_aa_pct": 23.76
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.16,
+   "taxa_juros_aa_pct": 29.19
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.94,
+   "taxa_juros_aa_pct": 25.86
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.52
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.52,
+   "taxa_juros_aa_pct": 51.4
+  },
+  {
+   "mes_referencia": "2024-12",
+   "periodo_inicio": "2024-12-24",
+   "periodo_fim": "2024-12-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.24,
+   "taxa_juros_aa_pct": 30.42
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.36,
+   "taxa_juros_aa_pct": 32.34
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.42,
+   "taxa_juros_aa_pct": 33.23
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.59,
+   "taxa_juros_aa_pct": 20.81
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.24,
+   "taxa_juros_aa_pct": 46.58
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.6,
+   "taxa_juros_aa_pct": 36.09
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.49
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.76,
+   "taxa_juros_aa_pct": 23.3
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.17,
+   "taxa_juros_aa_pct": 29.33
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.81,
+   "taxa_juros_aa_pct": 24.08
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.14,
+   "taxa_juros_aa_pct": 28.85
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.52,
+   "taxa_juros_aa_pct": 51.4
+  },
+  {
+   "mes_referencia": "2025-01",
+   "periodo_inicio": "2025-01-27",
+   "periodo_fim": "2025-01-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.25,
+   "taxa_juros_aa_pct": 30.58
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.28,
+   "taxa_juros_aa_pct": 31.04
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.49,
+   "taxa_juros_aa_pct": 34.37
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.63,
+   "taxa_juros_aa_pct": 21.46
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.19,
+   "taxa_juros_aa_pct": 45.7
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.63,
+   "taxa_juros_aa_pct": 36.49
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.11,
+   "taxa_juros_aa_pct": 28.41
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.72,
+   "taxa_juros_aa_pct": 22.77
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.07,
+   "taxa_juros_aa_pct": 27.82
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.71,
+   "taxa_juros_aa_pct": 22.5
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.14,
+   "taxa_juros_aa_pct": 28.85
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.58,
+   "taxa_juros_aa_pct": 52.49
+  },
+  {
+   "mes_referencia": "2025-02",
+   "periodo_inicio": "2025-02-24",
+   "periodo_fim": "2025-02-28",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.19,
+   "taxa_juros_aa_pct": 29.68
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.32,
+   "taxa_juros_aa_pct": 31.67
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.43,
+   "taxa_juros_aa_pct": 33.37
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.85,
+   "taxa_juros_aa_pct": 24.6
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.17,
+   "taxa_juros_aa_pct": 45.5
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.63,
+   "taxa_juros_aa_pct": 36.62
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.13,
+   "taxa_juros_aa_pct": 28.75
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.74,
+   "taxa_juros_aa_pct": 22.96
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.09,
+   "taxa_juros_aa_pct": 28.12
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.99,
+   "taxa_juros_aa_pct": 26.68
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.06,
+   "taxa_juros_aa_pct": 27.66
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.55,
+   "taxa_juros_aa_pct": 52.0
+  },
+  {
+   "mes_referencia": "2025-03",
+   "periodo_inicio": "2025-03-25",
+   "periodo_fim": "2025-03-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.13,
+   "taxa_juros_aa_pct": 28.85
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.25,
+   "taxa_juros_aa_pct": 30.55
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.48,
+   "taxa_juros_aa_pct": 34.15
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.88,
+   "taxa_juros_aa_pct": 25.02
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.09,
+   "taxa_juros_aa_pct": 44.12
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.6,
+   "taxa_juros_aa_pct": 36.03
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.11,
+   "taxa_juros_aa_pct": 28.46
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.62,
+   "taxa_juros_aa_pct": 21.25
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.44
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.26,
+   "taxa_juros_aa_pct": 30.69
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.39
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.45,
+   "taxa_juros_aa_pct": 50.3
+  },
+  {
+   "mes_referencia": "2025-04",
+   "periodo_inicio": "2025-04-24",
+   "periodo_fim": "2025-04-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.05,
+   "taxa_juros_aa_pct": 27.5
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.25,
+   "taxa_juros_aa_pct": 30.53
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.49,
+   "taxa_juros_aa_pct": 34.34
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.78,
+   "taxa_juros_aa_pct": 23.6
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.07,
+   "taxa_juros_aa_pct": 43.73
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.56,
+   "taxa_juros_aa_pct": 35.5
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.16,
+   "taxa_juros_aa_pct": 29.18
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.6,
+   "taxa_juros_aa_pct": 20.92
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.0,
+   "taxa_juros_aa_pct": 26.89
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.36
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.01,
+   "taxa_juros_aa_pct": 26.91
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.4,
+   "taxa_juros_aa_pct": 49.36
+  },
+  {
+   "mes_referencia": "2025-05",
+   "periodo_inicio": "2025-05-26",
+   "periodo_fim": "2025-05-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.39
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.25,
+   "taxa_juros_aa_pct": 30.55
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.49,
+   "taxa_juros_aa_pct": 34.37
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.8,
+   "taxa_juros_aa_pct": 23.82
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.17,
+   "taxa_juros_aa_pct": 45.44
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.6,
+   "taxa_juros_aa_pct": 36.12
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 30.03
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.62,
+   "taxa_juros_aa_pct": 21.2
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.48
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.94,
+   "taxa_juros_aa_pct": 25.96
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.44
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.44,
+   "taxa_juros_aa_pct": 50.03
+  },
+  {
+   "mes_referencia": "2025-06",
+   "periodo_inicio": "2025-06-24",
+   "periodo_fim": "2025-06-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.07,
+   "taxa_juros_aa_pct": 27.9
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 29.98
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.45,
+   "taxa_juros_aa_pct": 33.76
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.69,
+   "taxa_juros_aa_pct": 22.23
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.15,
+   "taxa_juros_aa_pct": 45.09
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.41,
+   "taxa_juros_aa_pct": 33.04
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.15,
+   "taxa_juros_aa_pct": 29.14
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.58,
+   "taxa_juros_aa_pct": 20.64
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.0,
+   "taxa_juros_aa_pct": 26.82
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.81,
+   "taxa_juros_aa_pct": 24.08
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.0,
+   "taxa_juros_aa_pct": 26.83
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.32,
+   "taxa_juros_aa_pct": 47.96
+  },
+  {
+   "mes_referencia": "2025-07",
+   "periodo_inicio": "2025-07-25",
+   "periodo_fim": "2025-07-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.07,
+   "taxa_juros_aa_pct": 27.8
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.22,
+   "taxa_juros_aa_pct": 30.18
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.51,
+   "taxa_juros_aa_pct": 34.61
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.75,
+   "taxa_juros_aa_pct": 23.16
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.18,
+   "taxa_juros_aa_pct": 45.57
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.37,
+   "taxa_juros_aa_pct": 32.5
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.36,
+   "taxa_juros_aa_pct": 32.37
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.57,
+   "taxa_juros_aa_pct": 20.57
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 2.0,
+   "taxa_juros_aa_pct": 26.84
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.37
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.56
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.31,
+   "taxa_juros_aa_pct": 47.75
+  },
+  {
+   "mes_referencia": "2025-08",
+   "periodo_inicio": "2025-08-25",
+   "periodo_fim": "2025-08-29",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.02,
+   "taxa_juros_aa_pct": 27.19
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.2,
+   "taxa_juros_aa_pct": 29.82
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.48,
+   "taxa_juros_aa_pct": 34.11
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.78,
+   "taxa_juros_aa_pct": 23.52
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.06,
+   "taxa_juros_aa_pct": 43.61
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.34,
+   "taxa_juros_aa_pct": 32.0
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.14,
+   "taxa_juros_aa_pct": 28.86
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.55,
+   "taxa_juros_aa_pct": 20.21
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.31
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.92,
+   "taxa_juros_aa_pct": 25.61
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.42
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.31,
+   "taxa_juros_aa_pct": 47.76
+  },
+  {
+   "mes_referencia": "2025-09",
+   "periodo_inicio": "2025-09-24",
+   "periodo_fim": "2025-09-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 2.02,
+   "taxa_juros_aa_pct": 27.11
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 29.92
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.47,
+   "taxa_juros_aa_pct": 33.96
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.71,
+   "taxa_juros_aa_pct": 22.58
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.03,
+   "taxa_juros_aa_pct": 43.04
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.52,
+   "taxa_juros_aa_pct": 34.85
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.16,
+   "taxa_juros_aa_pct": 29.29
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.63,
+   "taxa_juros_aa_pct": 21.36
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.92,
+   "taxa_juros_aa_pct": 25.7
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.13,
+   "taxa_juros_aa_pct": 28.77
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.01,
+   "taxa_juros_aa_pct": 26.92
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.27,
+   "taxa_juros_aa_pct": 47.04
+  },
+  {
+   "mes_referencia": "2025-10",
+   "periodo_inicio": "2025-10-27",
+   "periodo_fim": "2025-10-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.9,
+   "taxa_juros_aa_pct": 25.31
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.19,
+   "taxa_juros_aa_pct": 29.69
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.44,
+   "taxa_juros_aa_pct": 33.56
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.67,
+   "taxa_juros_aa_pct": 21.98
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.56,
+   "taxa_juros_aa_pct": 35.44
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.53
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.62,
+   "taxa_juros_aa_pct": 21.22
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.46
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.85,
+   "taxa_juros_aa_pct": 24.63
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.95,
+   "taxa_juros_aa_pct": 26.15
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.23,
+   "taxa_juros_aa_pct": 46.37
+  },
+  {
+   "mes_referencia": "2025-11",
+   "periodo_inicio": "2025-11-24",
+   "periodo_fim": "2025-11-28",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.81,
+   "taxa_juros_aa_pct": 24.07
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.22,
+   "taxa_juros_aa_pct": 30.13
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.46,
+   "taxa_juros_aa_pct": 33.92
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.61,
+   "taxa_juros_aa_pct": 21.18
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.0,
+   "taxa_juros_aa_pct": 42.54
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.65,
+   "taxa_juros_aa_pct": 36.81
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.99,
+   "taxa_juros_aa_pct": 26.74
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.68,
+   "taxa_juros_aa_pct": 22.16
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.18
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.9,
+   "taxa_juros_aa_pct": 25.31
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.44
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.29,
+   "taxa_juros_aa_pct": 47.46
+  },
+  {
+   "mes_referencia": "2025-12",
+   "periodo_inicio": "2025-12-24",
+   "periodo_fim": "2025-12-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.88,
+   "taxa_juros_aa_pct": 25.1
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.48
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.43,
+   "taxa_juros_aa_pct": 33.36
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.7,
+   "taxa_juros_aa_pct": 22.41
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 3.0,
+   "taxa_juros_aa_pct": 42.54
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.58,
+   "taxa_juros_aa_pct": 35.74
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.33
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.69,
+   "taxa_juros_aa_pct": 22.27
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.19
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.18,
+   "taxa_juros_aa_pct": 29.56
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.04,
+   "taxa_juros_aa_pct": 27.36
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.29,
+   "taxa_juros_aa_pct": 47.54
+  },
+  {
+   "mes_referencia": "2026-01",
+   "periodo_inicio": "2026-01-26",
+   "periodo_fim": "2026-01-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.88,
+   "taxa_juros_aa_pct": 25.0
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.16,
+   "taxa_juros_aa_pct": 29.23
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.47,
+   "taxa_juros_aa_pct": 34.03
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.73,
+   "taxa_juros_aa_pct": 22.9
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.96,
+   "taxa_juros_aa_pct": 41.98
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.51,
+   "taxa_juros_aa_pct": 34.61
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.23
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.65,
+   "taxa_juros_aa_pct": 21.7
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.94,
+   "taxa_juros_aa_pct": 25.97
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.09,
+   "taxa_juros_aa_pct": 28.16
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.48
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.34,
+   "taxa_juros_aa_pct": 48.39
+  },
+  {
+   "mes_referencia": "2026-02",
+   "periodo_inicio": "2026-02-23",
+   "periodo_fim": "2026-02-27",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.82,
+   "taxa_juros_aa_pct": 24.14
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 29.92
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.38,
+   "taxa_juros_aa_pct": 32.54
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.69,
+   "taxa_juros_aa_pct": 22.26
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.93,
+   "taxa_juros_aa_pct": 41.43
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.45,
+   "taxa_juros_aa_pct": 33.76
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.97,
+   "taxa_juros_aa_pct": 26.36
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.7,
+   "taxa_juros_aa_pct": 22.47
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.94,
+   "taxa_juros_aa_pct": 25.97
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.86,
+   "taxa_juros_aa_pct": 24.82
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.07,
+   "taxa_juros_aa_pct": 27.92
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.26,
+   "taxa_juros_aa_pct": 47.01
+  },
+  {
+   "mes_referencia": "2026-03",
+   "periodo_inicio": "2026-03-25",
+   "periodo_fim": "2026-03-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.77,
+   "taxa_juros_aa_pct": 23.48
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.19,
+   "taxa_juros_aa_pct": 29.63
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.34,
+   "taxa_juros_aa_pct": 31.92
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.73,
+   "taxa_juros_aa_pct": 22.92
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.95,
+   "taxa_juros_aa_pct": 41.75
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.47,
+   "taxa_juros_aa_pct": 34.05
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.9,
+   "taxa_juros_aa_pct": 25.31
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.71,
+   "taxa_juros_aa_pct": 22.6
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.26
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.93,
+   "taxa_juros_aa_pct": 25.74
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.0,
+   "taxa_juros_aa_pct": 26.75
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.22,
+   "taxa_juros_aa_pct": 46.29
+  },
+  {
+   "mes_referencia": "2026-04",
+   "periodo_inicio": "2026-04-24",
+   "periodo_fim": "2026-04-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.78,
+   "taxa_juros_aa_pct": 23.55
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.27,
+   "taxa_juros_aa_pct": 30.84
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.29,
+   "taxa_juros_aa_pct": 31.21
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.79,
+   "taxa_juros_aa_pct": 23.71
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.84,
+   "taxa_juros_aa_pct": 39.89
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.63,
+   "taxa_juros_aa_pct": 36.59
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.85,
+   "taxa_juros_aa_pct": 24.62
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.73,
+   "taxa_juros_aa_pct": 22.88
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.27
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 2.13,
+   "taxa_juros_aa_pct": 28.73
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.03,
+   "taxa_juros_aa_pct": 27.3
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.33,
+   "taxa_juros_aa_pct": 48.17
+  },
+  {
+   "mes_referencia": "2026-05",
+   "periodo_inicio": "2026-05-25",
+   "periodo_fim": "2026-05-29",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.69,
+   "taxa_juros_aa_pct": 22.26
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.27,
+   "taxa_juros_aa_pct": 30.96
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.25,
+   "taxa_juros_aa_pct": 30.65
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.74,
+   "taxa_juros_aa_pct": 23.01
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.91,
+   "taxa_juros_aa_pct": 41.02
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.54,
+   "taxa_juros_aa_pct": 35.19
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.86,
+   "taxa_juros_aa_pct": 24.75
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.84,
+   "taxa_juros_aa_pct": 24.42
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.94,
+   "taxa_juros_aa_pct": 25.88
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.92,
+   "taxa_juros_aa_pct": 25.57
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.13,
+   "taxa_juros_aa_pct": 28.83
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.41,
+   "taxa_juros_aa_pct": 49.53
+  },
+  {
+   "mes_referencia": "2026-06",
+   "periodo_inicio": "2026-06-24",
+   "periodo_fim": "2026-06-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.68,
+   "taxa_juros_aa_pct": 22.17
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.26,
+   "taxa_juros_aa_pct": 30.77
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.32,
+   "taxa_juros_aa_pct": 31.71
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.7,
+   "taxa_juros_aa_pct": 22.35
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.88,
+   "taxa_juros_aa_pct": 40.51
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.56,
+   "taxa_juros_aa_pct": 35.5
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.79,
+   "taxa_juros_aa_pct": 23.77
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.77,
+   "taxa_juros_aa_pct": 23.46
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.93,
+   "taxa_juros_aa_pct": 25.81
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.1,
+   "taxa_juros_aa_pct": 13.99
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.05,
+   "taxa_juros_aa_pct": 27.5
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.39,
+   "taxa_juros_aa_pct": 49.18
+  },
+  {
+   "mes_referencia": "2026-07",
+   "periodo_inicio": "2026-07-27",
+   "periodo_fim": "2026-07-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.8,
+   "taxa_juros_aa_pct": 23.89
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.26,
+   "taxa_juros_aa_pct": 30.69
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.39,
+   "taxa_juros_aa_pct": 32.73
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.68,
+   "taxa_juros_aa_pct": 22.11
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.81,
+   "taxa_juros_aa_pct": 39.48
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.55,
+   "taxa_juros_aa_pct": 35.34
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.68,
+   "taxa_juros_aa_pct": 22.12
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.72,
+   "taxa_juros_aa_pct": 22.77
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.22
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.01,
+   "taxa_juros_aa_pct": 12.75
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 2.05,
+   "taxa_juros_aa_pct": 27.55
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.26,
+   "taxa_juros_aa_pct": 46.95
+  },
+  {
+   "mes_referencia": "2026-08",
+   "periodo_inicio": "2026-08-25",
+   "periodo_fim": "2026-08-31",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.85,
+   "taxa_juros_aa_pct": 24.62
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "BV Financeira",
+   "taxa_juros_am_pct": 2.21,
+   "taxa_juros_aa_pct": 30.02
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Banco Honda",
+   "taxa_juros_am_pct": 2.27,
+   "taxa_juros_aa_pct": 30.87
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Banco Inter",
+   "taxa_juros_am_pct": 1.74,
+   "taxa_juros_aa_pct": 23.04
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Banco Pan",
+   "taxa_juros_am_pct": 2.83,
+   "taxa_juros_aa_pct": 39.77
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Banco Yamaha",
+   "taxa_juros_am_pct": 2.59,
+   "taxa_juros_aa_pct": 35.96
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Banco do Brasil",
+   "taxa_juros_am_pct": 1.11,
+   "taxa_juros_aa_pct": 14.19
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Bradesco",
+   "taxa_juros_am_pct": 1.69,
+   "taxa_juros_aa_pct": 22.23
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "C6 Bank",
+   "taxa_juros_am_pct": 1.93,
+   "taxa_juros_aa_pct": 25.71
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Caixa",
+   "taxa_juros_am_pct": 1.0,
+   "taxa_juros_aa_pct": 12.74
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Itaú",
+   "taxa_juros_am_pct": 1.98,
+   "taxa_juros_aa_pct": 26.47
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Omni Financeira",
+   "taxa_juros_am_pct": 3.32,
+   "taxa_juros_aa_pct": 47.9
+  },
+  {
+   "mes_referencia": "2026-09",
+   "periodo_inicio": "2026-09-24",
+   "periodo_fim": "2026-09-30",
+   "instituicao": "Santander",
+   "taxa_juros_am_pct": 1.74,
+   "taxa_juros_aa_pct": 23.0
+  }
+ ]
+}

@@ -35,6 +35,11 @@ jobs:
       - name: Rodar Extrator (atualiza taxas_cache_veiculos.json com taxas do BACEN)
         run: python etl_taxas_veiculos.py
 
+      - name: Atualizar histórico de taxas do BACEN (historico_taxas.csv)
+        # Acrescenta só os meses fechados que faltam. Falha de rede não
+        # derruba o pipeline (o script avisa e sai com 0, mantendo o CSV).
+        run: python historico_taxas_veiculos.py
+
       - name: Regerar as páginas pSEO (gerador_veiculos.py)
         run: python gerador_veiculos.py
 
@@ -59,6 +64,6 @@ jobs:
           # o BACEN falhar/estiver fora do ar (mesma regra do projeto
           # irmão) — sem commitar, cada execução do Actions parte de um
           # checkout limpo e o cache nasce vazio de novo.
-          git add paginas_seo taxas_cache_veiculos.json relatorio_atualizacao_taxas.txt ultima_atualizacao_taxas.txt
+          git add paginas_seo taxas_cache_veiculos.json relatorio_atualizacao_taxas.txt ultima_atualizacao_taxas.txt historico_taxas.csv
           git commit -m "auto: atualização semanal de taxas e rebuild do site" || echo "Sem mudanças"
           git push
