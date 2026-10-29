@@ -1316,6 +1316,12 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     # aqui como variável simples, fora da f-string grande da página — a
     # referência lá embaixo vira só {bloco_outros_prazos}, uma
     # substituição de variável comum, sem nenhum aninhamento.
+    link_comparacao_html = ""
+    if pagina_comparacao_existe(p["categoria"], p["valor_veiculo"], p["prazo"]):
+        link_comparacao_html = (
+            f'<a href="{slug_comparacao(p["categoria"], p["valor_veiculo"], p["prazo"])}" class="inline-flex items-center gap-1.5 mt-3 mr-4 text-xs text-sky-400 hover:text-sky-300 underline transition-colors">'
+            f'Comparar {formatar_valor_curto(p["valor_veiculo"])} em {p["prazo"]} meses em todos os bancos</a>'
+        )
     bloco_outros_prazos = (
         f'<div class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Outros prazos no {banco_exib}</h2>'
         f'<div class="flex flex-wrap gap-2">{outros_prazos_html}</div></div>'
@@ -1557,6 +1563,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         <section class="mt-8">
             <h2 class="font-serif text-lg font-semibold mb-3">Compare com o mercado</h2>
             {faixa_html}
+            {link_comparacao_html}
             <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-3 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
         </section>
 
@@ -1936,6 +1943,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         </section>
 
         <div class="grid gap-2">{linhas_lista}</div>
+        <p class="mt-6 text-sm text-slate-300">Quer ver outro valor ou prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>.</p>
         {faq_html}
     </main>'''
 
@@ -1957,6 +1965,276 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
 # ---------------------------------------------------------------------------
 # index.html
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Páginas de comparação SEM marca de banco: "financiamento carro novo de 60
+# mil em 48 meses" — todos os bancos da categoria lado a lado, mesma condição.
+#
+# Por que existem (auditoria de SEO, 29/out/2026): no imobiliário, 76% das
+# buscas que o Google mostrou citavam nome de banco e o CTR era zero. A busca
+# sem marca ("financiar carro de 60 mil em 48 meses") é onde um site neutro
+# tem o que oferecer. Cada página traz números próprios (parcela, total pago e
+# CET por banco para aquele cenário), não troca de variável em texto.
+# Mantém a regra de neutralidade do site: ordena por CET mas não numera nem
+# coroa "melhor banco" (ver gerar_comparador).
+# ---------------------------------------------------------------------------
+
+MIN_BANCOS_COMPARACAO = 3  # não gera a página se menos bancos oferecem aquele prazo
+_CACHE_LINHAS_COMPARACAO = {}
+
+
+def slug_comparacao(categoria, valor, prazo):
+    return f"financiamento-{CATEGORIA_SLUG[categoria]}-{int(round(valor / 1000))}-mil-{prazo}-meses"
+
+
+def bancos_com_prazo(categoria, prazo):
+    return {b: d for b, d in bancos_para_categoria(categoria).items() if d["prazo_max"] >= prazo}
+
+
+def pagina_comparacao_existe(categoria, valor, prazo):
+    return (
+        valor in VALORES_POR_CATEGORIA[categoria]
+        and prazo in PRAZOS_MESES
+        and len(bancos_com_prazo(categoria, prazo)) >= MIN_BANCOS_COMPARACAO
+    )
+
+
+def _reais_inteiros(valor):
+    return f"R$ {valor:,.0f}".replace(",", ".")
+
+
+def _pct(valor):
+    return f"{valor:.2f}".replace(".", ",")
+
+
+def linhas_comparacao(categoria, valor, prazo):
+    """Uma linha por banco que oferece o prazo, ordenada por CET. Entrada
+    mínima da categoria, taxa média real do BACEN de cada banco."""
+    chave = (categoria, valor, prazo)
+    if chave in _CACHE_LINHAS_COMPARACAO:
+        return _CACHE_LINHAS_COMPARACAO[chave]
+    entrada = valor * entrada_minima(categoria)
+    financiado = valor - entrada
+    linhas = []
+    for banco, dados in bancos_com_prazo(categoria, prazo).items():
+        pmt = calcular_pmt_price(financiado, prazo, dados["taxa_am"])
+        linhas.append({
+            "banco": banco, "nome_exibicao": dados["nome_exibicao"], "taxa_am": dados["taxa_am"],
+            "taxa_aa": dados["taxa_aa"], "parcela": pmt, "total": pmt * prazo, "financiado": financiado,
+            "entrada": entrada, "cet": calcular_cet_veiculo(financiado, prazo, dados["taxa_am"]),
+            "dominio_favicon": dados["dominio_favicon"],
+        })
+    linhas.sort(key=lambda x: x["cet"])
+    _CACHE_LINHAS_COMPARACAO[chave] = linhas
+    return linhas
+
+
+def _escolher_que_cabe(limite, *opcoes):
+    for o in opcoes:
+        if len(o) <= limite:
+            return o
+    return opcoes[-1][:limite].rsplit(" ", 1)[0]
+
+
+def _cta_comparacao(titulo):
+    return f'''<section class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mt-10">
+            <h2 class="font-serif text-xl font-bold mb-2">{titulo}</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed mb-4">A Datalab não indica um banco: a taxa final de cada cliente depende de relacionamento, histórico de crédito e entrada. Se quiser ajuda para comparar propostas, nosso parceiro faz a análise sem custo. Podemos receber uma comissão do parceiro, sem custo extra pra você.</p>
+            <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="inline-flex items-center justify-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-8 py-3.5 rounded-2xl transition-all">
+                Peça uma análise gratuita {icone('arrow-right', 'ml-2')}
+            </a>
+        </section>'''
+
+
+def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup):
+    """Gera as páginas categoria x valor x prazo sem marca + o índice
+    (financiamento-veiculos.html). Retorna as URLs (pro sitemap)."""
+    urls = []
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    url_indice = f"{DOMINIO}/financiamento-veiculos"
+
+    for categoria in CATEGORIAS:
+        label = CATEGORIA_LABEL[categoria]
+        nome_cat = label.lower()
+        valores = VALORES_POR_CATEGORIA[categoria]
+        for valor in valores:
+            for prazo in PRAZOS_MESES:
+                if not pagina_comparacao_existe(categoria, valor, prazo):
+                    continue
+                linhas = linhas_comparacao(categoria, valor, prazo)
+                n = len(linhas)
+                vc = formatar_valor_curto(valor)
+                vf = formatar_reais(valor)
+                slug = slug_comparacao(categoria, valor, prazo)
+                url_canonica = f"{DOMINIO}/{slug}"
+                menor_cet, maior_cet = linhas[0], linhas[-1]
+                por_parcela = sorted(linhas, key=lambda x: x["parcela"])
+                menor_p, maior_p = por_parcela[0], por_parcela[-1]
+                entrada_pct = round(entrada_minima(categoria) * 100)
+
+                titulo = f"Financiar {nome_cat} de {vc} em {prazo}x: parcela nos bancos | Datalab"
+                meta = _escolher_que_cabe(
+                    160,
+                    f"Financiamento de {nome_cat} de {vc} em {prazo}x: parcela de {_reais_inteiros(menor_p['parcela'])} a {_reais_inteiros(maior_p['parcela'])} e CET de {_pct(menor_cet['cet'])}% a {_pct(maior_cet['cet'])}% a.a. em {n} bancos.",
+                    f"Financiamento de {nome_cat} de {vc} em {prazo}x: parcela de {_reais_inteiros(menor_p['parcela'])} a {_reais_inteiros(maior_p['parcela'])} em {n} bancos.",
+                )
+
+                linhas_html = []
+                for x in linhas:
+                    slug_b = lookup.get((categoria, x["banco"], valor, prazo))
+                    favicon = favicon_com_fallback(f"https://www.google.com/s2/favicons?domain={x['dominio_favicon']}&sz=64", x["nome_exibicao"], "w-5 h-5")
+                    linhas_html.append(f'''<a href="{slug_b}" class="grid grid-cols-[1fr_auto_auto] md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
+            <span class="flex items-center gap-2 min-w-0">{favicon}<span class="text-sm font-medium truncate">{x["nome_exibicao"]}</span></span>
+            <span class="hidden md:block text-xs text-slate-400 text-center">{_pct(x["taxa_am"])}% a.m.</span>
+            <span class="text-xs text-slate-300 text-right md:text-center whitespace-nowrap">{formatar_reais(x["parcela"])}</span>
+            <span class="hidden md:block text-xs text-slate-400 text-center whitespace-nowrap">{_reais_inteiros(x["total"])}</span>
+            <span class="text-sm text-sky-400 font-bold text-right whitespace-nowrap">CET {_pct(x["cet"])}%</span>
+        </a>''')
+                linhas_blocos = "\n".join(linhas_html)
+
+                outros_prazos = []
+                for p2 in PRAZOS_MESES:
+                    if p2 != prazo and pagina_comparacao_existe(categoria, valor, p2):
+                        l2 = linhas_comparacao(categoria, valor, p2)
+                        outros_prazos.append(f'<a href="{slug_comparacao(categoria, valor, p2)}" class="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 text-sm text-slate-300"><span>{vc} em {p2} meses</span><span class="text-xs text-slate-400">parcela a partir de {_reais_inteiros(min(y["parcela"] for y in l2))}</span></a>')
+                vizinhos = []
+                idx = valores.index(valor)
+                for j in (idx - 1, idx + 1):
+                    if 0 <= j < len(valores) and pagina_comparacao_existe(categoria, valores[j], prazo):
+                        v2 = valores[j]
+                        l2 = linhas_comparacao(categoria, v2, prazo)
+                        vizinhos.append(f'<a href="{slug_comparacao(categoria, v2, prazo)}" class="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 text-sm text-slate-300"><span>{formatar_valor_curto(v2)} em {prazo} meses</span><span class="text-xs text-slate-400">parcela a partir de {_reais_inteiros(min(y["parcela"] for y in l2))}</span></a>')
+
+                perguntas = [
+                    (f"Qual a parcela de um financiamento de {nome_cat} de {vc} em {prazo} meses?",
+                     f"Com entrada mínima de {entrada_pct}% ({formatar_reais(menor_p['entrada'])}), o valor financiado é {formatar_reais(menor_p['financiado'])}. A parcela mensal vai de {formatar_reais(menor_p['parcela'])} ({menor_p['nome_exibicao']}) a {formatar_reais(maior_p['parcela'])} ({maior_p['nome_exibicao']}), na tabela Price (parcela fixa). A diferença vem da taxa média de cada banco."),
+                    (f"Qual banco tem o menor CET para financiar {nome_cat} de {vc} em {prazo} meses?",
+                     f"Na nossa simulação, o CET vai de {_pct(menor_cet['cet'])}% a.a. ({menor_cet['nome_exibicao']}) a {_pct(maior_cet['cet'])}% a.a. ({maior_cet['nome_exibicao']}). O CET inclui juros, IOF, tarifa de registro e seguro prestamista estimados. A taxa final de cada cliente depende de relacionamento, histórico de crédito e entrada."),
+                    (f"Quanto vou pagar ao todo para financiar {vc} em {prazo} meses?",
+                     f"Somando as {prazo} parcelas, o total pago vai de {formatar_reais(min(x['total'] for x in linhas))} a {formatar_reais(max(x['total'] for x in linhas))}, para {formatar_reais(menor_p['financiado'])} financiados. A diferença é o custo do crédito (juros) em cada banco; não inclui IOF, tarifas nem seguros."),
+                ]
+                faq_html, schema_faq = render_faq_visual(perguntas)
+                schema_breadcrumb = {
+                    "@context": "https://schema.org", "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+                        {"@type": "ListItem", "position": 2, "name": "Financiamento de veículos por valor e prazo", "item": url_indice},
+                        {"@type": "ListItem", "position": 3, "name": f"{label} {vc} em {prazo} meses", "item": url_canonica},
+                    ],
+                }
+                head = render_head(titulo, meta, url_canonica, [schema_breadcrumb, schema_faq])
+                breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Financiamento de veículos", "financiamento-veiculos"), (f"{label} {vc} em {prazo} meses", None)])
+
+                corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento de {nome_cat} de {vc} em {prazo} meses</h1>
+        <p class="text-slate-400 text-sm mb-2">Parcela e CET para financiar {vf} em {prazo} meses, com entrada mínima de {entrada_pct}%, nos {n} bancos que acompanhamos (ordenado por CET, do menor para o maior).</p>
+        <p class="text-slate-600 text-[10px] uppercase tracking-widest mb-6">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
+
+        <div class="hidden md:grid grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-3 px-3 mb-2 text-[11px] text-slate-400 uppercase tracking-widest"><span>Banco</span><span class="text-center">Taxa</span><span class="text-center">Parcela (Price)</span><span class="text-center">Total das parcelas</span><span class="text-right">CET</span></div>
+        <div class="grid gap-2">{linhas_blocos}</div>
+        <p class="text-slate-400 text-xs font-light leading-relaxed mt-4">Cada linha leva à simulação completa do banco, onde você ajusta valor, entrada e prazo. Valores de referência com a taxa média real apurada pelo Banco Central; a proposta final depende da análise de crédito.</p>
+
+        <section class="mt-10">
+            <h2 class="font-serif text-xl font-bold mb-2">Resumo para {vc} em {prazo} meses</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed">Financiando {vf} em {prazo} meses, a parcela vai de <strong class="text-white">{formatar_reais(menor_p["parcela"])}</strong> ({menor_p["nome_exibicao"]}) a <strong class="text-white">{formatar_reais(maior_p["parcela"])}</strong> ({maior_p["nome_exibicao"]}). O CET varia de {_pct(menor_cet["cet"])}% a {_pct(maior_cet["cet"])}% ao ano. Com {entrada_pct}% de entrada, você financia {formatar_reais(menor_p["financiado"])}.</p>
+        </section>
+
+        <section class="mt-8 grid md:grid-cols-2 gap-6">
+            <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo valor, outros prazos</h2><div class="grid gap-2">{"".join(outros_prazos)}</div></div>
+            <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo prazo, valores próximos</h2><div class="grid gap-2">{"".join(vizinhos)}</div></div>
+        </section>
+
+        {_cta_comparacao("Quer comparar propostas?")}
+        {faq_html}
+        <p class="text-center text-xs text-slate-400 mt-6"><a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Ver o comparador de {nome_cat} →</a></p>
+    </main>'''
+                html = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+                with open(os.path.join(pasta_saida, f"{slug}.html"), "w", encoding="utf-8") as f:
+                    f.write(corrigir_concordancia(html))
+                urls.append(url_canonica)
+
+    urls.append(gerar_indice_comparacao(pasta_saida, data_atualizacao))
+    return urls
+
+
+def gerar_indice_comparacao(pasta_saida, data_atualizacao):
+    """Índice (financiamento-veiculos.html): uma tabela valor x prazo por
+    categoria, com a menor parcela entre os bancos em cada cenário; cada
+    célula leva à página de comparação."""
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    url_canonica = f"{DOMINIO}/financiamento-veiculos"
+    titulo = "Financiamento de veículo: parcela por valor e prazo | Datalab"
+    meta = "Tabela de financiamento de carro novo, carro usado e moto: parcela e CET por valor e prazo, comparados entre os bancos, com dados do Banco Central."
+    prazos_validos = {c: [p for p in PRAZOS_MESES if len(bancos_com_prazo(c, p)) >= MIN_BANCOS_COMPARACAO] for c in CATEGORIAS}
+    secoes = []
+    for categoria in CATEGORIAS:
+        cab = "".join(f'<th scope="col" class="px-3 py-2 text-right font-medium">{p}x</th>' for p in prazos_validos[categoria])
+        corpo_tab = ""
+        for valor in VALORES_POR_CATEGORIA[categoria]:
+            celulas = ""
+            for p in prazos_validos[categoria]:
+                l = linhas_comparacao(categoria, valor, p)
+                celulas += f'<td class="px-3 py-2 text-right"><a href="{slug_comparacao(categoria, valor, p)}" class="text-sky-400 hover:underline">{_reais_inteiros(min(x["parcela"] for x in l))}</a></td>'
+            corpo_tab += f'<tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white">{formatar_valor_curto(valor)}</th>{celulas}</tr>'
+        secoes.append(f'''<section class="mt-10">
+            <h2 class="font-serif text-xl font-bold mb-3">{CATEGORIA_LABEL[categoria]}: menor parcela por valor e prazo</h2>
+            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-sm text-slate-300">
+                <thead class="text-[11px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Valor do veículo</th>{cab}</tr></thead>
+                <tbody>{corpo_tab}</tbody>
+            </table></div>
+        </section>''')
+    perguntas = [
+        ("Como ler estas tabelas?",
+         "Cada célula mostra a menor parcela mensal (tabela Price) entre os bancos para aquele valor de veículo e prazo, com a entrada mínima da categoria. Clique para ver todos os bancos lado a lado, com CET e total pago."),
+        ("De onde vêm as taxas?",
+         "Da taxa média real praticada por cada banco em cada modalidade, apurada pelo Banco Central do Brasil. A taxa final de cada cliente varia com relacionamento, histórico de crédito e entrada."),
+    ]
+    faq_html, schema_faq = render_faq_visual(perguntas)
+    schema_breadcrumb = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+            {"@type": "ListItem", "position": 2, "name": "Financiamento de veículos por valor e prazo", "item": url_canonica},
+        ],
+    }
+    head = render_head(titulo, meta, url_canonica, [schema_breadcrumb, schema_faq])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Financiamento de veículos", None)])
+    corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento de veículo: parcela por valor e prazo</h1>
+        <p class="text-slate-400 text-sm mb-2">Menor parcela entre os bancos para cada valor e prazo, em carro novo, carro usado e moto. Escolha um cenário para comparar todos os bancos.</p>
+        <p class="text-slate-600 text-[10px] uppercase tracking-widest">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
+        {"".join(secoes)}
+        {_cta_comparacao("Quer ajuda para escolher?")}
+        {faq_html}
+    </main>'''
+    html = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+    with open(os.path.join(pasta_saida, "financiamento-veiculos.html"), "w", encoding="utf-8") as f:
+        f.write(corrigir_concordancia(html))
+    return url_canonica
+
+
 
 def gerar_index(data_atualizacao):
     url_home = f"{DOMINIO}/"
@@ -2038,6 +2316,7 @@ def gerar_index(data_atualizacao):
         <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
         <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
         <div class="grid sm:grid-cols-3 gap-4">{cards_html}</div>
+        <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>.</p>
         {faq_html}
     </main>'''
 
@@ -2420,6 +2699,7 @@ Total de páginas de simulação: {total_paginas}
 - [Comparador Carro Novo]({DOMINIO}/{slug_comparador('novo')})
 - [Comparador Carro Usado]({DOMINIO}/{slug_comparador('usado')})
 - [Comparador Moto]({DOMINIO}/{slug_comparador('moto')})
+- [Financiamento de veículo: parcela por valor e prazo]({DOMINIO}/financiamento-veiculos)
 - [Sitemap completo]({DOMINIO}/sitemap.xml)
 
 ## Sobre os dados
@@ -2491,6 +2771,9 @@ def gerar_site(pasta_saida='paginas_seo'):
         with open(os.path.join(pasta_saida, f"{slug_pagina}.html"), "w", encoding="utf-8") as f:
             f.write(corrigir_concordancia(html))
         urls_sitemap.append(f"{DOMINIO}/{slug_pagina}")
+
+    urls_comparacao = gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup)
+    urls_sitemap.extend(urls_comparacao)
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
         f.write(gerar_index(data_atualizacao))
