@@ -81,6 +81,7 @@ from datetime import date, datetime
 from bancos_veiculos import (
     BANCOS_VEICULOS,
     bancos_para_categoria,
+    corrigir_concordancia,
     entrada_minima,
     normalizar_chave,
     obter_regra,
@@ -1233,10 +1234,22 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     href_comparador = f"{slug_comparador(categoria)}"
 
     titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: {valor_curto} em {prazo}x | Simulador Datalab"
-    meta_description = (
+    # Achado real (auditoria de SEO, 29/out/2026): 848 das 884 descriptions
+    # passavam de 160 caracteres e o corte ("...com base na taxa média real
+    # do Banc...") caía no meio da frase. Tenta a versão completa e, se não
+    # couber, a curta — as duas terminam em frase inteira, sem reticências.
+    meta_description_completa = (
         f"Simule o financiamento de {CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} pelo {banco_exib} "
-        f"em {prazo} meses: parcela de {formatar_reais(parcela)}, CET estimado {cet_fmt}% a.a., "
-        f"com base na taxa média real do Banco Central."
+        f"em {prazo}x: parcela de {formatar_reais(parcela)} e CET de {cet_fmt}% a.a., "
+        f"com a taxa média real do Banco Central."
+    )
+    meta_description_curta = (
+        f"Simule o financiamento de {CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} pelo {banco_exib} "
+        f"em {prazo}x: parcela de {formatar_reais(parcela)} e CET de {cet_fmt}% a.a."
+    )
+    meta_description = (
+        meta_description_completa if len(corrigir_concordancia(meta_description_completa)) <= 160
+        else meta_description_curta
     )
 
     faq_q1 = f"O que é o CET no financiamento {label_categoria.lower()} do {banco_exib}?"
@@ -1623,7 +1636,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     taxa_am_fmt = f"{dados_banco['taxa_am']:.2f}".replace('.', ',')
     taxa_aa_fmt = f"{dados_banco['taxa_aa']:.2f}".replace('.', ',')
 
-    titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: todas as simulações | Datalab"
+    titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: simulações | Datalab"
     meta_description = (
         f"Todas as simulações de financiamento {label_categoria.lower()} do {banco_exib}: taxa média real de "
         f"{taxa_am_fmt}% a.m., prazo até {dados_banco['prazo_max']} meses, parcelas por valor e prazo."
@@ -1941,10 +1954,10 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
 
 def gerar_index(data_atualizacao):
     url_home = f"{DOMINIO}/"
-    titulo_pagina = "Simulador de Financiamento de Veículos: Carro Novo, Usado e Moto | Datalab"
+    titulo_pagina = "Simulador de Financiamento de Veículos: Carro e Moto | Datalab"
     meta_description = (
-        "Compare taxas reais de financiamento de carro novo, carro usado e moto entre os principais bancos "
-        "do Brasil, com dados do Banco Central. Simule parcela, CET e tabela de amortização."
+        "Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos "
+        "do Brasil, com dados do Banco Central. Simule parcela e CET."
     )
 
     cards = []
@@ -2118,8 +2131,8 @@ def gerar_hub_aprenda(artigos, data_atualizacao):
     }
     head = render_head(
         "Aprenda: guias sobre financiamento de veículos | Datalab Global",
-        "Guias educativos sobre financiamento de veículos: CDC, Tabela Price, IOF, CET, amortização extra e "
-        "consórcio — explicados sem juridiquês, com base em dados reais do Banco Central.",
+        "Guias sobre financiamento de veículos: CDC, Tabela Price, IOF, CET, amortização extra e "
+        "consórcio, explicados sem juridiquês e com dados do Banco Central.",
         url_canonica, [schema_breadcrumb],
     )
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Aprenda", None)])
@@ -2153,7 +2166,7 @@ ARTIGOS_APRENDA = [
         "slug": "aprenda-o-que-e-cdc",
         "titulo_h1": "O que é CDC (Crédito Direto ao Consumidor)?",
         "titulo_pagina": "O que é CDC? Como funciona o financiamento de veículo | Datalab Global",
-        "meta_description": "CDC é a modalidade usada pra financiar carro e moto no Brasil: entenda como funciona a alienação fiduciária, quem fica com o documento do veículo e por que a parcela é sempre fixa.",
+        "meta_description": "CDC é a modalidade usada para financiar carro e moto: veja como funciona a alienação fiduciária, quem fica com o documento e por que a parcela é fixa.",
         "resumo_card": "A modalidade por trás de todo financiamento de veículo no Brasil — e por que o banco fica com o documento até o fim.",
         "corpo_html": '''<p>CDC — Crédito Direto ao Consumidor — é a modalidade de crédito usada em praticamente todo financiamento de veículo no Brasil. Na prática, o banco empresta o dinheiro direto pra você comprar o carro, a moto ou o veículo usado à vista da loja ou do vendedor, e você devolve esse valor ao banco em parcelas fixas, com juros.</p>
         <div class="border-t border-white/10 pt-6">
@@ -2171,7 +2184,7 @@ ARTIGOS_APRENDA = [
         "slug": "aprenda-tabela-price",
         "titulo_h1": "Tabela Price: por que a parcela do financiamento de veículo é sempre fixa",
         "titulo_pagina": "Tabela Price no financiamento de veículo: como funciona | Datalab Global",
-        "meta_description": "Entenda a Tabela Price, o sistema de amortização usado em todo CDC de veículo no Brasil: por que a parcela nunca muda, e como a proporção entre juros e amortização se transforma mês a mês.",
+        "meta_description": "Tabela Price, o sistema de amortização do CDC de veículo: por que a parcela nunca muda e como juros e amortização se alternam mês a mês.",
         "resumo_card": "O sistema por trás da parcela fixa — e por que, no fim do contrato, você paga mais amortização e menos juros.",
         "corpo_html": '''<p>Todo financiamento de veículo (CDC) no Brasil usa a <strong class="text-white">Tabela Price</strong> — também chamada de sistema francês de amortização. A característica mais visível dela é simples: a parcela é <strong class="text-white">idêntica do primeiro ao último mês</strong>, do início ao fim do contrato.</p>
         <div class="border-t border-white/10 pt-6">
@@ -2189,7 +2202,7 @@ ARTIGOS_APRENDA = [
         "slug": "aprenda-iof-financiamento-veiculo",
         "titulo_h1": "IOF no financiamento de veículo: como é calculado",
         "titulo_pagina": "IOF no financiamento de veículo: como é calculado | Datalab Global",
-        "meta_description": "O IOF incide sobre todo financiamento de veículo: entenda a alíquota fixa e a diária, como ele é cobrado uma única vez e por que já está embutido no CET calculado neste simulador.",
+        "meta_description": "O IOF incide sobre todo financiamento de veículo: alíquota fixa e diária, cobrança única e por que ele já está embutido no CET do simulador.",
         "resumo_card": "O imposto que incide sobre todo financiamento — cobrado uma vez só, e já embutido no CET que você vê aqui.",
         "corpo_html": '''<p>IOF — Imposto sobre Operações Financeiras — incide sobre praticamente todo crédito concedido no Brasil, incluindo o financiamento de veículo. Ele é cobrado <strong class="text-white">uma única vez</strong>, descontado do valor liberado na operação (não é uma cobrança mensal recorrente).</p>
         <div class="border-t border-white/10 pt-6">
@@ -2207,7 +2220,7 @@ ARTIGOS_APRENDA = [
         "slug": "aprenda-o-que-e-cet",
         "titulo_h1": "O que é CET (Custo Efetivo Total) e por que ele importa mais que a taxa de juros",
         "titulo_pagina": "O que é CET no financiamento de veículo? | Datalab Global",
-        "meta_description": "CET é o custo real do financiamento de veículo por ano: entenda o que entra nessa conta (juros, IOF, tarifas, seguro) e por que ele é o número certo pra comparar bancos diferentes.",
+        "meta_description": "CET é o custo real do financiamento de veículo por ano: juros, IOF, tarifas e seguro. É o número certo para comparar bancos diferentes.",
         "resumo_card": "O número que soma tudo — juros, IOF, tarifas e seguro — e por isso é o único jeito justo de comparar dois bancos.",
         "corpo_html": '''<p>CET — Custo Efetivo Total — é o custo real e completo de um financiamento, expresso em percentual ao ano. Diferente da taxa de juros anunciada isoladamente, o CET soma <strong class="text-white">tudo</strong> que você efetivamente paga pra ter o crédito: a taxa de juros em si, o IOF, a tarifa de registro de contrato e o seguro prestamista típico de mercado.</p>
         <div class="border-t border-white/10 pt-6">
@@ -2225,7 +2238,7 @@ ARTIGOS_APRENDA = [
         "slug": "aprenda-amortizacao-extra-veiculo",
         "titulo_h1": "Amortização extra no financiamento de veículo: como funciona",
         "titulo_pagina": "Amortização extra no financiamento de veículo | Datalab Global",
-        "meta_description": "Entenda como um pagamento extra fora do cronograma reduz o saldo devedor do financiamento de veículo, encurta o prazo ou diminui a parcela, e quanto isso pode economizar em juros.",
+        "meta_description": "Como um pagamento extra reduz o saldo devedor do financiamento de veículo, encurta o prazo ou diminui a parcela e economiza juros.",
         "resumo_card": "Um pagamento fora do cronograma que ataca o saldo devedor direto — e pode economizar meses inteiros de juros.",
         "corpo_html": '''<p>Amortização extra é um pagamento feito <strong class="text-white">fora</strong> do cronograma normal de parcelas, com o objetivo específico de abater o saldo devedor do financiamento — não é uma parcela adiantada nem uma antecipação do próximo mês, é um valor que reduz diretamente quanto você ainda deve ao banco.</p>
         <div class="border-t border-white/10 pt-6">
@@ -2272,10 +2285,10 @@ def gerar_pagina_sobre():
     Conteúdo real fornecido pelo usuário (12/set/2026) — não inventado."""
     url_home = f"{DOMINIO}/"
     url_canonica = f"{DOMINIO}/sobre"
-    titulo_pagina = "Sobre a Datalab Global | Simulador de Financiamento de Veículos"
+    titulo_pagina = "Sobre a Datalab Global | Simulador de Veículos"
     meta_description = (
-        "Conheça a Datalab Global, criada por Rodolfo Delfino para usar dados e IA na resolução de "
-        "problemas reais — incluindo este simulador de financiamento de veículos com taxas do Banco Central."
+        "Conheça a Datalab Global, criada por Rodolfo Delfino para resolver problemas reais com dados e IA, "
+        "incluindo este simulador de financiamento de veículos."
     )
     schema_sobre = {
         "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
@@ -2454,7 +2467,7 @@ def gerar_site(pasta_saida='paginas_seo'):
     for p in paginas:
         html = gerar_pagina_individual(p, paginas, lookup, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{p['slug']}.html"), "w", encoding="utf-8") as f:
-            f.write(html)
+            f.write(corrigir_concordancia(html))
         urls_sitemap.append(f"{DOMINIO}/{p['slug']}")
 
     hubs = {}
@@ -2464,13 +2477,13 @@ def gerar_site(pasta_saida='paginas_seo'):
         banco_exib = paginas_banco[0]["nome_exibicao"]
         slug_pagina, html = gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{slug_pagina}.html"), "w", encoding="utf-8") as f:
-            f.write(html)
+            f.write(corrigir_concordancia(html))
         urls_sitemap.append(f"{DOMINIO}/{slug_pagina}")
 
     for categoria in CATEGORIAS:
         slug_pagina, html = gerar_comparador(categoria, lookup, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{slug_pagina}.html"), "w", encoding="utf-8") as f:
-            f.write(html)
+            f.write(corrigir_concordancia(html))
         urls_sitemap.append(f"{DOMINIO}/{slug_pagina}")
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
