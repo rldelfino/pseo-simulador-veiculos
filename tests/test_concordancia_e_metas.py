@@ -65,3 +65,17 @@ def test_descriptions_e_titles_cabem_sem_corte():
         if t and len(html.unescape(t.group(1))) > 60:
             longos.append((nome, "title", len(t.group(1))))
     assert not longos, longos[:5]
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_rodape_mostra_identidade_da_empresa():
+    # mesmo texto já publicado no hub (www.datalabglobal.com): site YMYL
+    # precisa dizer quem está por trás.
+    faltando = []
+    for nome in os.listdir(PASTA_SAIDA):
+        if not nome.endswith(".html") or nome == "404.html":
+            continue
+        texto = open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8").read()
+        if "<footer" in texto and "CNPJ 63.998.502/0001-73" not in texto:
+            faltando.append(nome)
+    assert not faltando, faltando[:5]

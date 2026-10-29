@@ -89,6 +89,11 @@ from bancos_veiculos import (
 from icones import icone, tooltip
 
 DOMINIO = 'https://veiculos.datalabglobal.com'
+# Identidade da empresa por trás do site — mesmo texto já publicado no rodapé
+# e no schema Organization do hub (www.datalabglobal.com). Achado de auditoria
+# (29/out/2026): os simuladores, que são tema YMYL (dinheiro), não mostravam
+# razão social nem CNPJ; o hub mostrava. Texto copiado do hub, não inventado.
+EMPRESA_RODAPE = "Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73"
 
 # Cache-busting do styles.css (achado real, 07/set/2026: durante os testes
 # desta sessão, o navegador serviu uma versão cacheada e desatualizada do
@@ -1039,10 +1044,11 @@ SCRIPT_AJUSTA_TOOLTIPS = '''
 
 
 def render_footer():
-    return '''<footer class="border-t border-white/5 mt-16 py-8">
+    return f'''<footer class="border-t border-white/5 mt-16 py-8">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
+            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com</p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
