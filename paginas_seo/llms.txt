@@ -11,6 +11,7 @@ Total de páginas de simulação: 840
 - [Comparador Carro Usado](https://veiculos.datalabglobal.com/comparador-carro-usado)
 - [Comparador Moto](https://veiculos.datalabglobal.com/comparador-moto)
 - [Financiamento de veículo: parcela por valor e prazo](https://veiculos.datalabglobal.com/financiamento-veiculos)
+- [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON](https://veiculos.datalabglobal.com/dados-abertos)
 - [Sitemap completo](https://veiculos.datalabglobal.com/sitemap.xml)
 
 ## Sobre os dados

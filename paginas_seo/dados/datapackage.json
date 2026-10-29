@@ -1,0 +1,68 @@
+{
+ "name": "taxas-financiamento-veiculos",
+ "title": "Taxas médias de juros do financiamento de veículos por banco (BACEN)",
+ "description": "Taxa média de juros efetivamente contratada no financiamento de veículos (aquisição de veículos, pessoa física, pré-fixada), por banco, ao mês e ao ano, segundo o Banco Central do Brasil. Para cada mês fechado, a última janela de 5 dias úteis divulgada. Cobre 24 meses (out/24 a set/26) e 12 instituições. O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), sem separar carro novo, carro usado e moto: a taxa de cada banco é a mesma série para as três categorias.",
+ "licenses": [
+  {
+   "name": "CC-BY-4.0",
+   "path": "https://creativecommons.org/licenses/by/4.0/deed.pt-br",
+   "title": "CC BY 4.0"
+  }
+ ],
+ "sources": [
+  {
+   "title": "Banco Central do Brasil — Taxas de juros por instituição financeira",
+   "path": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101"
+  }
+ ],
+ "contributors": [
+  {
+   "title": "Datalab Global",
+   "role": "publisher",
+   "path": "https://veiculos.datalabglobal.com/"
+  }
+ ],
+ "resources": [
+  {
+   "name": "taxas",
+   "path": "taxas-financiamento-veiculos.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "encoding": "utf-8",
+   "schema": {
+    "fields": [
+     {
+      "name": "mes_referencia",
+      "type": "string",
+      "description": "Mês de referência (AAAA-MM)"
+     },
+     {
+      "name": "periodo_inicio",
+      "type": "date",
+      "description": "Início da janela de 5 dias úteis usada"
+     },
+     {
+      "name": "periodo_fim",
+      "type": "date",
+      "description": "Fim da janela de 5 dias úteis usada"
+     },
+     {
+      "name": "instituicao",
+      "type": "string",
+      "description": "Banco (nome comercial)"
+     },
+     {
+      "name": "taxa_juros_am_pct",
+      "type": "number",
+      "description": "Taxa média contratada, % ao mês"
+     },
+     {
+      "name": "taxa_juros_aa_pct",
+      "type": "number",
+      "description": "Taxa média contratada, % ao ano"
+     }
+    ]
+   }
+  }
+ ]
+}

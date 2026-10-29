@@ -66,3 +66,69 @@ def test_paginas_existem_estao_no_sitemap_e_tem_meta_dentro_do_limite():
         assert len(t) <= 60 and len(d) <= 160 and not d.endswith(("...", "…")), (t, d)
         titulos.add(t)
     assert len(titulos) == len(_todas()) > 70
+
+
+# ---------------------------------------------------------------------------
+# Histórico de taxas, comparadores com evolução e dados abertos
+# ---------------------------------------------------------------------------
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_dados_abertos_batem_com_o_historico_e_so_tem_bancos_conhecidos():
+    import csv
+    from bancos_veiculos import BANCOS_VEICULOS
+    from historico_taxas_veiculos import ler_historico
+    hist = ler_historico()
+    assert hist, "historico_taxas.csv vazio"
+    assert {r["banco"] for r in hist} <= set(BANCOS_VEICULOS)
+    with open(os.path.join(PASTA_SAIDA, "dados", "taxas-financiamento-veiculos.csv"), encoding="utf-8") as f:
+        linhas = list(csv.DictReader(f))
+    assert len(linhas) == len(hist)
+    for l in linhas:
+        am, aa = float(l["taxa_juros_am_pct"]), float(l["taxa_juros_aa_pct"])
+        assert 0.2 <= am <= 6.0 and 3.0 <= aa <= 70.0
+        assert aa > am  # taxa anual composta é sempre maior que a mensal
+    for nome in ("taxas-financiamento-veiculos.json", "datapackage.json", "README.md"):
+        assert os.path.isfile(os.path.join(PASTA_SAIDA, "dados", nome)), nome
+
+
+def test_historico_so_tem_meses_fechados():
+    from datetime import date
+    from historico_taxas_veiculos import ler_historico
+    hoje = date.today()
+    mes_atual = f"{hoje.year:04d}-{hoje.month:02d}"
+    assert all(r["mes_referencia"] < mes_atual for r in ler_historico())
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_pagina_dados_abertos_tem_schema_dataset_e_esta_no_sitemap():
+    import json
+    html = open(os.path.join(PASTA_SAIDA, "dados-abertos.html"), encoding="utf-8").read()
+    blocos = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
+    ds = [b for b in blocos if b.get("@type") == "Dataset"]
+    assert ds and ds[0]["license"] and ds[0]["distribution"] and ds[0]["temporalCoverage"]
+    assert "/dados-abertos</loc>" in open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8").read()
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+@pytest.mark.parametrize("categoria", ["carro-novo", "carro-usado", "moto"])
+def test_comparador_tem_mes_no_titulo_evolucao_so_com_bancos_da_categoria_e_faq(categoria):
+    html = open(os.path.join(PASTA_SAIDA, f"comparador-{categoria}.html"), encoding="utf-8").read()
+    titulo = re.search(r"<title>(.*?)</title>", html).group(1)
+    assert len(titulo) <= 60 and re.search(r"[a-z]{3}/\d{4}", titulo), titulo
+    assert "Como as taxas evoluíram" in html and "maior queda na taxa média contratada" in html
+    if categoria != "moto":  # Honda e Yamaha só financiam moto
+        assert "Banco Honda" not in html.split("Como as taxas evoluíram")[1].split("</table>")[0]
+
+
+def test_resumo_historico_filtra_por_categoria_e_calcula_variacao():
+    from gerador_veiculos import resumo_historico
+    h = []
+    for mes, honda, caixa in (("2026-01", 2.0, 1.5), ("2026-02", 2.4, 1.2)):
+        h += [{"mes_referencia": mes, "inicio_periodo": mes + "-20", "fim_periodo": mes + "-28", "banco": "Banco Honda", "taxa_am": honda, "taxa_aa": 30.0},
+              {"mes_referencia": mes, "inicio_periodo": mes + "-20", "fim_periodo": mes + "-28", "banco": "Caixa", "taxa_am": caixa, "taxa_aa": 20.0}]
+    novo = resumo_historico(h, "novo")
+    assert [x["banco"] for x in novo["linhas"]] == ["Caixa"]  # Honda não aplica a carro novo
+    assert novo["maior_queda"]["variacao"] == pytest.approx(-0.3)
+    moto = resumo_historico(h, "moto")
+    assert {x["banco"] for x in moto["linhas"]} == {"Banco Honda", "Caixa"} and moto["maior_alta"]["banco"] == "Banco Honda"
+    assert resumo_historico(h[:2], "novo") is None
