@@ -281,3 +281,39 @@ ITENS_A_VALIDAR = [
     "bancos universais acima usam a MESMA taxa pra novo/usado/moto por "
     "ora, o que provavelmente subestima a taxa real de moto.",
 ]
+
+
+# Bancos de gênero feminino em português ("a Caixa", "a BV Financeira", "a
+# Omni Financeira"). O gerador monta os textos com artigo masculino fixo
+# ("pelo", "do", "no", "O"), o que gerava "pelo Caixa", "O Omni Financeira"
+# etc. em ~250 páginas. Achado real (auditoria de SEO, 29/out/2026): erro de
+# concordância repetido em centenas de páginas é um sinal editorial ruim num
+# tema YMYL (dinheiro). Um banco novo feminino é só um nome nesta tupla.
+BANCOS_FEMININOS = ("Caixa", "BV Financeira", "Omni Financeira")
+
+_ARTIGO_FEMININO = {"pelo": "pela", "do": "da", "no": "na", "ao": "à", "o": "a"}
+_REGEX_CONCORDANCIA = None
+
+
+def corrigir_concordancia(texto):
+    """Troca artigo masculino por feminino diante dos bancos de
+    BANCOS_FEMININOS ("pelo Caixa" -> "pela Caixa", "O Omni Financeira" ->
+    "A Omni Financeira"). Preserva maiúscula inicial. Só casa palavra inteira
+    com o nome exato do banco, então slugs/URLs ("...-caixa-...") não são
+    tocados."""
+    global _REGEX_CONCORDANCIA
+    import re
+    if _REGEX_CONCORDANCIA is None:
+        nomes = "|".join(re.escape(n) for n in BANCOS_FEMININOS)
+        _REGEX_CONCORDANCIA = re.compile(rf"\b(pelo|do|no|ao|o)(\s+)({nomes})\b", re.IGNORECASE)
+
+    def trocar(m):
+        artigo, espaco, nome = m.group(1), m.group(2), m.group(3)
+        if nome not in BANCOS_FEMININOS:
+            return m.group(0)
+        novo = _ARTIGO_FEMININO[artigo.lower()]
+        if artigo[0].isupper():
+            novo = novo[0].upper() + novo[1:]
+        return f"{novo}{espaco}{nome}"
+
+    return _REGEX_CONCORDANCIA.sub(trocar, texto)
