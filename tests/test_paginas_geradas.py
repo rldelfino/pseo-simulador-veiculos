@@ -25,6 +25,15 @@ pytestmark = pytest.mark.skipif(not os.path.isdir(PASTA_SAIDA), reason="paginas_
 def _arquivos_html():
     return sorted(f for f in os.listdir(PASTA_SAIDA) if f.endswith(".html"))
 
+def _paginas_individuais_de_banco():
+    """Páginas "categoria x BANCO x valor x prazo". As páginas de comparação
+    sem marca (financiamento-carro-novo-60-mil-48-meses, sem banco no slug) e o índice
+    financiamento-veiculos
+    também começam com "financiamento-", mas são outro tipo de página."""
+    sem_marca = re.compile(r"^(financiamento-(carro-novo|carro-usado|moto)-\d+-mil-\d+-meses|financiamento-veiculos)\.html$")
+    return [n for n in _arquivos_html() if n.startswith("financiamento-") and not sem_marca.match(n)]
+
+
 
 class VerificadorBalanceamento(html.parser.HTMLParser):
     """Confere que toda tag aberta (não voidelement) tem seu fechamento
@@ -86,7 +95,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
 
 def test_calculo_js_existe_e_e_referenciado_pelas_paginas_individuais():
     assert os.path.isfile(os.path.join(PASTA_SAIDA, "calculo.js")), "calculo.js não foi gerado"
-    paginas_individuais = [n for n in _arquivos_html() if n.startswith("financiamento-")]
+    paginas_individuais = _paginas_individuais_de_banco()
     assert paginas_individuais, "nenhuma página individual encontrada pra checar"
     sem_calculo_js = [
         n for n in paginas_individuais
@@ -116,7 +125,7 @@ def test_faixa_de_mercado_nunca_linka_direto_pra_pagina_de_outro_banco():
     banco o cliente escolhe). Verifica que dentro do bloco #faixa_texto
     (o texto/CTA da barra) só existe o link de afiliado, nenhum href pra
     financiamento-*.html ou hub-*.html de outro banco."""
-    paginas_individuais = [n for n in _arquivos_html() if n.startswith("financiamento-")]
+    paginas_individuais = _paginas_individuais_de_banco()
     problemas = []
     for nome_arquivo in paginas_individuais:
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
