@@ -1048,7 +1048,7 @@ def render_footer():
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
-            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a></p>
+            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
@@ -2305,6 +2305,23 @@ def linhas_comparacao(categoria, valor, prazo):
     return linhas
 
 
+GUIAS_RELACIONADOS = ("aprenda-o-que-e-cet", "aprenda-tabela-price", "aprenda-o-que-e-cdc",
+                      "aprenda-iof-financiamento-veiculo", "aprenda-amortizacao-extra-veiculo",
+                      "aprenda-financiamento-x-consorcio-veiculo")
+
+
+def _guias_html():
+    """Bloco "Entenda melhor" com links contextuais para os guias de /aprenda.
+    Achado da auditoria de links internos (29/out/2026): cada guia recebia só 1
+    link (do índice /aprenda), o que o deixa fraco para o Google."""
+    por_slug = {a["slug"]: a for a in ARTIGOS_APRENDA}
+    itens = "".join(
+        f'<li><a href="{sl}" class="text-sky-400 underline hover:text-sky-300">{por_slug[sl]["titulo_h1"]}</a></li>'
+        for sl in GUIAS_RELACIONADOS if sl in por_slug)
+    return f'''<section class="mt-10"><h2 class="font-serif text-xl font-bold mb-2">Entenda melhor</h2>
+            <ul class="text-sm space-y-2 list-disc list-inside text-slate-300">{itens}</ul></section>'''
+
+
 def _escolher_que_cabe(limite, *opcoes):
     for o in opcoes:
         if len(o) <= limite:
@@ -2421,6 +2438,7 @@ def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup):
             <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo prazo, valores próximos</h2><div class="grid gap-2">{"".join(vizinhos)}</div></div>
         </section>
 
+        {_guias_html()}
         {_cta_comparacao("Quer comparar propostas?")}
         {faq_html}
         <p class="text-center text-xs text-slate-400 mt-6"><a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Ver o comparador de {nome_cat} →</a></p>
@@ -2492,6 +2510,7 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
         <p class="text-slate-400 text-sm mb-2">Menor parcela entre os bancos para cada valor e prazo, em carro novo, carro usado e moto. Escolha um cenário para comparar todos os bancos.</p>
         <p class="text-slate-600 text-[10px] uppercase tracking-widest">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
         {"".join(secoes)}
+        {_guias_html()}
         {_cta_comparacao("Quer ajuda para escolher?")}
         {faq_html}
     </main>'''

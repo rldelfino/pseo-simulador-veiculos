@@ -180,3 +180,16 @@ def test_imprensa_tem_numeros_calculados_e_incorporar_tem_codigo_e_iframe():
     assert re.search(r"taxa média contratada no financiamento de veículos foi de \d+,\d{2}% ao mês", imp)
     inc = open(os.path.join(PASTA_SAIDA, "incorporar.html"), encoding="utf-8").read()
     assert "&lt;iframe src=" in inc and 'src="embed"' in inc and "Simulador por" in inc
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_cada_guia_recebe_varios_links_contextuais_e_paginas_novas_sao_alcancaveis():
+    """Auditoria de links internos (29/out/2026): cada guia recebia só 1 link e
+    /incorporar e /imprensa eram inalcançáveis a partir da home."""
+    from gerador_veiculos import ARTIGOS_APRENDA
+    textos = {n: open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read() for n in os.listdir(PASTA_SAIDA) if n.endswith(".html")}
+    for art in ARTIGOS_APRENDA:
+        recebidos = sum(1 for n, t in textos.items() if n != art["slug"] + ".html" and f'href="{art["slug"]}"' in t)
+        assert recebidos >= 20, (art["slug"], recebidos)
+    for destino in ("incorporar", "imprensa"):
+        assert f'href="{destino}"' in textos["index.html"], destino  # rodapé da home
