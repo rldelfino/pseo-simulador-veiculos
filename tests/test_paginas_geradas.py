@@ -93,7 +93,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
             if ref_sem_query.startswith("dados/") and os.path.isfile(os.path.join(PASTA_SAIDA, ref_sem_query)):
                 continue  # arquivos de dados abertos publicados em dados/ (csv, json, md)
             if "." in ref_sem_query.rsplit("/", 1)[-1]:  # tem extensão: asset (.css/.svg/.js/.ico/.png) ou .html direto
-                if ref_sem_query not in assets and ref_sem_query not in set(_arquivos_html()):
+                if ref_sem_query.lstrip("/") not in assets and ref_sem_query not in set(_arquivos_html()):
                     faltando.append(f"{nome_arquivo} -> {ref}")
             elif ref_sem_query.lstrip("/") not in paginas_por_slug:  # slug sem extensão: precisa ter {slug}.html em disco
                 faltando.append(f"{nome_arquivo} -> {ref}")
