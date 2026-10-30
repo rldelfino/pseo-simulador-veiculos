@@ -20,3 +20,12 @@
 
 /calculo.js
   Cache-Control: public, max-age=3600, must-revalidate
+
+# /embed é feito para ficar dentro de <iframe> em outros sites: libera o enquadramento só
+# nesta rota (o resto do site segue com X-Frame-Options DENY e frame-ancestors 'none').
+# O '!' remove o cabeçalho herdado da regra /* antes de definir o específico.
+/embed
+  ! X-Frame-Options
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; frame-ancestors *; base-uri 'self'; form-action 'none'
+  Cache-Control: public, max-age=3600, must-revalidate

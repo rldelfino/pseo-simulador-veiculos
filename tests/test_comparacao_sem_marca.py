@@ -132,3 +132,51 @@ def test_resumo_historico_filtra_por_categoria_e_calcula_variacao():
     moto = resumo_historico(h, "moto")
     assert {x["banco"] for x in moto["linhas"]} == {"Banco Honda", "Caixa"} and moto["maior_alta"]["banco"] == "Banco Honda"
     assert resumo_historico(h[:2], "novo") is None
+
+
+# ---------------------------------------------------------------------------
+# Simulador incorporável, página "como incorporar" e imprensa
+# ---------------------------------------------------------------------------
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_calculo_do_embed_bate_com_o_calculo_do_site():
+    """A calculadora JS do /embed tem de dar os mesmos números que o motor Python do site."""
+    import json
+    import shutil
+    import subprocess
+    if not shutil.which("node"):
+        pytest.skip("node não instalado")
+    html = open(os.path.join(PASTA_SAIDA, "embed.html"), encoding="utf-8").read()
+    bloco = re.search(r"// <calc>(.*?)// </calc>", html, re.S).group(1)
+    casos = [(48_000, 48, 1.01), (30_000, 36, 2.85), (12_600, 24, 3.45), (70_000, 60, 1.86)]
+    js = bloco + "\nconst casos=" + json.dumps(casos) + ";\nconsole.log(JSON.stringify(casos.map(c=>calcularFinanciamento(c[0],c[1],c[2]))));"
+    saida = subprocess.run(["node", "-e", js], capture_output=True, text=True, check=True).stdout
+    for (fin, meses, taxa), r in zip(casos, json.loads(saida)):
+        pmt = calcular_pmt_price(fin, meses, taxa)
+        assert r["parcela"] == pytest.approx(pmt, rel=1e-9)
+        assert r["total"] == pytest.approx(pmt * meses, rel=1e-9)
+        assert r["juros"] == pytest.approx(pmt * meses - fin, rel=1e-9)
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_embed_e_noindex_headers_liberam_iframe_so_nele_e_paginas_novas_no_sitemap():
+    html = open(os.path.join(PASTA_SAIDA, "embed.html"), encoding="utf-8").read()
+    assert 'name="robots" content="noindex,follow"' in html
+    assert 'rel="canonical" href="https://veiculos.datalabglobal.com/incorporar"' in html
+    assert "https://veiculos.datalabglobal.com/" in html and "Datalab Global" in html  # link de crédito
+    headers = open(os.path.join(PASTA_SAIDA, "_headers"), encoding="utf-8").read()
+    bloco_embed = headers.split("\n/embed\n", 1)[1].split("\n\n", 1)[0]
+    assert "frame-ancestors *" in bloco_embed and "! X-Frame-Options" in bloco_embed
+    bloco_global = headers.split("/*\n", 1)[1].split("\n\n", 1)[0]
+    assert "X-Frame-Options: DENY" in bloco_global and "frame-ancestors 'none'" in bloco_global
+    sitemap = open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8").read()
+    assert "/embed<" not in sitemap and "/incorporar</loc>" in sitemap and "/imprensa</loc>" in sitemap
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_imprensa_tem_numeros_calculados_e_incorporar_tem_codigo_e_iframe():
+    imp = open(os.path.join(PASTA_SAIDA, "imprensa.html"), encoding="utf-8").read()
+    assert "Números para citar" in imp and "carro novo de R$ 60 mil em 48 meses" in imp and "CNPJ 63.998.502/0001-73" in imp
+    assert re.search(r"taxa média contratada no financiamento de veículos foi de \d+,\d{2}% ao mês", imp)
+    inc = open(os.path.join(PASTA_SAIDA, "incorporar.html"), encoding="utf-8").read()
+    assert "&lt;iframe src=" in inc and 'src="embed"' in inc and "Simulador por" in inc

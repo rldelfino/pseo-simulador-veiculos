@@ -22,6 +22,11 @@ PASTA_SAIDA = os.path.join(RAIZ, "paginas_seo")
 pytestmark = pytest.mark.skipif(not os.path.isdir(PASTA_SAIDA), reason="paginas_seo/ não gerada — rode python gerador_veiculos.py antes")
 
 
+# 404 e embed (widget de <iframe>, noindex) não são páginas de conteúdo: ficam fora do
+# sitemap e não têm CTA de afiliado nem JSON-LD de propósito.
+PAGINAS_SEM_CONTEUDO = ("404.html", "embed.html")
+
+
 def _arquivos_html():
     return sorted(f for f in os.listdir(PASTA_SAIDA) if f.endswith(".html"))
 
@@ -74,7 +79,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
     é a mesma verificação de sempre, só reconhecendo o formato de URL
     novo."""
     paginas_por_slug = {n[:-len(".html")] for n in _arquivos_html()}
-    assets = {"styles.css", "logo-full.png", "logo-header.webp", "sitemap.xml", "calculo.js", "favicon-32.png", "favicon-192.png", "og-image.png", "favicon.ico", "apple-touch-icon.png"}
+    assets = {"styles.css", "logo-full.png", "logo-header.webp", "sitemap.xml", "calculo.js", "favicon-32.png", "favicon-192.png", "og-image.png", "logo-schema.png", "favicon.ico", "apple-touch-icon.png"}
     faltando = []
     for nome_arquivo in _arquivos_html():
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
@@ -114,7 +119,7 @@ def test_toda_pagina_tem_o_cta_de_afiliado():
     produto, não deveria empurrar conversão — mesmo padrão do projeto
     irmão."""
     LINK = "https://ftudo.com/rodolfo-financiamento-de-automoveis/"
-    paginas = [n for n in _arquivos_html() if n != "404.html"]
+    paginas = [n for n in _arquivos_html() if n not in PAGINAS_SEM_CONTEUDO]
     sem_cta = [n for n in paginas if LINK not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
     assert not sem_cta, f"{len(sem_cta)} página(s) sem o link de afiliado: {sem_cta[:10]}"
 
@@ -193,7 +198,7 @@ def test_todo_bloco_json_ld_e_json_valido():
 def test_toda_pagina_tem_pelo_menos_um_json_ld():
     """404.html excluída — página de erro (noindex) não precisa de schema,
     o Google nem deveria indexar ela pra usar esse dado."""
-    paginas = [n for n in _arquivos_html() if n != "404.html"]
+    paginas = [n for n in _arquivos_html() if n not in PAGINAS_SEM_CONTEUDO]
     sem_schema = [n for n in paginas if "application/ld+json" not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()]
     assert not sem_schema, f"páginas sem nenhum JSON-LD: {sem_schema[:10]}"
 
@@ -260,7 +265,7 @@ def test_sitemap_lista_todas_as_paginas_geradas():
     dominio = "https://veiculos.datalabglobal.com"
     arquivos_esperados = {
         f"{dominio}/" if n == "index.html" else f"{dominio}/{n[:-len('.html')]}"
-        for n in _arquivos_html() if n != "404.html"
+        for n in _arquivos_html() if n not in PAGINAS_SEM_CONTEUDO
     }
     faltando = arquivos_esperados - urls_no_sitemap
     assert not faltando, f"{len(faltando)} página(s) gerada(s) mas ausente(s) do sitemap: {list(faltando)[:10]}"
