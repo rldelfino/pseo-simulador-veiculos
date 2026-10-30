@@ -1048,7 +1048,7 @@ def render_footer():
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
-            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com</p>
+            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>

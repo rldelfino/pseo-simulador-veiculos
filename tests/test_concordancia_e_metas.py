@@ -79,3 +79,16 @@ def test_rodape_mostra_identidade_da_empresa():
         if "<footer" in texto and "CNPJ 63.998.502/0001-73" not in texto:
             faltando.append(nome)
     assert not faltando, faltando[:5]
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_rodape_linka_privacidade_e_termos():
+    # site de dinheiro (YMYL): política de privacidade e termos acessíveis em toda página de conteúdo
+    faltando = []
+    for nome in os.listdir(PASTA_SAIDA):
+        if not nome.endswith(".html") or nome in ("404.html", "embed.html"):
+            continue
+        texto = open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8").read()
+        if "datalabglobal.com/privacidade/" not in texto or "datalabglobal.com/termos/" not in texto:
+            faltando.append(nome)
+    assert not faltando, faltando[:5]
