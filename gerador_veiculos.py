@@ -1048,7 +1048,7 @@ def render_footer():
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
             <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
-            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com</p>
+            <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
                 <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
@@ -2305,6 +2305,23 @@ def linhas_comparacao(categoria, valor, prazo):
     return linhas
 
 
+GUIAS_RELACIONADOS = ("aprenda-o-que-e-cet", "aprenda-tabela-price", "aprenda-o-que-e-cdc",
+                      "aprenda-iof-financiamento-veiculo", "aprenda-amortizacao-extra-veiculo",
+                      "aprenda-financiamento-x-consorcio-veiculo")
+
+
+def _guias_html():
+    """Bloco "Entenda melhor" com links contextuais para os guias de /aprenda.
+    Achado da auditoria de links internos (29/out/2026): cada guia recebia só 1
+    link (do índice /aprenda), o que o deixa fraco para o Google."""
+    por_slug = {a["slug"]: a for a in ARTIGOS_APRENDA}
+    itens = "".join(
+        f'<li><a href="{sl}" class="text-sky-400 underline hover:text-sky-300">{por_slug[sl]["titulo_h1"]}</a></li>'
+        for sl in GUIAS_RELACIONADOS if sl in por_slug)
+    return f'''<section class="mt-10"><h2 class="font-serif text-xl font-bold mb-2">Entenda melhor</h2>
+            <ul class="text-sm space-y-2 list-disc list-inside text-slate-300">{itens}</ul></section>'''
+
+
 def _escolher_que_cabe(limite, *opcoes):
     for o in opcoes:
         if len(o) <= limite:
@@ -2421,6 +2438,7 @@ def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup):
             <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo prazo, valores próximos</h2><div class="grid gap-2">{"".join(vizinhos)}</div></div>
         </section>
 
+        {_guias_html()}
         {_cta_comparacao("Quer comparar propostas?")}
         {faq_html}
         <p class="text-center text-xs text-slate-400 mt-6"><a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Ver o comparador de {nome_cat} →</a></p>
@@ -2492,6 +2510,7 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
         <p class="text-slate-400 text-sm mb-2">Menor parcela entre os bancos para cada valor e prazo, em carro novo, carro usado e moto. Escolha um cenário para comparar todos os bancos.</p>
         <p class="text-slate-600 text-[10px] uppercase tracking-widest">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
         {"".join(secoes)}
+        {_guias_html()}
         {_cta_comparacao("Quer ajuda para escolher?")}
         {faq_html}
     </main>'''
@@ -2509,6 +2528,233 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
     with open(os.path.join(pasta_saida, "financiamento-veiculos.html"), "w", encoding="utf-8") as f:
         f.write(corrigir_concordancia(html))
     return url_canonica
+
+
+
+# ---------------------------------------------------------------------------
+# Simulador incorporável (/embed), página "como incorporar" (/incorporar) e
+# página de imprensa (/imprensa). Mesma motivação do projeto irmão (ver
+# gerador.py): ganhar links sem contato com ninguém.
+# ---------------------------------------------------------------------------
+
+_JS_CALCULO_EMBED = """// <calc>
+function calcularFinanciamento(valorFinanciado, meses, taxaAmPct) {
+  var i = taxaAmPct / 100;
+  var price = i > 0 ? valorFinanciado * (i * Math.pow(1 + i, meses)) / (Math.pow(1 + i, meses) - 1) : valorFinanciado / meses;
+  return {parcela: price, total: price * meses, juros: price * meses - valorFinanciado};
+}
+// </calc>"""
+
+_TEMPLATE_EMBED = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de financiamento de veículos | Datalab Global</title>
+<meta name="description" content="Simulador de financiamento de veículos incorporável: parcela com a taxa média de cada banco.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="__DOMINIO__/incorporar">
+<link rel="icon" href="/favicon.ico?v=20261012" sizes="any">
+<link rel="icon" href="/favicon-32.png?v=20261012" type="image/png" sizes="32x32">
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e2e8f0}
+h1{font-size:16px;margin:0 0 10px;font-weight:700}label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:10px 0 4px}
+select,input{width:100%;padding:9px 10px;border-radius:8px;border:1px solid #334155;background:#111b2e;color:#f8fafc;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.res{margin-top:14px;padding:12px;border-radius:10px;background:#0c2433;border:1px solid #0ea5e9}
+.res b{display:block;font-size:20px;color:#7dd3fc}.res small{color:#94a3b8}.k{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid #16394f}
+.nota{margin-top:10px;font-size:11px;color:#94a3b8}.nota a{color:#7dd3fc}
+</style>
+</head>
+<body>
+<h1>Simule seu financiamento de veículo</h1>
+<div class="row"><div><label for="cat">Veículo</label><select id="cat"><option value="novo">Carro novo</option><option value="usado">Carro usado</option><option value="moto">Moto</option></select></div>
+<div><label for="banco">Banco</label><select id="banco"></select></div></div>
+<div class="row"><div><label for="valor">Valor do veículo (R$)</label><input id="valor" type="number" min="3000" step="1000" inputmode="numeric"></div>
+<div><label for="prazo">Prazo</label><select id="prazo"></select></div></div>
+<label for="entrada">Entrada (R$) <span id="minimo" style="text-transform:none;letter-spacing:0"></span></label><input id="entrada" type="number" min="0" step="500" inputmode="numeric">
+<div class="res" aria-live="polite">
+<small>Parcela mensal (Price, fixa)</small><b id="parcela">–</b>
+<div class="k"><span>Total das parcelas</span><span id="total">–</span></div>
+<div class="k"><span>Juros totais</span><span id="juros">–</span></div>
+<div class="k"><span>Valor financiado</span><span id="fin">–</span></div></div>
+<p class="nota" id="nota"></p>
+<p class="nota">Simulação educativa, sem IOF, tarifas e seguros; não é oferta de crédito. Simulador por <a href="__DOMINIO__/" target="_blank" rel="noopener">Datalab Global</a>.</p>
+<script>
+__JS_CALCULO__
+var BANCOS = __BANCOS_JSON__, ENTRADA = __ENTRADA_JSON__, VALOR_PADRAO = {novo: 80000, usado: 40000, moto: 18000};
+var fmt = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL', maximumFractionDigits: 0});
+var el = function (id) { return document.getElementById(id); };
+function bancosDaCategoria() { return BANCOS.filter(function (b) { return b.cats.indexOf(el('cat').value) >= 0; }); }
+function preencherBancos() {
+  var lista = bancosDaCategoria(); el('banco').innerHTML = '';
+  lista.forEach(function (b, i) { var o = document.createElement('option'); o.value = i; o.textContent = b.nome + ' (' + b.taxaAm.toFixed(2).replace('.', ',') + '% a.m.)'; el('banco').appendChild(o); });
+}
+function preencherPrazos() {
+  var b = bancosDaCategoria()[el('banco').value], atual = el('prazo').value; el('prazo').innerHTML = '';
+  [12, 24, 36, 48, 60].forEach(function (m) { if (m <= b.prazoMax) { var o = document.createElement('option'); o.value = m; o.textContent = m + ' meses'; el('prazo').appendChild(o); } });
+  el('prazo').value = Array.prototype.some.call(el('prazo').options, function (o) { return o.value === atual; }) ? atual : String(Math.min(48, b.prazoMax));
+}
+function calcular(ajustarEntrada) {
+  var b = bancosDaCategoria()[el('banco').value], cat = el('cat').value, valor = Math.max(0, parseFloat(el('valor').value) || 0);
+  var min = valor * ENTRADA[cat];
+  el('minimo').textContent = '(mín. ' + fmt.format(min) + ')';
+  if (ajustarEntrada || !el('entrada').value) el('entrada').value = Math.round(min);
+  var entrada = Math.min(valor, Math.max(min, parseFloat(el('entrada').value) || 0)), fin = valor - entrada, meses = parseInt(el('prazo').value, 10);
+  if (fin <= 0 || !meses) { ['parcela','total','juros','fin'].forEach(function (id) { el(id).textContent = '–'; }); return; }
+  var r = calcularFinanciamento(fin, meses, b.taxaAm);
+  el('parcela').textContent = fmt.format(r.parcela); el('total').textContent = fmt.format(r.total); el('juros').textContent = fmt.format(r.juros); el('fin').textContent = fmt.format(fin);
+  el('nota').textContent = 'Taxa média: ' + b.nome + ', ' + b.taxaAm.toFixed(2).replace('.', ',') + '% a.m. (Banco Central, __DATA_BR__).';
+}
+el('cat').addEventListener('change', function () { el('valor').value = VALOR_PADRAO[el('cat').value]; preencherBancos(); preencherPrazos(); calcular(true); });
+el('banco').addEventListener('change', function () { preencherPrazos(); calcular(false); });
+el('prazo').addEventListener('change', function () { calcular(false); });
+el('valor').addEventListener('input', function () { calcular(true); });
+el('entrada').addEventListener('input', function () { calcular(false); });
+el('valor').value = VALOR_PADRAO.novo; preencherBancos(); preencherPrazos(); calcular(true);
+</script>
+</body>
+</html>"""
+
+
+def gerar_embed(pasta_saida, data_atualizacao):
+    """/embed: simulador mínimo, sem dependências, pra ser usado em <iframe>."""
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    bancos = [{"chave": b, "nome": d["nome_exibicao"], "taxaAm": d["taxa_am"], "taxaAa": d["taxa_aa"],
+               "prazoMax": d["prazo_max"], "cats": list(d["aplica_a"])} for b, d in BANCOS_VEICULOS.items()]
+    entrada = {c: entrada_minima(c) for c in CATEGORIAS}
+    html_embed = (_TEMPLATE_EMBED
+                  .replace("__JS_CALCULO__", _JS_CALCULO_EMBED)
+                  .replace("__BANCOS_JSON__", json.dumps(bancos, ensure_ascii=False))
+                  .replace("__ENTRADA_JSON__", json.dumps(entrada))
+                  .replace("__DOMINIO__", DOMINIO).replace("__DATA_BR__", data_br))
+    with open(os.path.join(pasta_saida, "embed.html"), "w", encoding="utf-8") as f:
+        f.write(html_embed)
+
+
+def gerar_pagina_incorporar(pasta_saida, data_atualizacao):
+    url = f"{DOMINIO}/incorporar"
+    codigo = (f'<iframe src="{DOMINIO}/embed" title="Simulador de financiamento de veículos" '
+              f'width="100%" height="600" style="border:0;max-width:520px" loading="lazy"></iframe>\n'
+              f'<p style="font-size:12px">Simulador por <a href="{DOMINIO}/">Datalab Global</a></p>')
+    codigo_html = codigo.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    perguntas = [
+        ("O simulador para incorporar é gratuito?",
+         "Sim. Basta copiar o código e colar no HTML da sua página. Pedimos apenas que mantenha o link de crédito para a Datalab Global."),
+        ("Preciso me cadastrar ou usar alguma biblioteca?",
+         "Não. É um iframe: sem cadastro, sem chave de API, sem JavaScript no seu site e sem cookies."),
+        ("Quais veículos e bancos o simulador cobre?",
+         "Carro novo, carro usado e moto, com os bancos que acompanhamos em cada categoria, usando a taxa média mensal de cada um segundo o Banco Central. É atualizado por nós toda semana."),
+        ("O que o simulador calcula?",
+         "A parcela fixa (tabela Price), o total das parcelas, os juros totais e o valor financiado, respeitando a entrada mínima da categoria e o prazo máximo de cada banco. Não inclui IOF, tarifas nem seguros."),
+    ]
+    faq_html, schema_faq = render_faq_visual(perguntas)
+    schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+        {"@type": "ListItem", "position": 2, "name": "Simulador para incorporar", "item": url}]}
+    titulo = "Simulador de financiamento de veículos para site (grátis) | Datalab"
+    meta = "Incorpore grátis um simulador de financiamento de carro e moto no seu site, com taxas atualizadas dos bancos. Copie o código e cole: sem cadastro."
+    head = render_head(titulo, meta, url, [schema_bc, schema_faq])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Simulador para incorporar", None)])
+    corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Simulador de financiamento de veículos para o seu site</h1>
+        <p class="text-slate-400 text-sm mb-8">Copie o código, cole na sua página e pronto: um simulador de parcela de carro e moto com a taxa média atualizada de cada banco, grátis e sem cadastro.</p>
+        <section class="grid md:grid-cols-2 gap-8 items-start">
+            <div><h2 class="font-serif text-xl font-bold mb-3">Veja como fica</h2>
+                <iframe src="embed" title="Simulador de financiamento de veículos" width="100%" height="600" style="border:0;max-width:520px;border-radius:12px" loading="lazy"></iframe></div>
+            <div><h2 class="font-serif text-xl font-bold mb-3">Copie o código</h2>
+                <textarea readonly rows="7" onclick="this.select()" class="w-full bg-slate-900/60 border border-white/10 rounded-xl p-3 text-xs text-slate-300 font-mono" aria-label="Código para incorporar o simulador">{codigo_html}</textarea>
+                <ol class="mt-4 space-y-2 text-sm text-slate-300 list-decimal list-inside"><li>Clique no código e copie (Ctrl+C).</li><li>Cole no HTML da página onde o simulador deve aparecer.</li><li>Mantenha o link "Simulador por Datalab Global" logo abaixo.</li></ol>
+                <p class="mt-4 text-xs text-slate-400">Taxas médias do Banco Central. Simulação educativa: não é oferta de crédito. Os <a href="dados-abertos" class="text-sky-400 underline">dados abertos</a> por trás do simulador estão em CSV e JSON.</p></div>
+        </section>
+        {faq_html}
+        <p class="mt-8 text-center text-xs text-slate-400"><a href="financiamento-veiculos" class="text-sky-400 underline">Tabela de financiamento por valor e prazo</a></p>
+    </main>'''
+    html = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+    with open(os.path.join(pasta_saida, "incorporar.html"), "w", encoding="utf-8") as f:
+        f.write(corrigir_concordancia(html))
+    return [url]
+
+
+def gerar_pagina_imprensa(pasta_saida, data_atualizacao):
+    """/imprensa: fatos citáveis calculados dos dados reais, metodologia, logos,
+    como citar e contato."""
+    url = f"{DOMINIO}/imprensa"
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    historico = carregar_historico()
+    fatos = []
+    if historico:
+        meses = sorted({r["mes_referencia"] for r in historico})
+        ult = meses[-1]
+        do_mes = sorted((r for r in historico if r["mes_referencia"] == ult), key=lambda r: r["taxa_am"])
+        if do_mes:
+            lo, hi = do_mes[0], do_mes[-1]
+            n_lo, n_hi = BANCOS_VEICULOS[lo["banco"]]["nome_exibicao"], BANCOS_VEICULOS[hi["banco"]]["nome_exibicao"]
+            fatos.append(f"Em {MESES_PT[int(ult[5:7]) - 1]} de {ult[:4]}, a taxa média contratada no financiamento de veículos foi de {_pct2(lo['taxa_am'])}% ao mês em {n_lo}, a menor entre os {len(do_mes)} bancos com dado do Banco Central, e de {_pct2(hi['taxa_am'])}% ao mês em {n_hi}, a maior.")
+        resumo = resumo_historico(historico)
+        if resumo:
+            q, a = resumo["maior_queda"], resumo["maior_alta"]
+            m0, m1 = resumo["meses"][0], resumo["meses"][-1]
+            fatos.append(f"Entre {_rotulo_mes(m0)} e {_rotulo_mes(m1)}, a maior queda foi a de {q['banco_exib']} ({_sinal_pp(q['variacao'])} ponto percentual ao mês) e a maior alta, a de {a['banco_exib']} ({_sinal_pp(a['variacao'])} ponto percentual).")
+        fatos.append(f"A série histórica cobre {len(meses)} meses ({_rotulo_mes(meses[0])} a {_rotulo_mes(meses[-1])}) e está disponível em dados abertos, sob licença {LICENCA_DADOS}.")
+    ln = linhas_comparacao("novo", 60_000, 48)
+    p_lo, p_hi = min(ln, key=lambda x: x["parcela"]), max(ln, key=lambda x: x["parcela"])
+    fatos.append(f"Para financiar um carro novo de R$ 60 mil em 48 meses, com entrada de 20%, a parcela mensal vai de {formatar_reais(p_lo['parcela'])} ({p_lo['nome_exibicao']}) a {formatar_reais(p_hi['parcela'])} ({p_hi['nome_exibicao']}), e o CET estimado, de {_pct(min(x['cet'] for x in ln))}% a {_pct(max(x['cet'] for x in ln))}% ao ano.")
+    fatos_html = "".join(f'<li class="mb-3">{f}</li>' for f in fatos)
+    citacao = f"Datalab Global. Taxas de financiamento de veículos por banco (dados do Banco Central). {url}, acesso em AAAA-MM-DD."
+    schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+        {"@type": "ListItem", "position": 2, "name": "Imprensa", "item": url}]}
+    schema_page = {"@context": "https://schema.org", "@type": "WebPage", "url": url, "name": "Imprensa e dados para citação",
+                   "dateModified": data_atualizacao, "about": {"@type": "Organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"}}
+    titulo = "Imprensa: dados de financiamento de veículos para citar | Datalab"
+    meta = "Números atualizados de taxas e parcelas de financiamento de veículos, metodologia, logos e como citar a Datalab Global. Dados abertos (CC BY 4.0)."
+    head = render_head(titulo, meta, url, [schema_bc, schema_page])
+    breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Imprensa", None)])
+    corpo = f'''<main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {breadcrumb}
+        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Imprensa e dados para citação</h1>
+        <p class="text-slate-400 text-sm mb-8">Números prontos, metodologia aberta e a forma de citar. Atualizado em {data_br}.</p>
+        <section><h2 class="font-serif text-xl font-bold mb-3">Números para citar</h2>
+            <ul class="text-slate-300 text-sm font-light leading-relaxed list-disc list-inside">{fatos_html}</ul>
+            <p class="text-slate-400 text-xs mt-2">Calculados automaticamente a partir dos dados do Banco Central; mudam a cada atualização. As taxas são médias do que foi efetivamente contratado, não ofertas.</p></section>
+        <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Metodologia</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed">As taxas vêm do relatório de taxas de juros por instituição financeira do Banco Central (modalidade 401101, aquisição de veículos, pessoa física, pré-fixada), que não separa carro novo, carro usado e moto. O CET é calculado por nós (IOF, tarifa de registro e seguro prestamista estimados) para o mesmo valor, prazo e a entrada mínima da categoria. Série completa em <a href="dados-abertos" class="text-sky-400 underline">dados abertos</a>.</p></section>
+        <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Sobre a Datalab Global</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed">A Datalab Global é uma marca de {EMPRESA_RODAPE}. Cria ferramentas gratuitas de dados e de simulação de crédito. As simulações são educativas e não constituem oferta de crédito. Conheça a <a href="sobre" class="text-sky-400 underline">página Sobre</a>.</p></section>
+        <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Logos e imagens</h2>
+            <ul class="text-sm space-y-2"><li><a href="logo-full.png" download class="text-sky-400 underline">Logo completo (PNG)</a></li><li><a href="logo-schema.png" download class="text-sky-400 underline">Ícone (PNG, 512 px)</a></li><li><a href="og-image.png" download class="text-sky-400 underline">Imagem de compartilhamento (PNG)</a></li></ul></section>
+        <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Como citar</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed bg-white/5 border border-white/10 rounded-xl p-4">{citacao}</p>
+            <p class="text-slate-400 text-xs mt-3">Dados sob licença <a href="{LICENCA_DADOS_URL}" rel="noopener" class="underline">{LICENCA_DADOS}</a>: pode usar e adaptar, citando a fonte com link.</p></section>
+        <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Contato</h2>
+            <p class="text-slate-300 text-sm font-light">E-mail: <a href="mailto:contato@datalabglobal.com" class="text-sky-400 underline">contato@datalabglobal.com</a></p></section>
+        <p class="mt-10 text-center text-xs text-slate-400"><a href="financiamento-veiculos" class="text-sky-400 underline">Parcela por valor e prazo</a> · <a href="incorporar" class="text-sky-400 underline">Simulador para o seu site</a></p>
+    </main>'''
+    html = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    {corpo}
+    {render_footer()}
+</body>
+</html>'''
+    with open(os.path.join(pasta_saida, "imprensa.html"), "w", encoding="utf-8") as f:
+        f.write(corrigir_concordancia(html))
+    return [url]
 
 
 
@@ -2977,6 +3223,8 @@ Total de páginas de simulação: {total_paginas}
 - [Comparador Moto]({DOMINIO}/{slug_comparador('moto')})
 - [Financiamento de veículo: parcela por valor e prazo]({DOMINIO}/financiamento-veiculos)
 - [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON]({DOMINIO}/dados-abertos)
+- [Simulador de financiamento de veículos para incorporar no seu site (grátis)]({DOMINIO}/incorporar)
+- [Imprensa: números atualizados para citar]({DOMINIO}/imprensa)
 - [Sitemap completo]({DOMINIO}/sitemap.xml)
 
 ## Sobre os dados
@@ -3010,6 +3258,15 @@ def gerar_headers():
         "/og-image.png\n"
         "  Cache-Control: public, max-age=86400, must-revalidate\n\n"
         "/calculo.js\n"
+        "  Cache-Control: public, max-age=3600, must-revalidate\n\n"
+        "# /embed é feito para ficar dentro de <iframe> em outros sites: libera o enquadramento só\n"
+        "# nesta rota (o resto do site segue com X-Frame-Options DENY e frame-ancestors 'none').\n"
+        "# O '!' remove o cabeçalho herdado da regra /* antes de definir o específico.\n"
+        "/embed\n"
+        "  ! X-Frame-Options\n"
+        "  ! Content-Security-Policy\n"
+        "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; connect-src 'none'; frame-ancestors *; base-uri 'self'; form-action 'none'\n"
         "  Cache-Control: public, max-age=3600, must-revalidate\n"
     )
 
@@ -3052,6 +3309,9 @@ def gerar_site(pasta_saida='paginas_seo'):
     urls_comparacao = gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup)
     urls_sitemap.extend(urls_comparacao)
     urls_sitemap.extend(gerar_dados_abertos(pasta_saida, data_atualizacao))
+    gerar_embed(pasta_saida, data_atualizacao)
+    urls_sitemap.extend(gerar_pagina_incorporar(pasta_saida, data_atualizacao))
+    urls_sitemap.extend(gerar_pagina_imprensa(pasta_saida, data_atualizacao))
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
         f.write(gerar_index(data_atualizacao))

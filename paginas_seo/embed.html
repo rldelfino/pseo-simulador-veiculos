@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de financiamento de veículos | Datalab Global</title>
+<meta name="description" content="Simulador de financiamento de veículos incorporável: parcela com a taxa média de cada banco.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://veiculos.datalabglobal.com/incorporar">
+<link rel="icon" href="/favicon.ico?v=20261012" sizes="any">
+<link rel="icon" href="/favicon-32.png?v=20261012" type="image/png" sizes="32x32">
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e2e8f0}
+h1{font-size:16px;margin:0 0 10px;font-weight:700}label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:10px 0 4px}
+select,input{width:100%;padding:9px 10px;border-radius:8px;border:1px solid #334155;background:#111b2e;color:#f8fafc;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.res{margin-top:14px;padding:12px;border-radius:10px;background:#0c2433;border:1px solid #0ea5e9}
+.res b{display:block;font-size:20px;color:#7dd3fc}.res small{color:#94a3b8}.k{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid #16394f}
+.nota{margin-top:10px;font-size:11px;color:#94a3b8}.nota a{color:#7dd3fc}
+</style>
+</head>
+<body>
+<h1>Simule seu financiamento de veículo</h1>
+<div class="row"><div><label for="cat">Veículo</label><select id="cat"><option value="novo">Carro novo</option><option value="usado">Carro usado</option><option value="moto">Moto</option></select></div>
+<div><label for="banco">Banco</label><select id="banco"></select></div></div>
+<div class="row"><div><label for="valor">Valor do veículo (R$)</label><input id="valor" type="number" min="3000" step="1000" inputmode="numeric"></div>
+<div><label for="prazo">Prazo</label><select id="prazo"></select></div></div>
+<label for="entrada">Entrada (R$) <span id="minimo" style="text-transform:none;letter-spacing:0"></span></label><input id="entrada" type="number" min="0" step="500" inputmode="numeric">
+<div class="res" aria-live="polite">
+<small>Parcela mensal (Price, fixa)</small><b id="parcela">–</b>
+<div class="k"><span>Total das parcelas</span><span id="total">–</span></div>
+<div class="k"><span>Juros totais</span><span id="juros">–</span></div>
+<div class="k"><span>Valor financiado</span><span id="fin">–</span></div></div>
+<p class="nota" id="nota"></p>
+<p class="nota">Simulação educativa, sem IOF, tarifas e seguros; não é oferta de crédito. Simulador por <a href="https://veiculos.datalabglobal.com/" target="_blank" rel="noopener">Datalab Global</a>.</p>
+<script>
+// <calc>
+function calcularFinanciamento(valorFinanciado, meses, taxaAmPct) {
+  var i = taxaAmPct / 100;
+  var price = i > 0 ? valorFinanciado * (i * Math.pow(1 + i, meses)) / (Math.pow(1 + i, meses) - 1) : valorFinanciado / meses;
+  return {parcela: price, total: price * meses, juros: price * meses - valorFinanciado};
+}
+// </calc>
+var BANCOS = [{"chave": "Caixa", "nome": "Caixa", "taxaAm": 1.01, "taxaAa": 12.75, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Banco do Brasil", "nome": "Banco do Brasil", "taxaAm": 1.06, "taxaAa": 13.53, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Bradesco", "nome": "Bradesco", "taxaAm": 1.66, "taxaAa": 21.87, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Santander", "nome": "Santander", "taxaAm": 1.86, "taxaAa": 24.75, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Itau", "nome": "Itaú", "taxaAm": 1.96, "taxaAa": 26.21, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Banco Inter", "nome": "Banco Inter", "taxaAm": 1.65, "taxaAa": 21.69, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "C6 Bank", "nome": "C6 Bank", "taxaAm": 1.97, "taxaAa": 26.39, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "BV Financeira", "nome": "BV Financeira", "taxaAm": 2.2, "taxaAa": 29.88, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Banco Pan", "nome": "Banco Pan", "taxaAm": 2.85, "taxaAa": 40.07, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Omni Financeira", "nome": "Omni Financeira", "taxaAm": 3.45, "taxaAa": 50.21, "prazoMax": 60, "cats": ["novo", "usado", "moto"]}, {"chave": "Banco Honda", "nome": "Banco Honda", "taxaAm": 2.48, "taxaAa": 34.23, "prazoMax": 48, "cats": ["moto"]}, {"chave": "Banco Yamaha", "nome": "Banco Yamaha", "taxaAm": 2.66, "taxaAa": 37.1, "prazoMax": 48, "cats": ["moto"]}], ENTRADA = {"novo": 0.2, "usado": 0.3, "moto": 0.3}, VALOR_PADRAO = {novo: 80000, usado: 40000, moto: 18000};
+var fmt = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL', maximumFractionDigits: 0});
+var el = function (id) { return document.getElementById(id); };
+function bancosDaCategoria() { return BANCOS.filter(function (b) { return b.cats.indexOf(el('cat').value) >= 0; }); }
+function preencherBancos() {
+  var lista = bancosDaCategoria(); el('banco').innerHTML = '';
+  lista.forEach(function (b, i) { var o = document.createElement('option'); o.value = i; o.textContent = b.nome + ' (' + b.taxaAm.toFixed(2).replace('.', ',') + '% a.m.)'; el('banco').appendChild(o); });
+}
+function preencherPrazos() {
+  var b = bancosDaCategoria()[el('banco').value], atual = el('prazo').value; el('prazo').innerHTML = '';
+  [12, 24, 36, 48, 60].forEach(function (m) { if (m <= b.prazoMax) { var o = document.createElement('option'); o.value = m; o.textContent = m + ' meses'; el('prazo').appendChild(o); } });
+  el('prazo').value = Array.prototype.some.call(el('prazo').options, function (o) { return o.value === atual; }) ? atual : String(Math.min(48, b.prazoMax));
+}
+function calcular(ajustarEntrada) {
+  var b = bancosDaCategoria()[el('banco').value], cat = el('cat').value, valor = Math.max(0, parseFloat(el('valor').value) || 0);
+  var min = valor * ENTRADA[cat];
+  el('minimo').textContent = '(mín. ' + fmt.format(min) + ')';
+  if (ajustarEntrada || !el('entrada').value) el('entrada').value = Math.round(min);
+  var entrada = Math.min(valor, Math.max(min, parseFloat(el('entrada').value) || 0)), fin = valor - entrada, meses = parseInt(el('prazo').value, 10);
+  if (fin <= 0 || !meses) { ['parcela','total','juros','fin'].forEach(function (id) { el(id).textContent = '–'; }); return; }
+  var r = calcularFinanciamento(fin, meses, b.taxaAm);
+  el('parcela').textContent = fmt.format(r.parcela); el('total').textContent = fmt.format(r.total); el('juros').textContent = fmt.format(r.juros); el('fin').textContent = fmt.format(fin);
+  el('nota').textContent = 'Taxa média: ' + b.nome + ', ' + b.taxaAm.toFixed(2).replace('.', ',') + '% a.m. (Banco Central, 26/10/2026).';
+}
+el('cat').addEventListener('change', function () { el('valor').value = VALOR_PADRAO[el('cat').value]; preencherBancos(); preencherPrazos(); calcular(true); });
+el('banco').addEventListener('change', function () { preencherPrazos(); calcular(false); });
+el('prazo').addEventListener('change', function () { calcular(false); });
+el('valor').addEventListener('input', function () { calcular(true); });
+el('entrada').addEventListener('input', function () { calcular(false); });
+el('valor').value = VALOR_PADRAO.novo; preencherBancos(); preencherPrazos(); calcular(true);
+</script>
+</body>
+</html>
