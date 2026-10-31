@@ -27,6 +27,12 @@ pytestmark = pytest.mark.skipif(not os.path.isdir(PASTA_SAIDA), reason="paginas_
 PAGINAS_SEM_CONTEUDO = ("404.html", "embed.html")
 
 
+def _eh_noindex(nome):
+    # meses antigos das taxas mensais ficam no ar com noindex,follow e fora do sitemap, de propósito
+    with open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8") as f:
+        return 'name="robots" content="noindex' in f.read()
+
+
 def _arquivos_html():
     return sorted(f for f in os.listdir(PASTA_SAIDA) if f.endswith(".html"))
 
@@ -265,7 +271,7 @@ def test_sitemap_lista_todas_as_paginas_geradas():
     dominio = "https://veiculos.datalabglobal.com"
     arquivos_esperados = {
         f"{dominio}/" if n == "index.html" else f"{dominio}/{n[:-len('.html')]}"
-        for n in _arquivos_html() if n not in PAGINAS_SEM_CONTEUDO
+        for n in _arquivos_html() if n not in PAGINAS_SEM_CONTEUDO and not _eh_noindex(n)
     }
     faltando = arquivos_esperados - urls_no_sitemap
     assert not faltando, f"{len(faltando)} página(s) gerada(s) mas ausente(s) do sitemap: {list(faltando)[:10]}"
