@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologia: de onde vêm as taxas e os cálculos</title>
+    <meta name="description" content="Como a Datalab Global obtém as taxas do Banco Central e calcula parcela, IOF e CET do financiamento de veículos. O que os números são e o que não são.">
+    <link rel="canonical" href="https://veiculos.datalabglobal.com/metodologia" />
+    
+    <link rel="icon" href="favicon.ico?v=20261012" sizes="any">
+    <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
+    <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Datalab Global">
+    <meta property="og:title" content="Metodologia: de onde vêm as taxas e os cálculos">
+    <meta property="og:description" content="Como a Datalab Global obtém as taxas do Banco Central e calcula parcela, IOF e CET do financiamento de veículos. O que os números são e o que não são.">
+    <meta property="og:url" content="https://veiculos.datalabglobal.com/metodologia">
+    <meta property="og:image" content="https://veiculos.datalabglobal.com/og-image.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Metodologia: de onde vêm as taxas e os cálculos">
+    <meta name="twitter:description" content="Como a Datalab Global obtém as taxas do Banco Central e calcula parcela, IOF e CET do financiamento de veículos. O que os números são e o que não são.">
+    <link rel="stylesheet" href="styles.css?v=20261031015856">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://veiculos.datalabglobal.com/metodologia", "name": "Metodologia: de onde vêm as taxas e os cálculos | Datalab Global", "dateModified": "2026-10-26", "isPartOf": {"@type": "WebSite", "url": "https://veiculos.datalabglobal.com/", "name": "Simulador de financiamento de veículos | Datalab Global"}, "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": "https://veiculos.datalabglobal.com/"}, {"@type": "ListItem", "position": 2, "name": "Metodologia", "item": "https://veiculos.datalabglobal.com/metodologia"}]}</script>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    <nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="168" height="54" class="w-auto" style="height:54px;max-width:45vw"></a>
+            <div class="flex items-center gap-2">
+                <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9"></path></svg> <span class="hidden sm:inline">Início</span></a>
+                <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h7a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H2z"></path><path d="M22 5h-7a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H22z"></path></svg> <span class="hidden sm:inline">Aprenda</span></a>
+                <a href="https://ftudo.com/rodolfo-financiamento-de-automoveis/" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                    Análise Grátis <svg class="inline-block align-[-0.125em] ml-1.5 text-xs" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-8">Metodologia</h1>
+        <div class="glass-panel rounded-2xl p-6 md:p-10 space-y-6 text-slate-300 leading-relaxed">
+            <h2 class="text-xl font-serif text-white">De onde vêm as taxas</h2>
+            <p>As taxas vêm do relatório de taxas de juros por instituição financeira do Banco Central do Brasil, modalidade "Pessoa Física, aquisição de veículos, prefixado" (código 401101). É a taxa <strong>média das operações efetivamente contratadas</strong>, não uma oferta. O Banco Central publica uma única modalidade para veículos: não existe taxa oficial separada para carro novo, usado e moto, então o mesmo número serve às três categorias. O histórico mensal usa, para cada mês fechado, a última janela de 5 dias úteis divulgada. Última atualização: 26/10/2026. A série está em <a href="dados-abertos" class="text-sky-400 underline">dados abertos</a> (licença CC BY 4.0).</p>
+            <h2 class="text-xl font-serif text-white">Entrada e prazo</h2>
+            <p>O Banco Central não publica entrada mínima nem prazo máximo por banco. Usamos a convenção geral de mercado (entrada mínima de 20% para carro novo e de 30% para usado e moto; prazos de 12 a 60 meses), que ainda não foi confirmada banco a banco. Trate esses dois campos como estimativa e confirme com a instituição.</p>
+            <h2 class="text-xl font-serif text-white">Como calculamos</h2>
+            <p><strong>Parcela:</strong> Tabela Price, parcela fixa pela fórmula PMT com a taxa mensal do banco. É o sistema usado no crédito de veículo; não simulamos SAC porque os bancos não o oferecem para carro e moto.</p>
+            <p><strong>CET:</strong> calculado por TIR (taxa interna de retorno). Você recebe o valor financiado menos o IOF e a tarifa de registro do contrato, e paga a parcela mais o seguro prestamista. O IOF segue a lei (0,38% sobre o valor financiado mais 0,0082% ao dia, por até 365 dias, contando 30 dias por mês). Os outros dois itens são estimativas de mercado: tarifa de registro de R$ 120 e seguro prestamista de 0,035% do saldo devedor por mês. Eles variam por banco e seguradora, então o CET aqui serve para comparar; o seu depende da sua análise de crédito.</p>
+            <p><strong>Renda sugerida:</strong> a parcela dividida por 30%, a regra de comprometimento de renda usada pelos bancos.</p>
+            <h2 class="text-xl font-serif text-white">O que os números não são</h2>
+            <p>Não são oferta, proposta nem aprovação de crédito. A taxa que o banco oferece a você pode ser maior ou menor que a média. Use os resultados para comparar e entender a ordem de grandeza; confirme as condições direto com a instituição.</p>
+            <h2 class="text-xl font-serif text-white">Quem mantém</h2>
+            <p>A Datalab Global é uma marca de Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73, criada por Rodolfo Delfino. <a href="sobre" class="text-sky-400 underline">Saiba mais</a>. Encontrou um número errado? Escreva para <a href="mailto:contato@datalabglobal.com" class="text-sky-400 underline">contato@datalabglobal.com</a>.</p>
+            <p>Divulgação: o simulador pode indicar a Financia Tudo, parceira com a qual podemos receber comissão, sem custo adicional para você. As taxas e os rankings não são influenciados por essa parceria.</p>
+        </div>
+    </main>
+    <footer class="border-t border-white/5 mt-16 py-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
+            <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
+            <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
+            <p class="mt-1">Datalab Global é uma marca de Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
+            <p class="mt-3 flex items-center justify-center gap-4">
+                <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
+                <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
+                <a href="https://dados.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Lente B2B: dados de empresas</a>
+                <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
+                <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
+                <a href="/metodologia" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Metodologia</a>
+                <a href="/taxas-financiamento-veiculos" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Taxas mês a mês</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
