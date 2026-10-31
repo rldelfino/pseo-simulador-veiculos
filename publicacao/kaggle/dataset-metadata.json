@@ -1,0 +1,24 @@
+{
+  "title": "Taxas de financiamento de veículos por banco (Brasil, BACEN)",
+  "id": "SEU_USUARIO_KAGGLE/taxas-financiamento-veiculos-brasil",
+  "subtitle": "Taxa média mensal contratada por banco, % ao mês e ao ano, atualizada toda semana",
+  "description": "Taxa média de juros efetivamente contratada no financiamento de veículos (aquisição de veículos, pessoa física, pré-fixada), por banco, ao mês e ao ano, segundo o Banco Central do Brasil. Para cada mês fechado, a última janela de 5 dias úteis divulgada. Cobre 24 meses (out/24 a set/26) e 12 instituições. O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), sem separar carro novo, carro usado e moto: a taxa de cada banco é a mesma série para as três categorias.\n\nLicença: CC BY 4.0. Fonte: Banco Central do Brasil. Atualizado todo mês em https://veiculos.datalabglobal.com/dados-abertos.",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "keywords": [
+    "finance",
+    "brazil",
+    "banking",
+    "interest rates",
+    "vehicle loans"
+  ],
+  "resources": [
+    {
+      "path": "taxas-financiamento-veiculos.csv",
+      "description": "Série mensal: mes_referencia, periodo_inicio, periodo_fim, instituicao, taxa_juros_am_pct, taxa_juros_aa_pct"
+    }
+  ]
+}

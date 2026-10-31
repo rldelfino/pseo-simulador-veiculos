@@ -54,6 +54,9 @@ jobs:
       - name: Compilar CSS estático (substitui o CDN do Tailwind em produção)
         run: npm run build:css
 
+      - name: Gerar pacote de publicação (Kaggle, Hugging Face, dados.gov.br, nota de imprensa)
+        run: python publicacao.py
+
       - name: Atualizar Site (Commit e Push)
         run: |
           git config --global user.name "Robô Datalab"
@@ -64,7 +67,7 @@ jobs:
           # o BACEN falhar/estiver fora do ar (mesma regra do projeto
           # irmão) — sem commitar, cada execução do Actions parte de um
           # checkout limpo e o cache nasce vazio de novo.
-          git add paginas_seo taxas_cache_veiculos.json relatorio_atualizacao_taxas.txt ultima_atualizacao_taxas.txt historico_taxas.csv
+          git add paginas_seo taxas_cache_veiculos.json relatorio_atualizacao_taxas.txt ultima_atualizacao_taxas.txt historico_taxas.csv publicacao
           git commit -m "auto: atualização semanal de taxas e rebuild do site" || echo "Sem mudanças"
           git push
 

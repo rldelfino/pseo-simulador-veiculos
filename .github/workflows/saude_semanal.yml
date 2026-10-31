@@ -1,0 +1,27 @@
+name: Saúde semanal do site
+
+on:
+  schedule:
+    # segunda-feira, 12:00 UTC (depois da atualização semanal das taxas, que roda às 08:00 UTC)
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install requests
+      - name: Verificar o site em produção
+        run: >
+          python verifica_saude.py
+          --dominio https://veiculos.datalabglobal.com
+          --min-urls 700 --max-urls 1500
+          --chave-indexnow 1c5d2ac5ea7443060014bbe43cedbcf6
+          --paginas /,/comparador-carro-novo,/metodologia,/dados-abertos,/incorporar,/imprensa,/taxas-financiamento-veiculos,/financiamento-veiculos,/renda-para-financiar-veiculo

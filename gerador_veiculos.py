@@ -863,6 +863,7 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos, robots=N
     # precisar escapar individualmente cada f-string do arquivo inteiro.
     titulo = html.escape(titulo)
     meta_description = html.escape(meta_description)
+    _medicao_head = ''.join('\n    ' + t for t in tags_medicao())
     return f'''<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{titulo}</title>
@@ -872,7 +873,7 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos, robots=N
     <link rel="icon" href="favicon.ico?v=20261012" sizes="any">
     <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
     <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">{_medicao_head}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <meta property="og:type" content="website">
@@ -1058,6 +1059,7 @@ def render_footer():
                 <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
                 <a href="/metodologia" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Metodologia</a>
                 <a href="/taxas-financiamento-veiculos" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Taxas mês a mês</a>
+                <a href="/renda-para-financiar-veiculo" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Renda para financiar</a>
             </p>
         </div>
     </footer>'''
@@ -2019,6 +2021,7 @@ def html_vizinhas(p, todas_paginas):
     return (f'<section class="mt-8">{bloco}<p class="text-slate-500 text-xs mt-3">'
             f'<a href="{SLUG_INDICE_MENSAL}" class="underline hover:text-sky-400">Taxas de financiamento de veículos mês a mês</a> · '
             f'<a href="financiamento-veiculos" class="underline hover:text-sky-400">Parcela por valor e prazo</a> · '
+            f'<a href="{slug_renda(p["categoria"], p["valor_veiculo"]) if p["valor_veiculo"] in VALORES_POR_CATEGORIA[p["categoria"]] else SLUG_INDICE_RENDA}" class="underline hover:text-sky-400">Renda necessária para financiar</a> · '
             f'<a href="metodologia" class="underline hover:text-sky-400">Como calculamos</a></p></section>')
 
 
@@ -2109,7 +2112,17 @@ def gerar_paginas_mensais(pasta_saida, data_atualizacao, historico):
             vizinhos += f'<a href="{slug_mes(meses[k - 1])}" class="underline hover:text-sky-400">← {nome_mes(meses[k - 1])}</a>'
         if k + 1 < len(meses):
             vizinhos += f' &nbsp;·&nbsp; <a href="{slug_mes(meses[k + 1])}" class="underline hover:text-sky-400">{nome_mes(meses[k + 1])} →</a>'
-        head = render_head(titulo, desc, url, [schema_bc, schema_faq], robots=(None if indexavel else "noindex,follow"))
+        cobertura = [(r["inicio_periodo"], r["fim_periodo"]) for r in historico if r["mes_referencia"] == mes]
+        schema_dados = {
+            "@context": "https://schema.org", "@type": "Dataset", "name": f"Taxas do financiamento de veículos por banco em {mes_ano}",
+            "description": f"Taxa média de juros contratada (% ao mês) por banco em {mes_ano}, segundo o Banco Central do Brasil.",
+            "url": url, "inLanguage": "pt-BR", "license": LICENCA_DADOS_URL, "isAccessibleForFree": True,
+            "creator": {"@type": "Organization", "name": "Datalab Global", "url": f"{DOMINIO}/"},
+            "isBasedOn": FONTE_BACEN_URL, "temporalCoverage": f"{min(c[0] for c in cobertura)}/{max(c[1] for c in cobertura)}",
+            "variableMeasured": ["Taxa média de juros contratada (% ao mês)"],
+            "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": f"{DOMINIO}/dados/taxas-financiamento-veiculos.csv"}],
+        }
+        head = render_head(titulo, desc, url, [schema_bc, schema_faq, schema_dados], robots=(None if indexavel else "noindex,follow"))
         html = f'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -2227,6 +2240,283 @@ def gerar_pagina_metodologia(pasta_saida, data_atualizacao):
         f.write(corrigir_concordancia(html))
     return [url]
 
+
+
+# ---------------------------------------------------------------------------
+# Motor v3b (31/out/2026): renda necessária por valor, llms-full.txt e medição
+# de cliques (Umami, só liga com o ID do site).
+# ---------------------------------------------------------------------------
+SLUG_INDICE_RENDA = "renda-para-financiar-veiculo"
+ENTRADAS_RENDA = (0.20, 0.30, 0.50)
+PERC_RENDA_COMPROMETIDA = 0.30
+
+# Medição de cliques: vazio = não carrega nada. Preencha com o "Website ID" do
+# Umami Cloud (plano gratuito, sem cookies) para ligar.
+UMAMI_WEBSITE_ID = ""
+UMAMI_SCRIPT = "https://cloud.umami.is/script.js"
+# Link do parceiro (ftudo.com) e, por garantia, o domínio institucional dele.
+SELETOR_CTA_PARCEIRO = 'a[href*="ftudo.com"], a[href*="financiatudo"]'
+
+
+def slug_renda(categoria, valor):
+    return f"renda-para-financiar-{CATEGORIA_SLUG[categoria]}-{int(round(valor / 1000))}-mil"
+
+
+def _entradas_da_categoria(categoria):
+    return [e for e in ENTRADAS_RENDA if e >= entrada_minima(categoria) - 1e-9]
+
+
+def renda_minima(categoria, valor, entrada_perc, prazo):
+    """Renda familiar mínima (parcela Price / 30%) na taxa mediana dos bancos da
+    categoria que oferecem o prazo. None se há menos de MIN_BANCOS_COMPARACAO."""
+    bancos = bancos_com_prazo(categoria, prazo)
+    if len(bancos) < MIN_BANCOS_COMPARACAO:
+        return None
+    taxa = _mediana([d["taxa_am"] for d in bancos.values()])
+    parcela = calcular_pmt_price(valor * (1 - entrada_perc), prazo, taxa)
+    return {"taxa_am": taxa, "parcela": parcela, "renda": math.ceil((parcela / PERC_RENDA_COMPROMETIDA) / 50) * 50}
+
+
+def gerar_paginas_renda(pasta_saida, data_atualizacao):
+    """/renda-para-financiar-{carro-novo|carro-usado|moto}-{valor}-mil: quanto de
+    renda os bancos costumam exigir, por prazo e entrada. Números próprios por
+    categoria e valor. Retorna as URLs (sitemap)."""
+    urls = []
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    prazos = list(PRAZOS_MESES)
+    for categoria in CATEGORIAS:
+        valores = VALORES_POR_CATEGORIA[categoria]
+        entradas = _entradas_da_categoria(categoria)
+        nome_cat = CATEGORIA_ARTIGO[categoria].split(" ", 1)[1]  # "carro novo", "carro usado", "moto"
+        for k, valor in enumerate(valores):
+            vc, vf = formatar_valor_curto(valor), formatar_reais(valor)
+            tab = {(p, e): renda_minima(categoria, valor, e, p) for p in prazos for e in entradas}
+            validos = [(p, e) for (p, e), v in tab.items() if v]
+            if not validos:
+                continue
+            e_base = entradas[0]
+            p_base = 48 if tab.get((48, e_base)) else max(p for p, e in validos if e == e_base)
+            base = tab[(p_base, e_base)]
+            e_alta = entradas[-1]
+            p_longo = max(p for p, e in validos if e == e_base)
+            alta = tab.get((p_base, e_alta)) or base
+            longo = tab[(p_longo, e_base)]
+
+            cab = "".join(f'<th scope="col" class="px-2 py-2 text-right font-medium">{round(e * 100)}% de entrada<br>'
+                          f'<span class="normal-case text-slate-500">({formatar_reais(valor * e)})</span></th>' for e in entradas)
+            linhas_tab = ""
+            for p in prazos:
+                cels = ""
+                for e in entradas:
+                    v = tab[(p, e)]
+                    cels += (f'<td class="px-2 py-2 text-right whitespace-nowrap"><strong class="text-white">{formatar_reais(v["renda"])}</strong>'
+                             f'<br><span class="text-slate-500">parcela {formatar_reais(v["parcela"])}</span></td>') if v \
+                        else '<td class="px-2 py-2 text-right text-slate-500">–</td>'
+                linhas_tab += f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">{p} meses</th>{cels}</tr>'
+            tabela = (f'<div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">'
+                      f'<thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Prazo</th>{cab}</tr></thead>'
+                      f'<tbody>{linhas_tab}</tbody></table></div>')
+
+            resumo = (f"Para financiar {nome_cat} de {vf} com {round(e_base * 100)}% de entrada ({formatar_reais(valor * e_base)}) em {p_base} meses, "
+                      f"na taxa mediana dos bancos ({_pct2(base['taxa_am'])}% ao mês), a parcela pela Tabela Price é de {formatar_reais(base['parcela'])} "
+                      f"e a renda familiar mínima, considerando o limite de 30% da renda, é de {formatar_reais(base['renda'])} por mês.")
+            dica = ""
+            if e_alta != e_base and tab.get((p_base, e_alta)):
+                dica += (f"Com {round(e_alta * 100)}% de entrada ({formatar_reais(valor * e_alta)}), a renda mínima cai para "
+                         f"{formatar_reais(alta['renda'])} em {p_base} meses. ")
+            if p_longo != p_base:
+                dica += (f"Esticar para {p_longo} meses baixa a renda mínima ({round(e_base * 100)}% de entrada) para "
+                         f"{formatar_reais(longo['renda'])}, mas aumenta o total de juros.")
+            perguntas = [
+                (f"Qual a renda mínima para financiar {nome_cat} de {vc}?",
+                 f"Com {round(e_base * 100)}% de entrada, em {p_base} meses e na taxa mediana dos bancos ({_pct2(base['taxa_am'])}% ao mês), "
+                 f"a renda familiar mínima é de cerca de {formatar_reais(base['renda'])} por mês."),
+                (f"Como diminuir a renda exigida para financiar {nome_cat} de {vc}?",
+                 "Aumentar a entrada e alongar o prazo reduzem a parcela e, com ela, a renda exigida."
+                 + (f" Com {round(e_alta * 100)}% de entrada, a renda mínima cai para {formatar_reais(alta['renda'])} em {p_base} meses."
+                    if e_alta != e_base and tab.get((p_base, e_alta)) else "")),
+                ("Por que a renda mínima é calculada com 30%?",
+                 "Os bancos costumam limitar a parcela a 30% da renda bruta. É uma regra de mercado, não uma lei: cada banco faz a própria análise de crédito."),
+            ]
+            faq_html, schema_faq = render_faq_visual(perguntas)
+            slug = slug_renda(categoria, valor)
+            url = f"{DOMINIO}/{slug}"
+            titulo = _escolher_que_cabe(60, f"Renda para financiar {nome_cat} de {vc}: quanto precisa ganhar | Datalab Global",
+                                        f"Renda para financiar {nome_cat} de {vc}: quanto precisa ganhar", f"Renda para financiar {nome_cat} de {vc}")
+            desc = _escolher_que_cabe(
+                160, f"Renda mínima para financiar {nome_cat} de {vc}: {formatar_reais(base['renda'])} por mês com {round(e_base * 100)}% de entrada em {p_base} meses. Veja por prazo e entrada.",
+                f"Renda mínima para financiar {nome_cat} de {vc}: {formatar_reais(base['renda'])} por mês com {round(e_base * 100)}% de entrada em {p_base} meses.")
+            schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+                {"@type": "ListItem", "position": 2, "name": "Renda para financiar", "item": f"{DOMINIO}/{SLUG_INDICE_RENDA}"},
+                {"@type": "ListItem", "position": 3, "name": f"{CATEGORIA_LABEL[categoria]} {vc}", "item": url}]}
+            viz = []
+            if k > 0:
+                viz.append(f'<a href="{slug_renda(categoria, valores[k - 1])}" class="underline hover:text-sky-400">← Renda para {formatar_valor_curto(valores[k - 1])}</a>')
+            if k + 1 < len(valores):
+                viz.append(f'<a href="{slug_renda(categoria, valores[k + 1])}" class="underline hover:text-sky-400">Renda para {formatar_valor_curto(valores[k + 1])} →</a>')
+            comp = ""
+            if pagina_comparacao_existe(categoria, valor, p_base):
+                comp = f'<a href="{slug_comparacao(categoria, valor, p_base)}" class="text-sky-400 underline">Compare {vc} em {p_base} meses em todos os bancos</a> · '
+            head = render_head(titulo, desc, url, [schema_bc, schema_faq])
+            html_pag = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {render_breadcrumb([("Datalab Global", "/"), ("Renda para financiar", SLUG_INDICE_RENDA), (f"{CATEGORIA_LABEL[categoria]} {vc}", None)])}
+        <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-4">Renda necessária para financiar {nome_cat} de {vc}</h1>
+        <p class="text-slate-300 text-base font-light leading-relaxed mb-4">{resumo}</p>
+        <p class="text-slate-300 text-sm font-light leading-relaxed mb-8">{dica}</p>
+        <h2 class="font-serif text-xl font-bold mb-3">Renda mínima por prazo e entrada</h2>
+        {tabela}
+        <p class="text-slate-500 text-[11px] mt-3">Cálculo: parcela pela Tabela Price dividida por 30%, na taxa mediana dos bancos da categoria que oferecem o prazo (taxas médias contratadas, Banco Central, atualizadas em {data_br}), sem IOF, tarifas e seguro. A entrada mínima desta categoria é {round(entrada_minima(categoria) * 100)}%. A sua análise de crédito pode exigir mais ou menos. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>
+        <p class="text-slate-400 text-sm mt-6">{" &nbsp;·&nbsp; ".join(viz)}</p>
+        {faq_html}
+        <p class="text-slate-400 text-sm mt-10">{comp}<a href="{SLUG_INDICE_RENDA}" class="text-sky-400 underline">Renda por valor do veículo</a> · <a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Comparador de bancos</a></p>
+        {_cta_comparacao("Quer saber se a sua renda aprova?")}
+    </main>
+    {render_footer()}
+</body>
+</html>'''
+            with open(os.path.join(pasta_saida, f"{slug}.html"), "w", encoding="utf-8") as f:
+                f.write(corrigir_concordancia(html_pag))
+            urls.append(url)
+
+    secoes = ""
+    for categoria in CATEGORIAS:
+        itens = "".join(
+            f'<li><a href="{slug_renda(categoria, v)}" class="text-sky-400 underline hover:text-sky-300">Renda para financiar {formatar_valor_curto(v)}</a></li>'
+            for v in VALORES_POR_CATEGORIA[categoria])
+        secoes += (f'<h2 class="font-serif text-xl font-bold mt-8 mb-3">{CATEGORIA_LABEL[categoria]}</h2><ul class="space-y-2 text-sm">{itens}</ul>')
+    url_ind = f"{DOMINIO}/{SLUG_INDICE_RENDA}"
+    schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+        {"@type": "ListItem", "position": 2, "name": "Renda para financiar", "item": url_ind}]}
+    head = render_head("Renda para financiar veículo: quanto precisa ganhar | Datalab Global",
+                       "Renda mínima para financiar carro novo, carro usado e moto, por valor, prazo e entrada, com a taxa mediana dos bancos.",
+                       url_ind, [schema_bc])
+    html_ind = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-4">Renda para financiar um veículo</h1>
+        <p class="text-slate-300 text-base font-light leading-relaxed mb-4">Escolha a categoria e o valor do veículo e veja a renda familiar mínima por prazo e entrada, calculada com o limite de 30% da renda e a taxa mediana do mercado.</p>
+        {secoes}
+        <p class="text-slate-400 text-sm mt-10"><a href="financiamento-veiculos" class="text-sky-400 underline">Parcela por valor e prazo</a> · <a href="metodologia" class="text-sky-400 underline">Metodologia</a></p>
+    </main>
+    {render_footer()}
+</body>
+</html>'''
+    with open(os.path.join(pasta_saida, f"{SLUG_INDICE_RENDA}.html"), "w", encoding="utf-8") as f:
+        f.write(corrigir_concordancia(html_ind))
+    urls.append(url_ind)
+    return urls
+
+
+def gerar_llms_full_txt(pasta_saida, data_atualizacao, historico):
+    """llms-full.txt: versão longa do llms.txt, com as taxas de hoje em frases
+    curtas e datadas, fáceis de citar por buscadores de IA."""
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    linhas = []
+    for banco, d in sorted(BANCOS_VEICULOS.items(), key=lambda kv: kv[1]["taxa_am"]):
+        cats = ", ".join(CATEGORIA_LABEL[c].lower() for c in CATEGORIAS if c in d["aplica_a"])
+        linhas.append(f"- {d['nome_exibicao']}: taxa de {_pct2(d['taxa_am'])}% ao mês ({_pct2(d['taxa_aa'])}% ao ano), prazo de até {d['prazo_max']} meses ({cats}).")
+    serie = ""
+    meses = sorted({r["mes_referencia"] for r in historico})
+    if meses:
+        ult = meses[-1]
+        atual = {r["banco"]: r["taxa_am"] for r in historico if r["mes_referencia"] == ult}
+        if atual:
+            menor, maior = min(atual, key=atual.get), max(atual, key=atual.get)
+            serie = (f"\n## Taxa média contratada em {nome_mes(ult)} (Banco Central)\n"
+                     f"- Menor: {BANCOS_VEICULOS[menor]['nome_exibicao']}, {_pct2(atual[menor])}% ao mês.\n"
+                     f"- Maior: {BANCOS_VEICULOS[maior]['nome_exibicao']}, {_pct2(atual[maior])}% ao mês.\n"
+                     f"- Média simples de {len(atual)} bancos: {_pct2(sum(atual.values()) / len(atual))}% ao mês.\n"
+                     f"- Série mensal desde {nome_mes(meses[0])}: {DOMINIO}/{SLUG_INDICE_MENSAL}\n")
+    entradas = "; ".join(f"{CATEGORIA_LABEL[c].lower()}: {round(entrada_minima(c) * 100)}%" for c in CATEGORIAS)
+    conteudo = f"""# Datalab Global: simulador de financiamento de veículos (versão completa)
+
+> Simulador e dados abertos de financiamento de carro novo, carro usado e moto no Brasil. Última atualização das taxas: {data_br}. Os números abaixo podem ser citados com link para {DOMINIO}/ (dados sob licença CC BY 4.0).
+
+## O que é e o que não é
+Calcula parcela (Tabela Price), CET estimado e economia de juros com amortização extra. Não é oferta de crédito: as taxas são médias efetivamente contratadas, divulgadas pelo Banco Central (modalidade 401101), e a proposta de cada pessoa depende da análise do banco.
+
+## Taxas usadas nas simulações hoje ({data_br})
+{chr(10).join(linhas)}
+{serie}
+## Como os números são calculados
+- Fonte das taxas: API pública do Banco Central, modalidade 401101 (aquisição de veículos, pessoa física, pré-fixada), taxa média do mês por banco. O Banco Central publica uma única modalidade para veículos, sem divisão por categoria.
+- Parcela fixa pela Tabela Price. A renda mínima usa 30% de comprometimento da renda bruta.
+- Entrada mínima usada por categoria (convenção de mercado, ainda não confirmada banco a banco): {entradas}.
+- CET: TIR do fluxo com IOF, tarifa de registro e seguro prestamista estimados. Detalhes: {DOMINIO}/metodologia
+
+## Páginas principais
+- Comparador carro novo: {DOMINIO}/{slug_comparador('novo')}
+- Comparador carro usado: {DOMINIO}/{slug_comparador('usado')}
+- Comparador moto: {DOMINIO}/{slug_comparador('moto')}
+- Parcela por valor e prazo: {DOMINIO}/financiamento-veiculos
+- Renda necessária por valor do veículo: {DOMINIO}/{SLUG_INDICE_RENDA}
+- Taxas mês a mês: {DOMINIO}/{SLUG_INDICE_MENSAL}
+- Dados abertos (CSV, JSON): {DOMINIO}/dados-abertos
+- Metodologia: {DOMINIO}/metodologia
+- Guias: {DOMINIO}/aprenda
+
+## Como citar
+Datalab Global ({DOMINIO}/), taxas do Banco Central compiladas em {data_br}.
+
+## Responsável
+Marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com
+"""
+    with open(os.path.join(pasta_saida, "llms-full.txt"), "w", encoding="utf-8") as f:
+        f.write(conteudo)
+
+
+def gerar_medicao_js(pasta_saida):
+    """medicao.js: cliques no CTA do parceiro e primeira interação com o
+    simulador. Só é gerado/carregado com UMAMI_WEBSITE_ID."""
+    caminho = os.path.join(pasta_saida, "medicao.js")
+    if not UMAMI_WEBSITE_ID:
+        if os.path.exists(caminho):
+            os.remove(caminho)
+        return
+    js = """(function () {
+  function bloco(a) {
+    if (a.closest('nav')) return 'topo';
+    if (a.closest('footer')) return 'rodape';
+    var s = a.closest('[id]');
+    return s ? s.id : 'corpo';
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('__SELETOR__');
+    if (a && window.umami) umami.track('cta-financiatudo', { pagina: location.pathname, bloco: bloco(a) });
+  }, true);
+  var usou = false;
+  document.addEventListener('input', function (e) {
+    if (usou || !window.umami || !e.target.matches('input')) return;
+    usou = true;
+    umami.track('usou-simulador', { pagina: location.pathname });
+  }, true);
+})();
+""".replace("__SELETOR__", SELETOR_CTA_PARCEIRO)
+    with open(caminho, "w", encoding="utf-8") as f:
+        f.write(js)
+
+
+def tags_medicao():
+    """<script> do Umami + medicao.js para o <head> (lista vazia sem UMAMI_WEBSITE_ID)."""
+    if not UMAMI_WEBSITE_ID:
+        return []
+    host = DOMINIO.replace("https://", "")
+    return [f'<script defer src="{UMAMI_SCRIPT}" data-website-id="{UMAMI_WEBSITE_ID}" data-domains="{host}" data-do-not-track="true"></script>',
+            '<script defer src="/medicao.js"></script>']
 
 
 def gerar_dados_abertos(pasta_saida, data_atualizacao):
@@ -2685,7 +2975,9 @@ def linhas_comparacao(categoria, valor, prazo):
 
 GUIAS_RELACIONADOS = ("aprenda-o-que-e-cet", "aprenda-tabela-price", "aprenda-o-que-e-cdc",
                       "aprenda-iof-financiamento-veiculo", "aprenda-amortizacao-extra-veiculo",
-                      "aprenda-financiamento-x-consorcio-veiculo")
+                      "aprenda-financiamento-x-consorcio-veiculo", "aprenda-quitacao-antecipada-financiamento-veiculo",
+                      "aprenda-portabilidade-financiamento-veiculo", "aprenda-score-e-taxa-financiamento-veiculo",
+                      "aprenda-entrada-ideal-financiamento-veiculo")
 
 
 def _guias_html():
@@ -2793,7 +3085,14 @@ def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup):
                         {"@type": "ListItem", "position": 3, "name": f"{label} {vc} em {prazo} meses", "item": url_canonica},
                     ],
                 }
-                head = render_head(titulo, meta, url_canonica, [schema_breadcrumb, schema_faq])
+                schema_lista = {
+                    "@context": "https://schema.org", "@type": "ItemList",
+                    "name": f"Bancos para financiar {nome_cat} de {vc} em {prazo} meses, do menor ao maior CET",
+                    "numberOfItems": len(linhas),
+                    "itemListElement": [{"@type": "ListItem", "position": pos, "name": x["nome_exibicao"]}
+                                        for pos, x in enumerate(linhas, start=1)],
+                }
+                head = render_head(titulo, meta, url_canonica, [schema_breadcrumb, schema_faq, schema_lista])
                 breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Financiamento de veículos", "financiamento-veiculos"), (f"{label} {vc} em {prazo} meses", None)])
 
                 corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
@@ -3316,8 +3615,8 @@ def gerar_hub_aprenda(artigos, data_atualizacao):
     }
     head = render_head(
         "Aprenda: guias sobre financiamento de veículos | Datalab Global",
-        "Guias sobre financiamento de veículos: CDC, Tabela Price, IOF, CET, amortização extra e "
-        "consórcio, explicados sem juridiquês e com dados do Banco Central.",
+        "Guias sobre financiamento de veículos: CDC, Price, IOF, CET, amortização, consórcio, "
+        "quitação antecipada, portabilidade, score e entrada, sem juridiquês.",
         url_canonica, [schema_breadcrumb],
     )
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Aprenda", None)])
@@ -3458,6 +3757,135 @@ ARTIGOS_APRENDA = [
         </div>''',
         "cta_href": "comparador-carro-novo",
         "cta_texto": "Simular financiamento de carro novo",
+    },
+]
+
+
+# ---------------------------------------------------------------------------
+# Guias de 31/out/2026 (motor v3b). Os fatos legais foram conferidos em fonte
+# oficial antes de escritos (CDC art. 52 §2º; Resolução CMN 4.292/2013; Lei
+# 12.414/2011 e o Cadastro Positivo, segundo gov.br e Banco Central). Os
+# números dos exemplos são contas feitas com o mesmo cálculo do simulador, com
+# taxas ilustrativas (não são oferta). Onde não conseguimos confirmar uma
+# regra em fonte oficial, o texto descreve a situação sem afirmá-la.
+# ---------------------------------------------------------------------------
+def _saldo_apos(valor, prazo, taxa_am, pagas):
+    """Saldo devedor (Tabela Price) depois de `pagas` parcelas."""
+    i = taxa_am / 100
+    pmt = calcular_pmt_price(valor, prazo, taxa_am)
+    restantes = prazo - pagas
+    return pmt * (1 - (1 + i) ** -restantes) / i if i else pmt * restantes
+
+
+_PMT_Q = calcular_pmt_price(40_000, 48, 2.0)
+_SALDO_Q = _saldo_apos(40_000, 48, 2.0, 24)
+_RESTANTE_Q = _PMT_Q * 24
+
+_PMT_P1 = calcular_pmt_price(30_000, 36, 2.2)
+_PMT_P2 = calcular_pmt_price(30_000, 36, 1.8)
+
+_PMT_S1 = calcular_pmt_price(50_000, 48, 1.8)
+_PMT_S2 = calcular_pmt_price(50_000, 48, 2.3)
+
+_LINHAS_ENTRADA = "".join(
+    f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white">{round(e * 100)}% ({formatar_reais(80_000 * e)})</th>'
+    f'<td class="px-2 py-2 text-right">{formatar_reais(80_000 * (1 - e))}</td>'
+    f'<td class="px-2 py-2 text-right">{formatar_reais(calcular_pmt_price(80_000 * (1 - e), 48, 2.0))}</td>'
+    f'<td class="px-2 py-2 text-right">{formatar_reais(calcular_pmt_price(80_000 * (1 - e), 48, 2.0) * 48 - 80_000 * (1 - e))}</td></tr>'
+    for e in (0.20, 0.30, 0.50))
+
+ARTIGOS_APRENDA += [
+    {
+        "slug": "aprenda-quitacao-antecipada-financiamento-veiculo",
+        "titulo_h1": "Quitar o financiamento do veículo antes do prazo: você tem desconto nos juros",
+        "titulo_pagina": "Quitação antecipada do financiamento de veículo | Datalab Global",
+        "meta_description": "Pagar o financiamento do carro ou da moto antes do fim dá direito a abatimento proporcional dos juros. Veja a conta, como pedir e onde reclamar.",
+        "resumo_card": "O Código de Defesa do Consumidor garante a redução proporcional dos juros ao quitar antes. Veja a conta com números.",
+        "corpo_html": f'''<p>Quem quita um financiamento antes do fim do contrato não precisa pagar os juros das parcelas que ainda não venceram. O <strong class="text-white">Código de Defesa do Consumidor (Lei 8.078/1990, art. 52, § 2º)</strong> assegura a liquidação antecipada do débito, total ou parcial, com redução proporcional dos juros e demais acréscimos. É o que órgãos de defesa do consumidor, como o <a href="https://proconresponde.sc.gov.br/faq/quero-efetuar-o-pagamento-das-parcelas-de-um-financiamento-antecipadamente-tenho-desconto/" rel="noopener" class="text-sky-400 underline">Procon de Santa Catarina</a>, orientam.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">A conta, com um exemplo</h2>
+            <p>Um financiamento de R$ 40.000 em 48 parcelas, a 2,00% ao mês (taxa ilustrativa), tem parcela de {formatar_reais(_PMT_Q)} pela Tabela Price. Depois de pagar 24 parcelas, faltam 24. Somando-as, seriam {formatar_reais(_RESTANTE_Q)}. Mas o saldo devedor, o valor que o banco realmente emprestou e ainda não recebeu de volta, é de {formatar_reais(_SALDO_Q)}. A diferença, <strong class="text-white">{formatar_reais(_RESTANTE_Q - _SALDO_Q)}</strong>, são juros que só existiriam se você continuasse pagando até o fim.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Como pedir</h2>
+            <p>Peça ao banco, por escrito ou pelo aplicativo, o <strong class="text-white">saldo devedor para quitação</strong> e a memória de cálculo. Compare com a soma das parcelas que faltam: o valor para quitar deve ser menor. Pergunte se há qualquer cobrança adicional e peça que conste no documento. Depois de pagar, guarde o comprovante de quitação e confirme a baixa da alienação fiduciária no documento do veículo.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">E se o banco não der o desconto?</h2>
+            <p>Registre uma reclamação no Procon da sua cidade ou estado e no Banco Central. Guarde as propostas e os comprovantes. Se quiser pagar só uma parte, veja também como funciona a <a href="aprenda-amortizacao-extra-veiculo" class="text-sky-400 underline">amortização extra</a>.</p>
+        </div>
+        <p class="text-xs text-slate-500">Os números são um exemplo calculado como no simulador, sem IOF, tarifas e seguro, e não são oferta de crédito. Fonte legal: Lei 8.078/1990 (Código de Defesa do Consumidor), art. 52, § 2º.</p>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Simular um financiamento",
+    },
+    {
+        "slug": "aprenda-portabilidade-financiamento-veiculo",
+        "titulo_h1": "Portabilidade do financiamento de veículo: dá para trocar de banco?",
+        "titulo_pagina": "Portabilidade de financiamento de veículo: como funciona | Datalab Global",
+        "meta_description": "Como levar o financiamento do carro ou da moto para outro banco com taxa menor: o que diz a regra do Banco Central, quando vale a pena e como fazer a conta.",
+        "resumo_card": "Trocar o financiamento de banco é permitido, mas não é automático. Veja quando compensa, com a conta.",
+        "corpo_html": f'''<p>A portabilidade permite transferir uma dívida de um banco para outro que ofereça condições melhores. A <a href="https://www.bcb.gov.br/pre/normativos/res/2013/pdf/res_4292_v1_O.pdf" rel="noopener" class="text-sky-400 underline">Resolução CMN 4.292/2013</a>, do Banco Central, trata da portabilidade de operações de crédito de pessoas físicas, e o Banco Central aponta o financiamento de veículos entre as modalidades que mais aparecem nas operações portadas, segundo o <a href="https://www.bcb.gov.br/content/publicacoes/Documents/reb/boxesreb2020/boxe_2_evolucao_portabilidade_credito_brasil.pdf" rel="noopener" class="text-sky-400 underline">Relatório de Economia Bancária de 2020</a>.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Como funciona</h2>
+            <p>O banco novo quita o saldo devedor no banco de origem e passa a ser o seu credor, com a taxa e o prazo que propuser. Ele faz a própria análise de crédito, então a aprovação não é garantida. O veículo continua como garantia do financiamento.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Quando vale a pena: a conta</h2>
+            <p>Imagine que faltam 36 parcelas e o saldo devedor é de R$ 30.000. Com taxa de 2,20% ao mês, a parcela é de {formatar_reais(_PMT_P1)}. Se outro banco oferecer 1,80% ao mês no mesmo prazo, a parcela cai para {formatar_reais(_PMT_P2)}, uma economia de <strong class="text-white">{formatar_reais((_PMT_P1 - _PMT_P2) * 36)}</strong> ao longo dos 36 meses (exemplo ilustrativo). Quanto menos parcelas faltam, menor tende a ser a economia, porque o saldo já é pequeno.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Passo a passo</h2>
+            <p>1) Peça ao banco atual o saldo devedor e o CET do contrato. 2) Compare com propostas de outros bancos pelo <a href="aprenda-o-que-e-cet" class="text-sky-400 underline">CET</a>, não só pela taxa. 3) Use o <a href="comparador-carro-novo" class="text-sky-400 underline">comparador</a> e a página de <a href="taxas-financiamento-veiculos" class="text-sky-400 underline">taxas mês a mês</a> para ter referência. 4) Se o banco de origem criar dificuldades, registre reclamação no Banco Central e no Procon.</p>
+        </div>
+        <p class="text-xs text-slate-500">Exemplo calculado como no simulador, sem IOF, tarifas e seguro; não é oferta de crédito. Fonte: Resolução CMN 4.292/2013 (Banco Central do Brasil).</p>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Ver taxas dos bancos",
+    },
+    {
+        "slug": "aprenda-score-e-taxa-financiamento-veiculo",
+        "titulo_h1": "Score de crédito e a taxa do financiamento de veículo",
+        "titulo_pagina": "Score de crédito e taxa do financiamento de veículo | Datalab Global",
+        "meta_description": "Como o score e o Cadastro Positivo entram na taxa do financiamento de carro ou moto, o que você controla e quanto meio ponto de taxa muda a parcela.",
+        "resumo_card": "Duas pessoas, o mesmo banco, taxas diferentes: veja o que é o score e quanto a taxa pesa no bolso.",
+        "corpo_html": f'''<p>As taxas que mostramos aqui são <strong class="text-white">médias</strong> contratadas por cada banco, divulgadas pelo Banco Central. A taxa da sua proposta pode ser maior ou menor, porque o banco avalia o risco de cada cliente. Uma das informações usadas é o histórico de crédito, que os birôs resumem em uma nota, o score.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">O que é o Cadastro Positivo</h2>
+            <p>O Cadastro Positivo foi criado pela Lei 12.414/2011 e reúne o histórico de pagamentos dos consumidores. Segundo o <a href="https://www.gov.br/pt-br/noticias/financas-impostos-e-gestao-publica/2020/01/cadastro-positivo-ja-esta-no-ar" rel="noopener" class="text-sky-400 underline">Portal Gov.br</a>, a inclusão é automática, e quem não quiser participar pode pedir a exclusão. Segundo o <a href="https://www.bcb.gov.br/content/publicacoes/Documents/outras_pub_alfa/analise_dos_efeitos_do_cadastro_positivo.pdf" rel="noopener" class="text-sky-400 underline">Banco Central</a>, os gestores de bancos de dados podem informar a nota de crédito, mas o histórico detalhado só pode ser disponibilizado com autorização prévia do consumidor. Sair do cadastro pode deixar os birôs sem dados para calcular a sua nota.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Quanto a taxa pesa no bolso</h2>
+            <p>Num financiamento de R$ 50.000 em 48 meses, a 1,80% ao mês a parcela é de {formatar_reais(_PMT_S1)}; a 2,30% ao mês, de {formatar_reais(_PMT_S2)}. Em 48 meses, são <strong class="text-white">{formatar_reais((_PMT_S2 - _PMT_S1) * 48)}</strong> a mais por apenas 0,5 ponto percentual de taxa por mês (exemplo ilustrativo).</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">O que você controla</h2>
+            <p>Pagar as contas em dia, regularizar dívidas em atraso e conferir se os seus dados nos birôs estão corretos. Os birôs não divulgam a fórmula do score, então desconfie de promessas de aumentar a nota rápido. Antes de assinar, peça propostas em mais de um banco e compare pelo <a href="aprenda-o-que-e-cet" class="text-sky-400 underline">CET</a>. Veja também a <a href="metodologia" class="text-sky-400 underline">metodologia</a> das nossas taxas.</p>
+        </div>
+        <p class="text-xs text-slate-500">Exemplo calculado como no simulador, sem IOF, tarifas e seguro; não é oferta de crédito. Fontes: Lei 12.414/2011; Portal Gov.br; Banco Central do Brasil.</p>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Comparar bancos",
+    },
+    {
+        "slug": "aprenda-entrada-ideal-financiamento-veiculo",
+        "titulo_h1": "Qual a entrada ideal no financiamento de veículo?",
+        "titulo_pagina": "Entrada ideal no financiamento de veículo: a conta | Datalab Global",
+        "meta_description": "Quanto dar de entrada no financiamento do carro ou da moto: veja como 20%, 30% e 50% mudam a parcela e o total de juros, com números.",
+        "resumo_card": "Não existe um percentual ideal para todos. Veja o que a conta mostra para 20%, 30% e 50% de entrada.",
+        "corpo_html": f'''<p>Não existe uma entrada ideal que sirva para todo mundo: o que existe é um equilíbrio entre pagar menos juros e manter dinheiro disponível. Cada banco define o mínimo que exige. Nas nossas simulações, usamos 20% para carro novo e 30% para carro usado e moto, uma convenção de mercado que ainda não confirmamos banco a banco, como explicamos na <a href="metodologia" class="text-sky-400 underline">metodologia</a>.</p>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">O que a conta mostra</h2>
+            <p class="mb-4">Veículo de R$ 80.000, 48 meses, taxa de 2,00% ao mês (ilustrativa), Tabela Price:</p>
+            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
+                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Entrada</th><th scope="col" class="px-2 py-2 text-right font-medium">Financiado</th><th scope="col" class="px-2 py-2 text-right font-medium">Parcela</th><th scope="col" class="px-2 py-2 text-right font-medium">Juros no total</th></tr></thead>
+                <tbody>{_LINHAS_ENTRADA}</tbody></table></div>
+            <p class="mt-4">Cada real a mais de entrada deixa de render juros por 48 meses. Mas a entrada é dinheiro que sai da sua reserva.</p>
+        </div>
+        <div class="border-t border-white/10 pt-6">
+            <h2 class="font-serif text-xl text-white mb-3">Como decidir</h2>
+            <p>Primeiro, a parcela precisa caber no orçamento: veja quanto de <a href="renda-para-financiar-veiculo" class="text-sky-400 underline">renda os bancos costumam exigir</a> para o valor que você quer. Depois, evite zerar a reserva de emergência para aumentar a entrada: um imprevisto sem reserva pode custar mais caro que os juros economizados. Por fim, simule os cenários no <a href="comparador-carro-novo" class="text-sky-400 underline">comparador</a> e compare o <a href="aprenda-o-que-e-cet" class="text-sky-400 underline">CET</a>, que inclui IOF, tarifas e seguro.</p>
+        </div>
+        <p class="text-xs text-slate-500">Exemplo calculado como no simulador, sem IOF, tarifas e seguro; não é oferta de crédito.</p>''',
+        "cta_href": "comparador-carro-novo",
+        "cta_texto": "Simular com a minha entrada",
     },
 ]
 
@@ -3605,6 +4033,8 @@ Total de páginas de simulação: {total_paginas}
 - [Imprensa: números atualizados para citar]({DOMINIO}/imprensa)
 - [Taxas de financiamento de veículos mês a mês, desde 2024]({DOMINIO}/taxas-financiamento-veiculos)
 - [Metodologia: fonte das taxas e fórmulas]({DOMINIO}/metodologia)
+- [Renda necessária para financiar um veículo, por valor]({DOMINIO}/renda-para-financiar-veiculo)
+- [Versão completa com os números atuais]({DOMINIO}/llms-full.txt)
 - [Sitemap completo]({DOMINIO}/sitemap.xml)
 
 ## Sobre os dados
@@ -3625,9 +4055,9 @@ def gerar_headers():
         "  Strict-Transport-Security: max-age=31536000; includeSubDomains\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n"
         "  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()\n"
-        "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; "
+        "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cloud.umami.is; "
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; "
-        "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; "
+        "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://cloud.umami.is https://api-gateway.umami.dev; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'\n\n"
         "/styles.css\n"
         "  Cache-Control: public, max-age=31536000, immutable\n\n"
@@ -3694,6 +4124,9 @@ def gerar_site(pasta_saida='paginas_seo'):
     urls_sitemap.extend(gerar_pagina_imprensa(pasta_saida, data_atualizacao))
     urls_sitemap.extend(gerar_paginas_mensais(pasta_saida, data_atualizacao, historico_cache()))
     urls_sitemap.extend(gerar_pagina_metodologia(pasta_saida, data_atualizacao))
+    urls_sitemap.extend(gerar_paginas_renda(pasta_saida, data_atualizacao))
+    gerar_llms_full_txt(pasta_saida, data_atualizacao, historico_cache())
+    gerar_medicao_js(pasta_saida)
 
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
         f.write(gerar_index(data_atualizacao))
