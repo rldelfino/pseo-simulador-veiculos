@@ -16,6 +16,8 @@ Total de páginas de simulação: 840
 - [Imprensa: números atualizados para citar](https://veiculos.datalabglobal.com/imprensa)
 - [Taxas de financiamento de veículos mês a mês, desde 2024](https://veiculos.datalabglobal.com/taxas-financiamento-veiculos)
 - [Metodologia: fonte das taxas e fórmulas](https://veiculos.datalabglobal.com/metodologia)
+- [Renda necessária para financiar um veículo, por valor](https://veiculos.datalabglobal.com/renda-para-financiar-veiculo)
+- [Versão completa com os números atuais](https://veiculos.datalabglobal.com/llms-full.txt)
 - [Sitemap completo](https://veiculos.datalabglobal.com/sitemap.xml)
 
 ## Sobre os dados

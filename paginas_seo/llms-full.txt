@@ -1,0 +1,49 @@
+# Datalab Global: simulador de financiamento de veículos (versão completa)
+
+> Simulador e dados abertos de financiamento de carro novo, carro usado e moto no Brasil. Última atualização das taxas: 26/10/2026. Os números abaixo podem ser citados com link para https://veiculos.datalabglobal.com/ (dados sob licença CC BY 4.0).
+
+## O que é e o que não é
+Calcula parcela (Tabela Price), CET estimado e economia de juros com amortização extra. Não é oferta de crédito: as taxas são médias efetivamente contratadas, divulgadas pelo Banco Central (modalidade 401101), e a proposta de cada pessoa depende da análise do banco.
+
+## Taxas usadas nas simulações hoje (26/10/2026)
+- Caixa: taxa de 1,01% ao mês (12,75% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Banco do Brasil: taxa de 1,06% ao mês (13,53% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Banco Inter: taxa de 1,65% ao mês (21,69% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Bradesco: taxa de 1,66% ao mês (21,87% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Santander: taxa de 1,86% ao mês (24,75% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Itaú: taxa de 1,96% ao mês (26,21% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- C6 Bank: taxa de 1,97% ao mês (26,39% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- BV Financeira: taxa de 2,20% ao mês (29,88% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Banco Honda: taxa de 2,48% ao mês (34,23% ao ano), prazo de até 48 meses (moto).
+- Banco Yamaha: taxa de 2,66% ao mês (37,10% ao ano), prazo de até 48 meses (moto).
+- Banco Pan: taxa de 2,85% ao mês (40,07% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+- Omni Financeira: taxa de 3,45% ao mês (50,21% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
+
+## Taxa média contratada em setembro de 2026 (Banco Central)
+- Menor: Caixa, 1,00% ao mês.
+- Maior: Omni Financeira, 3,32% ao mês.
+- Média simples de 12 bancos: 2,03% ao mês.
+- Série mensal desde outubro de 2024: https://veiculos.datalabglobal.com/taxas-financiamento-veiculos
+
+## Como os números são calculados
+- Fonte das taxas: API pública do Banco Central, modalidade 401101 (aquisição de veículos, pessoa física, pré-fixada), taxa média do mês por banco. O Banco Central publica uma única modalidade para veículos, sem divisão por categoria.
+- Parcela fixa pela Tabela Price. A renda mínima usa 30% de comprometimento da renda bruta.
+- Entrada mínima usada por categoria (convenção de mercado, ainda não confirmada banco a banco): carro novo: 20%; carro usado: 30%; moto: 30%.
+- CET: TIR do fluxo com IOF, tarifa de registro e seguro prestamista estimados. Detalhes: https://veiculos.datalabglobal.com/metodologia
+
+## Páginas principais
+- Comparador carro novo: https://veiculos.datalabglobal.com/comparador-carro-novo
+- Comparador carro usado: https://veiculos.datalabglobal.com/comparador-carro-usado
+- Comparador moto: https://veiculos.datalabglobal.com/comparador-moto
+- Parcela por valor e prazo: https://veiculos.datalabglobal.com/financiamento-veiculos
+- Renda necessária por valor do veículo: https://veiculos.datalabglobal.com/renda-para-financiar-veiculo
+- Taxas mês a mês: https://veiculos.datalabglobal.com/taxas-financiamento-veiculos
+- Dados abertos (CSV, JSON): https://veiculos.datalabglobal.com/dados-abertos
+- Metodologia: https://veiculos.datalabglobal.com/metodologia
+- Guias: https://veiculos.datalabglobal.com/aprenda
+
+## Como citar
+Datalab Global (https://veiculos.datalabglobal.com/), taxas do Banco Central compiladas em 26/10/2026.
+
+## Responsável
+Marca de Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73. Contato: contato@datalabglobal.com
