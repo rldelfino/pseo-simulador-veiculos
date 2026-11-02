@@ -1,10 +1,10 @@
 # Taxas médias de juros do financiamento de veículos por banco
 
-Taxa média de juros efetivamente contratada no financiamento de veículos (aquisição de veículos, pessoa física, pré-fixada), por banco, ao mês e ao ano, segundo o Banco Central do Brasil. Para cada mês fechado, a última janela de 5 dias úteis divulgada. Cobre 24 meses (out/24 a set/26) e 12 instituições. O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), sem separar carro novo, carro usado e moto: a taxa de cada banco é a mesma série para as três categorias.
+Taxa média de juros efetivamente contratada no financiamento de veículos (aquisição de veículos, pessoa física, pré-fixada), por banco, ao mês e ao ano, segundo o Banco Central do Brasil. Para cada mês fechado, a última janela de 5 dias úteis divulgada. Cobre 24 meses (nov/24 a out/26) e 12 instituições. O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), sem separar carro novo, carro usado e moto: a taxa de cada banco é a mesma série para as três categorias.
 
 - **Fonte original:** [Banco Central do Brasil](https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101), modalidade 401101.
 - **Licença:** CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.pt-br). Pode usar, copiar e adaptar, citando a fonte.
-- **Atualização:** a cada mês fechado. Última atualização: 2026-10-26.
+- **Atualização:** a cada mês fechado. Última atualização: 2026-11-02.
 - **Arquivos:** `taxas-financiamento-veiculos.csv`, `taxas-financiamento-veiculos.json`, `datapackage.json`.
 - **Colunas:** `mes_referencia`, `periodo_inicio`, `periodo_fim`, `instituicao`, `taxa_juros_am_pct`, `taxa_juros_aa_pct`.
 - **Limites:** são médias do que foi efetivamente contratado, não ofertas; a modalidade não separa carro novo, usado e moto.
