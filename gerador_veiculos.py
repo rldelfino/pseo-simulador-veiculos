@@ -583,13 +583,16 @@ function calcularCetVeiculo(valorFinanciado, prazoMeses, taxaAm) {
         saldo -= amortizacao;
     }
     const valorLiquidoRecebido = valorFinanciado - iof - TARIFA_REGISTRO_CONTRATO;
+    // Desempenho (02/nov/2026): fator de desconto incremental em vez de Math.pow por parcela e 36 iterações de
+    // bisseção (precisão de ~2e-12 ao mês, além das 2 casas exibidas).
     const vpl = (r) => {
-        let total = -valorLiquidoRecebido;
-        for (let i = 0; i < fluxo.length; i++) total += fluxo[i] / Math.pow(1 + r, i + 1);
+        const f = 1 / (1 + r);
+        let d = 1, total = -valorLiquidoRecebido;
+        for (let i = 0; i < fluxo.length; i++) { d *= f; total += fluxo[i] * d; }
         return total;
     };
     let lo = 0, hi = 0.15; // teto com margem de segurança maior — ver comentário em calcular_cet_veiculo (Python)
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 36; i++) {
         const mid = (lo + hi) / 2;
         if (vpl(mid) > 0) lo = mid; else hi = mid;
     }
