@@ -202,3 +202,21 @@ def test_titulos_dos_hubs_trazem_taxa_e_cabem_em_60_caracteres():
     for f in hubs:
         t = _re.search(r"<title>(.*?)</title>", open(f, encoding="utf-8").read()).group(1)
         assert len(t) <= 60 and t.lower().startswith("taxa"), (f, t)
+
+
+def test_home_tem_tabela_de_taxas_do_dia_igual_aos_hubs():
+    import os as _os, re as _re
+    raiz = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    caminho = _os.path.join(raiz, "paginas_seo", "index.html")
+    if not _os.path.exists(caminho):
+        import pytest as _pytest
+        _pytest.skip("paginas_seo/ não gerada")
+    html = open(caminho, encoding="utf-8").read()
+    assert html.count("<table") >= 2 and "hoje, por banco" in html
+    # sem tabelas repetidas: cada <tbody> aparece uma vez
+    corpos = _re.findall(r"<tbody>(.*?)</tbody>", html, _re.S)
+    assert len(corpos) == len(set(corpos))
+    # a taxa de um banco na home é a mesma do hub dele
+    m = _re.search(r'<a href="(hub-[a-z0-9-]+)" class="hover:text-sky-400">([^<]+)</a></th><td[^>]*>([\d,]+%)', html)
+    hub = open(_os.path.join(raiz, "paginas_seo", m.group(1) + ".html"), encoding="utf-8").read()
+    assert m.group(3) in hub
