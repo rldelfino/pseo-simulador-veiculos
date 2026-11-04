@@ -1665,7 +1665,18 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     taxa_am_fmt = f"{dados_banco['taxa_am']:.2f}".replace('.', ',')
     taxa_aa_fmt = f"{dados_banco['taxa_aa']:.2f}".replace('.', ',')
 
-    titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: simulações | Datalab"
+    # Achado real (04/11/2026, Bing Webmaster > AI Performance): o Copilot cita o site para "taxa financiamento carro
+    # novo", "taxas de financiamento de veículos" e "comparar taxas financiamento carro". O título passa a trazer
+    # "taxa" e o ano, sem passar de 60 caracteres (a marca sai primeiro, depois a palavra "simulador").
+    ano_hub = date.fromisoformat(data_atualizacao).year if isinstance(data_atualizacao, str) else date.today().year
+    candidatos_titulo = (
+        f"Taxa de financiamento {label_categoria} {banco_exib} {ano_hub} | Datalab",
+        f"Taxa de financiamento {label_categoria} {banco_exib}: simulador {ano_hub}",
+        f"Taxa de financiamento {label_categoria} {banco_exib} {ano_hub}",
+        f"Taxa financiamento {label_categoria} {banco_exib} {ano_hub}",
+        f"Financiamento {label_categoria} {banco_exib}: simulações | Datalab",
+    )
+    titulo_pagina = next((t for t in candidatos_titulo if len(t) <= 60), candidatos_titulo[-1])
     meta_description = (
         f"Taxa do {banco_exib} hoje para {label_categoria.lower()}: {taxa_am_fmt}% ao mês ({taxa_aa_fmt}% ao ano). "
         f"Simulações por valor e prazo, até {dados_banco['prazo_max']} meses."
