@@ -11,7 +11,7 @@ Total de páginas de simulação: 840
 - [Comparador Carro Usado](https://veiculos.datalabglobal.com/comparador-carro-usado)
 - [Comparador Moto](https://veiculos.datalabglobal.com/comparador-moto)
 - [Financiamento de veículo: parcela por valor e prazo](https://veiculos.datalabglobal.com/financiamento-veiculos)
-- [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON](https://veiculos.datalabglobal.com/dados-abertos)
+- [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON](https://veiculos.datalabglobal.com/dados-abertos) (cópia no Kaggle: https://www.kaggle.com/datasets/rodolfodelfino/taxas-financiamento-de-veculos-por-banco-bacen)
 - [Simulador de financiamento de veículos para incorporar no seu site (grátis)](https://veiculos.datalabglobal.com/incorporar)
 - [Imprensa: números atualizados para citar](https://veiculos.datalabglobal.com/imprensa)
 - [Taxas de financiamento de veículos mês a mês, desde 2024](https://veiculos.datalabglobal.com/taxas-financiamento-veiculos)

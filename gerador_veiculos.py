@@ -1783,6 +1783,8 @@ MESES_PT = ["janeiro", "fevereiro", "março", "abril", "maio", "junho",
 MESES_PT_ABREV = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
 FONTE_BACEN_URL = "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101"
 LICENCA_DADOS = "CC BY 4.0"
+# Cópia do conjunto de dados no Kaggle (publicada em 04/11/2026).
+URL_KAGGLE = "https://www.kaggle.com/datasets/rodolfodelfino/taxas-financiamento-de-veculos-por-banco-bacen"
 LICENCA_DADOS_URL = "https://creativecommons.org/licenses/by/4.0/deed.pt-br"
 MESES_NA_TABELA_EVOLUCAO = 6
 NOTA_MODALIDADE = ("O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), "
@@ -2593,7 +2595,7 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
         "description": descricao, "url": url_pagina, "inLanguage": "pt-BR",
         "license": LICENCA_DADOS_URL, "isAccessibleForFree": True,
         "creator": {"@type": "Organization", "name": "Datalab Global", "url": f"{DOMINIO}/"},
-        "isBasedOn": FONTE_BACEN_URL, "dateModified": data_atualizacao,
+        "isBasedOn": FONTE_BACEN_URL, "dateModified": data_atualizacao, "sameAs": URL_KAGGLE,
         "temporalCoverage": f"{ini}/{fim}", "spatialCoverage": {"@type": "Country", "name": "Brasil"},
         "variableMeasured": ["Taxa média de juros contratada (% ao mês)", "Taxa média de juros contratada (% ao ano)"],
         "distribution": [
@@ -2625,6 +2627,7 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
                 <li><a href="dados/taxas-financiamento-veiculos.json" download class="text-sky-400 underline">taxas-financiamento-veiculos.json</a> <span class="text-slate-400">· para programação</span></li>
                 <li><a href="dados/datapackage.json" download class="text-sky-400 underline">datapackage.json</a> <span class="text-slate-400">· metadados (Frictionless Data)</span></li>
                 <li><a href="dados/README.md" class="text-sky-400 underline">README.md</a> <span class="text-slate-400">· descrição e como citar</span></li>
+                <li><a href="{URL_KAGGLE}" rel="noopener" class="text-sky-400 underline">Kaggle</a> <span class="text-slate-400">· mesma série, com notebook de exemplo</span></li>
             </ul>
         </section>
 
@@ -4031,7 +4034,7 @@ Total de páginas de simulação: {total_paginas}
 - [Comparador Carro Usado]({DOMINIO}/{slug_comparador('usado')})
 - [Comparador Moto]({DOMINIO}/{slug_comparador('moto')})
 - [Financiamento de veículo: parcela por valor e prazo]({DOMINIO}/financiamento-veiculos)
-- [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON]({DOMINIO}/dados-abertos)
+- [Dados abertos: taxas de financiamento por banco, série mensal em CSV e JSON]({DOMINIO}/dados-abertos) (cópia no Kaggle: {URL_KAGGLE})
 - [Simulador de financiamento de veículos para incorporar no seu site (grátis)]({DOMINIO}/incorporar)
 - [Imprensa: números atualizados para citar]({DOMINIO}/imprensa)
 - [Taxas de financiamento de veículos mês a mês, desde 2024]({DOMINIO}/taxas-financiamento-veiculos)

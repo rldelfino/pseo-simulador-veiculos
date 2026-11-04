@@ -180,3 +180,13 @@ def test_guias_novos_no_sitemap_hub_e_com_fonte():
     assert "art. 52, § 2º" in _ler(GUIAS_NOVOS[0] + ".html")
     assert "Resolução CMN 4.292/2013" in _ler(GUIAS_NOVOS[1] + ".html")
     assert "Lei 12.414/2011" in _ler(GUIAS_NOVOS[2] + ".html")
+
+
+def test_pagina_de_dados_abertos_aponta_para_o_kaggle():
+    import os as _os
+    caminho = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "paginas_seo", "dados-abertos.html")
+    if not _os.path.exists(caminho):
+        import pytest as _pytest
+        _pytest.skip("paginas_seo/ não gerada")
+    html = open(caminho, encoding="utf-8").read()
+    assert html.count("https://www.kaggle.com/datasets/rodolfodelfino/") >= 2  # link visível + sameAs do Dataset
