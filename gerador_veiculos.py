@@ -1654,6 +1654,38 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
 # Hub por banco+categoria: hub-{banco}-{categoria}.html
 # ---------------------------------------------------------------------------
 
+def schema_webpage(url, nome, descricao, data_atualizacao):
+    """JSON-LD WebPage (04/11/2026): url, nome, data de modificação, site e publicador, para hubs, comparadores
+    e home (as páginas que o Copilot mais cita, segundo o Bing > AI Performance)."""
+    return {
+        "@context": "https://schema.org", "@type": "WebPage", "url": url, "name": nome, "description": descricao,
+        "inLanguage": "pt-BR", "dateModified": data_atualizacao,
+        "isPartOf": {"@type": "WebSite", "url": f"{DOMINIO}/", "name": "Datalab Global"},
+        "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"},
+    }
+
+
+def html_mais_sobre_banco(categoria, banco_exib):
+    """Bloco 'Mais sobre {banco}' dos hubs: taxas mês a mês, renda necessária, comparador da categoria,
+    metodologia e dois guias. Só links para páginas que existem."""
+    label = CATEGORIA_LABEL[categoria].lower()
+    meses = sorted({r["mes_referencia"] for r in historico_cache()})
+    itens = []
+    if meses:
+        itens.append((slug_mes(meses[-1]), f"Taxas de financiamento de veículos em {nome_mes(meses[-1])}"))
+    itens.append((SLUG_INDICE_MENSAL, "Taxas de financiamento de veículos mês a mês"))
+    valor_renda = VALORES_POR_CATEGORIA[categoria][len(VALORES_POR_CATEGORIA[categoria]) // 2]
+    itens.append((slug_renda(categoria, valor_renda), f"Renda necessária para financiar {label} de {formatar_valor_curto(valor_renda)}"))
+    itens.append((SLUG_INDICE_RENDA, "Renda para financiar veículo, por valor"))
+    itens.append((slug_comparador(categoria), f"Comparar bancos para financiar {label}"))
+    itens.append(("aprenda-o-que-e-cet", "O que é CET e por que olhar além da taxa"))
+    itens.append(("aprenda-score-e-taxa-financiamento-veiculo", "Como o score afeta a taxa do financiamento"))
+    itens.append(("metodologia", "Como calculamos e de onde vêm os dados"))
+    links = "".join(f'<li><a href="{h}" class="text-sky-400 underline hover:text-sky-300">{t}</a></li>' for h, t in itens)
+    return (f'<section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Mais sobre {banco_exib}</h2>'
+            f'<ul class="space-y-2 text-sm">{links}</ul></section>')
+
+
 def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     label_categoria = CATEGORIA_LABEL[categoria]
     slug_pagina = slug_hub(categoria, banco)
@@ -1743,7 +1775,8 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         ],
     }
 
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_faq])
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_faq,
+                                                                       schema_webpage(url_canonica, titulo_pagina, meta_description, data_atualizacao)])
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, href_comparador), (banco_exib, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
@@ -1757,6 +1790,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
 
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
         <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
+        {html_mais_sobre_banco(categoria, banco_exib)}
         {faq_html}
     </main>'''
 
@@ -2867,7 +2901,13 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         ],
     }
 
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_item_list, schema_faq])
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_breadcrumb, schema_item_list, schema_faq,
+                                                                       schema_webpage(url_canonica, titulo_pagina, meta_description, data_atualizacao)])
+    por_taxa = sorted(ranking, key=lambda r: (r["taxa_am"], r["nome_exibicao"]))
+    pct_am = lambda v: f"{v:.2f}".replace('.', ',') + "%"
+    frase_resposta = (f"Em {d_atual.strftime('%d/%m/%Y')}, a menor taxa de financiamento de {nome_cat} entre os {len(ranking)} bancos que acompanhamos "
+                      f"é a do {por_taxa[0]['nome_exibicao']} ({pct_am(por_taxa[0]['taxa_am'])} ao mês) e a maior, a do {por_taxa[-1]['nome_exibicao']} "
+                      f"({pct_am(por_taxa[-1]['taxa_am'])}).")
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, None)])
 
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
@@ -2876,6 +2916,7 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
             <div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0">{ilustracao_categoria(categoria, f'il-grad-cmp-{categoria}')}</div>
             <h1 class="font-serif text-2xl sm:text-3xl font-bold">Taxas de financiamento de {nome_cat} por banco em {mes_ano}</h1>
         </div>
+        <p class="text-white text-lg font-medium mb-3">{frase_resposta}</p>
         <p class="text-slate-400 text-sm mb-8">Posição de cada banco pelo CET, cenário de referência de {formatar_valor_curto(valor_referencia)} em {prazo_referencia} meses.</p>
 
         <section class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mb-6">
@@ -3566,7 +3607,8 @@ def gerar_index(data_atualizacao):
         ),
     ])
 
-    head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization, schema_faq])
+    head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization, schema_faq,
+                                                                    schema_webpage(url_home, titulo_pagina, meta_description, data_atualizacao)])
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
         <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
