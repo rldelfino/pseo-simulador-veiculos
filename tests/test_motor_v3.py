@@ -220,3 +220,68 @@ def test_home_tem_tabela_de_taxas_do_dia_igual_aos_hubs():
     m = _re.search(r'<a href="(hub-[a-z0-9-]+)" class="hover:text-sky-400">([^<]+)</a></th><td[^>]*>([\d,]+%)', html)
     hub = open(_os.path.join(raiz, "paginas_seo", m.group(1) + ".html"), encoding="utf-8").read()
     assert m.group(3) in hub
+
+
+# ---- hubs/comparadores v3c: bloco "Mais sobre", WebPage JSON-LD e frase de resposta direta ----
+def _pasta_gerada():
+    import os as _os
+    p = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "paginas_seo")
+    if not _os.path.isdir(p):
+        import pytest as _pytest
+        _pytest.skip("paginas_seo/ não gerada")
+    return p
+
+
+def _json_ld(html):
+    import json as _json, re as _re
+    return [_json.loads(b) for b in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, _re.S)]
+
+
+def test_hubs_tem_bloco_mais_sobre_com_links_que_existem():
+    import glob as _glob, os as _os, re as _re
+    pasta = _pasta_gerada()
+    hubs = _glob.glob(_os.path.join(pasta, "hub-*.html"))
+    assert len(hubs) >= 30
+    for f in hubs:
+        html = open(f, encoding="utf-8").read()
+        assert "Mais sobre " in html, f
+        bloco = html[html.index("Mais sobre "):]
+        bloco = bloco[:bloco.index("</section>")]
+        hrefs = _re.findall(r'href="([^"]+)"', bloco)
+        assert len(hrefs) >= 7, f
+        for h in hrefs:
+            assert _os.path.exists(_os.path.join(pasta, h + ".html")), (f, h)
+
+
+def test_webpage_json_ld_em_hubs_comparadores_e_home_sem_duplicar():
+    import glob as _glob, os as _os
+    pasta = _pasta_gerada()
+    paginas = _glob.glob(_os.path.join(pasta, "hub-*.html")) + _glob.glob(_os.path.join(pasta, "comparador-*.html")) + [_os.path.join(pasta, "index.html")]
+    assert len(paginas) >= 34
+    for f in paginas:
+        blocos = _json_ld(open(f, encoding="utf-8").read())
+        webpages = [b for b in blocos if b.get("@type") == "WebPage"]
+        assert len(webpages) == 1, f
+        w = webpages[0]
+        assert w["url"].startswith("https://veiculos.datalabglobal.com") and w["name"] and w["dateModified"]
+        assert w["isPartOf"]["@type"] == "WebSite" and w["publisher"]["@id"] == "https://www.datalabglobal.com/#organization"
+
+
+def test_comparador_tem_frase_de_resposta_igual_aos_dados_da_tabela():
+    import os as _os, re as _re, html as _html
+    from bancos_veiculos import bancos_para_categoria, corrigir_concordancia
+    pasta = _pasta_gerada()
+    for categoria, arquivo in (("novo", "comparador-carro-novo"), ("usado", "comparador-carro-usado"), ("moto", "comparador-moto")):
+        caminho = _os.path.join(pasta, arquivo + ".html")
+        if not _os.path.exists(caminho):
+            continue
+        pagina = _html.unescape(open(caminho, encoding="utf-8").read())
+        bancos = sorted(bancos_para_categoria(categoria).values(), key=lambda d: (d["taxa_am"], d["nome_exibicao"]))
+        fmt = lambda v: f"{v:.2f}".replace(".", ",") + "%"
+        esperado_menor = corrigir_concordancia(f"é a do {bancos[0]['nome_exibicao']} ({fmt(bancos[0]['taxa_am'])} ao mês)")
+        esperado_maior = corrigir_concordancia(f"a maior, a do {bancos[-1]['nome_exibicao']} ({fmt(bancos[-1]['taxa_am'])})")
+        assert f"entre os {len(bancos)} bancos que acompanhamos" in pagina, arquivo
+        assert esperado_menor in pagina and esperado_maior in pagina, arquivo
+        assert _re.search(r"Em \d{2}/\d{2}/\d{4}, a menor taxa de financiamento de", pagina)
+        # os mesmos números aparecem na lista de bancos da página
+        assert fmt(bancos[0]["taxa_am"]).replace("%", "") in pagina
