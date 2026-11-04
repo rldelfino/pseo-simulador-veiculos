@@ -190,3 +190,15 @@ def test_pagina_de_dados_abertos_aponta_para_o_kaggle():
         _pytest.skip("paginas_seo/ não gerada")
     html = open(caminho, encoding="utf-8").read()
     assert html.count("https://www.kaggle.com/datasets/rodolfodelfino/") >= 2  # link visível + sameAs do Dataset
+
+
+def test_titulos_dos_hubs_trazem_taxa_e_cabem_em_60_caracteres():
+    import glob as _glob, os as _os, re as _re
+    pasta = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "paginas_seo")
+    hubs = _glob.glob(_os.path.join(pasta, "hub-*.html"))
+    if not hubs:
+        import pytest as _pytest
+        _pytest.skip("paginas_seo/ não gerada")
+    for f in hubs:
+        t = _re.search(r"<title>(.*?)</title>", open(f, encoding="utf-8").read()).group(1)
+        assert len(t) <= 60 and t.lower().startswith("taxa"), (f, t)
