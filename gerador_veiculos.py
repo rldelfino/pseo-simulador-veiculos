@@ -3452,6 +3452,45 @@ def gerar_pagina_imprensa(pasta_saida, data_atualizacao):
 
 
 
+def html_taxas_hoje_home(data_atualizacao):
+    """Tabelas 'taxa de hoje por banco' para a home. Categorias com exatamente os mesmos bancos e taxas (carro novo e
+    usado, que o Banco Central não separa) dividem uma tabela, para não repetir conteúdo na página.
+    Achado real (04/11/2026, Bing > AI Performance): a home foi citada 41 vezes pelo Copilot para 'taxa
+    financiamento carro novo', mas tinha 360 palavras e nenhuma taxa. Mesmos números dos hubs de banco."""
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    pct = lambda v: f"{v:.2f}".replace('.', ',') + "%"
+    nome = lambda b: obter_regra(b)["nome_exibicao"] or b
+    grupos = {}
+    for categoria in CATEGORIAS:
+        bancos = sorted(bancos_para_categoria(categoria), key=lambda b: (obter_regra(b)["taxa_am"], b))
+        assinatura = tuple((b, obter_regra(b)["taxa_am"], obter_regra(b)["taxa_aa"]) for b in bancos)
+        grupos.setdefault(assinatura, []).append(categoria)
+    blocos = []
+    for assinatura, categorias in grupos.items():
+        rotulo = " e ".join(CATEGORIA_LABEL[c].lower() for c in categorias)
+        bancos = [x[0] for x in assinatura]
+        linhas = "".join(
+            f'<tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap">'
+            f'<a href="{slug_hub(categorias[0], b)}" class="hover:text-sky-400">{nome(b)}</a></th>'
+            f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(am)}</td>'
+            f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(aa)}</td></tr>'
+            for b, am, aa in assinatura)
+        resumo = (f"Em {data_br}, a taxa de financiamento de {rotulo} nos bancos que acompanhamos vai de "
+                  f"{pct(assinatura[0][1])} ao mês ({nome(bancos[0])}) a {pct(assinatura[-1][1])} ({nome(bancos[-1])}).")
+        links = " · ".join(f'<a href="{slug_comparador(c)}" class="underline hover:text-sky-400">Comparar CET e parcela de {CATEGORIA_LABEL[c].lower()}</a>' for c in categorias)
+        blocos.append(f'''<section class="mt-8">
+            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de {rotulo} hoje, por banco</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed mb-3">{resumo}</p>
+            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
+                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Banco</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao mês</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao ano</th></tr></thead>
+                <tbody>{linhas}</tbody></table></div>
+            <p class="text-slate-500 text-[11px] mt-2">{links}</p>
+        </section>''')
+    nota = (f'<p class="text-slate-500 text-[11px] mt-6">Taxa média efetivamente contratada, atualizada em {data_br}, com base no Banco Central do Brasil. '
+            f'Não é oferta de crédito: a sua taxa depende da análise do banco. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>')
+    return "\n".join(blocos) + nota
+
+
 def gerar_index(data_atualizacao):
     url_home = f"{DOMINIO}/"
     titulo_pagina = "Simulador de Financiamento de Veículos: Carro e Moto | Datalab"
@@ -3532,6 +3571,7 @@ def gerar_index(data_atualizacao):
         <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
         <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
         <div class="grid sm:grid-cols-3 gap-4">{cards_html}</div>
+        {html_taxas_hoje_home(data_atualizacao)}
         <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>.</p>
         {faq_html}
     </main>'''
