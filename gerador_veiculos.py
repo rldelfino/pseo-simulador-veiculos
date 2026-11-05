@@ -4156,7 +4156,7 @@ def gerar_headers():
         "  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()\n"
         "  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cloud.umami.is; "
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; "
-        "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://cloud.umami.is https://api-gateway.umami.dev; frame-ancestors 'none'; "
+        "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'\n\n"
         "/styles.css\n"
         "  Cache-Control: public, max-age=31536000, immutable\n\n"
