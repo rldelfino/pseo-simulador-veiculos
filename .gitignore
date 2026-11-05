@@ -2,3 +2,9 @@ node_modules/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Segredos e configuração local: nunca versionar (scanners procuram estes caminhos)
+.env
+.env.*
+.claude/settings.local.json
+*.pem
