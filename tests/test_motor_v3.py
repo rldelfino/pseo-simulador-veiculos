@@ -147,7 +147,7 @@ def test_llms_full_itemlist_dataset_e_medicao_desligada():
     assert f'data-website-id="{gv.UMAMI_WEBSITE_ID}"' in home and 'data-domains="veiculos.datalabglobal.com"' in home
     assert "/medicao.js" in home and os.path.exists(os.path.join(PASTA, "medicao.js"))
     assert "ftudo.com" in _ler("medicao.js") and "cta-financiatudo" in _ler("medicao.js")
-    assert "cloud.umami.is" in _ler("_headers") and "api-gateway.umami.dev" in _ler("_headers")
+    assert "cloud.umami.is" in _ler("_headers") and "gateway.umami.is" in _ler("_headers")
 
 
 def test_tags_de_medicao_so_com_id_e_seletor_do_parceiro(monkeypatch, tmp_path):
