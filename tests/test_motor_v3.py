@@ -142,12 +142,16 @@ def test_llms_full_itemlist_dataset_e_medicao_desligada():
     assert lista and all("url" not in it for it in lista[0]["itemListElement"])
     mensal = _ler(slug_mes(sorted({r["mes_referencia"] for r in carregar_historico()})[-1]) + ".html")
     assert '"Dataset"' in mensal and "temporalCoverage" in mensal
-    assert not gv.UMAMI_WEBSITE_ID
-    assert "umami" not in _ler("index.html").lower() and not os.path.exists(os.path.join(PASTA, "medicao.js"))
+    assert gv.UMAMI_WEBSITE_ID
+    home = _ler("index.html")
+    assert f'data-website-id="{gv.UMAMI_WEBSITE_ID}"' in home and 'data-domains="veiculos.datalabglobal.com"' in home
+    assert "/medicao.js" in home and os.path.exists(os.path.join(PASTA, "medicao.js"))
+    assert "ftudo.com" in _ler("medicao.js") and "cta-financiatudo" in _ler("medicao.js")
     assert "cloud.umami.is" in _ler("_headers") and "api-gateway.umami.dev" in _ler("_headers")
 
 
 def test_tags_de_medicao_so_com_id_e_seletor_do_parceiro(monkeypatch, tmp_path):
+    monkeypatch.setattr(gv, "UMAMI_WEBSITE_ID", "")
     assert gv.tags_medicao() == []
     monkeypatch.setattr(gv, "UMAMI_WEBSITE_ID", "abc-123")
     tags = "".join(gv.tags_medicao())

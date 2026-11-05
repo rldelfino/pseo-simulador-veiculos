@@ -2302,7 +2302,7 @@ PERC_RENDA_COMPROMETIDA = 0.30
 
 # Medição de cliques: vazio = não carrega nada. Preencha com o "Website ID" do
 # Umami Cloud (plano gratuito, sem cookies) para ligar.
-UMAMI_WEBSITE_ID = ""
+UMAMI_WEBSITE_ID = "ba3c0b88-59e8-47dd-866d-0b05e5e7dae9"  # mesmo site do Umami do simulador. (plano Hobby tem 1 site; o hostname separa)
 UMAMI_SCRIPT = "https://cloud.umami.is/script.js"
 # Link do parceiro (ftudo.com) e, por garantia, o domínio institucional dele.
 SELETOR_CTA_PARCEIRO = 'a[href*="ftudo.com"], a[href*="financiatudo"]'
