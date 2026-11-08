@@ -38,6 +38,8 @@ Calcula parcela (Tabela Price), CET estimado e economia de juros com amortizaç�
 - Parcela por valor e prazo: https://veiculos.datalabglobal.com/financiamento-veiculos
 - Renda necessária por valor do veículo: https://veiculos.datalabglobal.com/renda-para-financiar-veiculo
 - Taxas mês a mês: https://veiculos.datalabglobal.com/taxas-financiamento-veiculos
+- O que mudou esta semana: https://veiculos.datalabglobal.com/atualizacoes
+- Feed Atom das atualizações: https://veiculos.datalabglobal.com/feed.xml
 - Dados abertos (CSV, JSON): https://veiculos.datalabglobal.com/dados-abertos
 - Metodologia: https://veiculos.datalabglobal.com/metodologia
 - Guias: https://veiculos.datalabglobal.com/aprenda

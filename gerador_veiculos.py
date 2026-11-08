@@ -877,6 +877,7 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos, robots=N
     <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
     <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">{_medicao_head}
+    <link rel="alternate" type="application/atom+xml" title="Taxas de financiamento de veículos" href="/feed.xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <meta property="og:type" content="website">
@@ -1063,6 +1064,7 @@ def render_footer():
                 <a href="/metodologia" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Metodologia</a>
                 <a href="/taxas-financiamento-veiculos" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Taxas mês a mês</a>
                 <a href="/renda-para-financiar-veiculo" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Renda para financiar</a>
+                <a href="/atualizacoes" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">O que mudou esta semana</a>
             </p>
         </div>
     </footer>'''
@@ -1674,6 +1676,7 @@ def html_mais_sobre_banco(categoria, banco_exib):
     if meses:
         itens.append((slug_mes(meses[-1]), f"Taxas de financiamento de veículos em {nome_mes(meses[-1])}"))
     itens.append((SLUG_INDICE_MENSAL, "Taxas de financiamento de veículos mês a mês"))
+    itens.append((SLUG_ATUALIZACOES, "O que mudou nas taxas esta semana"))
     valor_renda = VALORES_POR_CATEGORIA[categoria][len(VALORES_POR_CATEGORIA[categoria]) // 2]
     itens.append((slug_renda(categoria, valor_renda), f"Renda necessária para financiar {label} de {formatar_valor_curto(valor_renda)}"))
     itens.append((SLUG_INDICE_RENDA, "Renda para financiar veículo, por valor"))
@@ -1791,6 +1794,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
         <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
         {html_mais_sobre_banco(categoria, banco_exib)}
+        {html_como_citar(categoria, banco_exib, url_canonica, data_atualizacao)}
         {faq_html}
     </main>'''
 
@@ -2471,6 +2475,250 @@ def gerar_paginas_renda(pasta_saida, data_atualizacao):
     return urls
 
 
+# ---------------------------------------------------------------------------
+# Feed Atom, "O que mudou esta semana" e bloco "Como citar" (05/11/2026).
+# ---------------------------------------------------------------------------
+ARQUIVO_HISTORICO_SEMANAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "historico_semanal.csv")
+SEMANAS_NO_HISTORICO = 26
+SEMANAS_NA_TABELA = 6
+SLUG_ATUALIZACOES = "atualizacoes"
+URL_FEED = f"{DOMINIO}/feed.xml"
+TITULO_FEED = "Taxas de financiamento de veículos"
+ENTRADAS_MENSAIS_NO_FEED = 12
+ENTRADAS_SEMANAIS_NO_FEED = 12
+_CAMPOS_SEMANAL = ("data_referencia", "banco", "taxa_am", "taxa_aa")
+
+
+def ler_historico_semanal(caminho=None):
+    """Linhas de historico_semanal.csv: [{data_referencia, banco, taxa_am, taxa_aa}], ordenadas por data e banco.
+    Arquivo ausente -> lista vazia."""
+    import csv
+    try:
+        with open(caminho or ARQUIVO_HISTORICO_SEMANAL, encoding="utf-8", newline="") as f:
+            linhas = [{"data_referencia": r["data_referencia"], "banco": r["banco"],
+                       "taxa_am": float(r["taxa_am"]), "taxa_aa": float(r["taxa_aa"])}
+                      for r in csv.DictReader(f, delimiter=";")]
+    except FileNotFoundError:
+        return []
+    return sorted(linhas, key=lambda r: (r["data_referencia"], r["banco"]))
+
+
+def _escrever_historico_semanal(linhas, caminho=None):
+    import csv
+    with open(caminho or ARQUIVO_HISTORICO_SEMANAL, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, delimiter=";", lineterminator="\n")
+        w.writerow(_CAMPOS_SEMANAL)
+        for r in sorted(linhas, key=lambda r: (r["data_referencia"], r["banco"])):
+            w.writerow([r["data_referencia"], r["banco"], f"{r['taxa_am']:.2f}", f"{r['taxa_aa']:.2f}"])
+
+
+def registrar_snapshot_semanal(data_atualizacao, caminho=None, bancos=None):
+    """Acrescenta ao CSV o snapshot de taxas por banco da atualização atual (idempotente: se a data já está no
+    arquivo, não muda nada) e mantém só as últimas SEMANAS_NO_HISTORICO datas. Retorna as linhas do arquivo."""
+    linhas = ler_historico_semanal(caminho)
+    if any(r["data_referencia"] == data_atualizacao for r in linhas):
+        return linhas
+    bancos = BANCOS_VEICULOS if bancos is None else bancos
+    for banco, d in bancos.items():
+        linhas.append({"data_referencia": data_atualizacao, "banco": banco,
+                       "taxa_am": float(d["taxa_am"]), "taxa_aa": float(d["taxa_aa"])})
+    datas = sorted({r["data_referencia"] for r in linhas})[-SEMANAS_NO_HISTORICO:]
+    linhas = [r for r in linhas if r["data_referencia"] in datas]
+    _escrever_historico_semanal(linhas, caminho)
+    return sorted(linhas, key=lambda r: (r["data_referencia"], r["banco"]))
+
+
+def _snapshots(historico_sem):
+    snaps = {}
+    for r in historico_sem:
+        snaps.setdefault(r["data_referencia"], {})[r["banco"]] = r
+    return dict(sorted(snaps.items()))
+
+
+def comparar_snapshots(atual, anterior):
+    """Variações (p.p. na taxa ao mês) dos bancos presentes nos dois snapshots, mais a média e as pontas."""
+    linhas = []
+    for b, r in atual.items():
+        if b in anterior:
+            linhas.append({"banco": b, "nome": BANCOS_VEICULOS[b]["nome_exibicao"] if b in BANCOS_VEICULOS else b,
+                           "antes": anterior[b]["taxa_am"], "depois": r["taxa_am"], "var": round(r["taxa_am"] - anterior[b]["taxa_am"], 2)})
+    if not linhas:
+        return None
+    media_antes = sum(x["antes"] for x in linhas) / len(linhas)
+    media_depois = sum(x["depois"] for x in linhas) / len(linhas)
+    alta = max(linhas, key=lambda x: x["var"])
+    queda = min(linhas, key=lambda x: x["var"])
+    return {"linhas": linhas, "media_antes": media_antes, "media_depois": media_depois,
+            "alta": alta if alta["var"] > 0 else None, "queda": queda if queda["var"] < 0 else None}
+
+
+def _data_br(iso):
+    return date.fromisoformat(iso).strftime("%d/%m/%Y")
+
+
+def _texto_pontas(cmp):
+    partes = []
+    if cmp["alta"]:
+        a = cmp["alta"]
+        partes.append(f"maior alta: {a['nome']} ({_sinal_pp(a['var'])} p.p., de {_pct2(a['antes'])}% para {_pct2(a['depois'])}% ao mês)")
+    if cmp["queda"]:
+        q = cmp["queda"]
+        partes.append(f"maior queda: {q['nome']} ({_sinal_pp(q['var'])} p.p., de {_pct2(q['antes'])}% para {_pct2(q['depois'])}% ao mês)")
+    return "; ".join(partes) if partes else "nenhum banco mudou de taxa"
+
+
+def gerar_pagina_atualizacoes(pasta_saida, data_atualizacao, historico_sem):
+    """/atualizacoes: o que mudou na taxa de cada banco frente à atualização anterior. Com menos de 2 snapshots
+    sai com noindex,follow e fora do sitemap; a partir de 2, vira indexável. Retorna as URLs do sitemap."""
+    url = f"{DOMINIO}/{SLUG_ATUALIZACOES}"
+    snaps = _snapshots(historico_sem)
+    datas = list(snaps)
+    cmp = comparar_snapshots(snaps[datas[-1]], snaps[datas[-2]]) if len(datas) >= 2 else None
+    indexavel = cmp is not None
+    data_ref = datas[-1] if datas else data_atualizacao
+    titulo = "Taxas de financiamento de veículos: o que mudou esta semana"
+    if indexavel:
+        var_media = cmp["media_depois"] - cmp["media_antes"]
+        sentido = "subiu" if var_media > 0.004 else "caiu" if var_media < -0.004 else "ficou estável"
+        lead = (f"Na atualização de {_data_br(data_ref)}, a taxa média ao mês dos {len(cmp['linhas'])} bancos que acompanhamos {sentido}"
+                f"{'' if sentido == 'ficou estável' else ' ' + _pct2(abs(var_media)) + ' p.p.'} frente à de {_data_br(datas[-2])} "
+                f"(de {_pct2(cmp['media_antes'])}% para {_pct2(cmp['media_depois'])}% ao mês). Destaques: {_texto_pontas(cmp)}.")
+        curto = []
+        if cmp["alta"]:
+            curto.append(f"maior alta, {cmp['alta']['nome']} ({_sinal_pp(cmp['alta']['var'])} p.p.)")
+        if cmp["queda"]:
+            curto.append(f"maior queda, {cmp['queda']['nome']} ({_sinal_pp(cmp['queda']['var'])} p.p.)")
+        desc = f"O que mudou nas taxas de financiamento de veículos em {_data_br(data_ref)}: " + (" e ".join(curto) if curto else "nenhum banco mudou de taxa") + "."
+        if len(desc) > 155:
+            desc = f"O que mudou nas taxas de financiamento de veículos em {_data_br(data_ref)}, banco a banco, frente à atualização anterior."
+        linhas_cmp = "".join(
+            f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">{x["nome"]}</th>'
+            f'<td class="px-2 py-2 text-right whitespace-nowrap">{_pct2(x["antes"])}%</td>'
+            f'<td class="px-2 py-2 text-right whitespace-nowrap">{_pct2(x["depois"])}%</td>'
+            f'<td class="px-2 py-2 text-right whitespace-nowrap font-bold {"text-rose-400" if x["var"] > 0 else "text-emerald-400" if x["var"] < 0 else "text-slate-400"}">{_sinal_pp(x["var"])} p.p.</td></tr>'
+            for x in sorted(cmp["linhas"], key=lambda x: x["depois"]))
+        tabela_cmp = (f'<div class="overflow-x-auto rounded-xl border border-white/10 mt-6"><table class="w-full text-xs text-slate-300">'
+                      f'<thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Banco</th>'
+                      f'<th scope="col" class="px-2 py-2 text-right font-medium">{_data_br(datas[-2])}</th><th scope="col" class="px-2 py-2 text-right font-medium">{_data_br(datas[-1])}</th>'
+                      f'<th scope="col" class="px-2 py-2 text-right font-medium">Variação</th></tr></thead><tbody>{linhas_cmp}</tbody></table></div>')
+        ult = datas[-SEMANAS_NA_TABELA:]
+        cab = "".join(f'<th scope="col" class="px-2 py-2 text-right font-medium whitespace-nowrap">{_data_br(d)[:5]}</th>' for d in ult)
+        bancos = sorted(snaps[datas[-1]], key=lambda b: snaps[datas[-1]][b]["taxa_am"])
+        corpo = "".join(
+            f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">'
+            f'{BANCOS_VEICULOS[b]["nome_exibicao"] if b in BANCOS_VEICULOS else b}</th>'
+            + "".join(f'<td class="px-2 py-2 text-right whitespace-nowrap">{_pct2(snaps[d][b]["taxa_am"]) + "%" if b in snaps[d] else "–"}</td>' for d in ult) + '</tr>'
+            for b in bancos)
+        historico_html = (f'<h2 class="font-serif text-xl font-bold mt-10 mb-3">Taxa ao mês nas últimas {len(ult)} atualizações</h2>'
+                          f'<div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">'
+                          f'<thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Banco</th>{cab}</tr></thead>'
+                          f'<tbody>{corpo}</tbody></table></div>')
+    else:
+        lead = ("Primeira medição: guardamos hoje a taxa de cada banco e a comparação começa na próxima atualização. "
+                "A partir daí, esta página mostra o que subiu e o que caiu.")
+        desc = "Acompanhamento semanal das taxas de financiamento de veículos por banco: a comparação começa na próxima atualização."
+        tabela_cmp = historico_html = ""
+    schema = schema_webpage(url, titulo, desc, data_ref)
+    schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+        {"@type": "ListItem", "position": 2, "name": "O que mudou esta semana", "item": url}]}
+    head = render_head(titulo, desc, url, [schema, schema_bc], robots=None if indexavel else "noindex,follow")
+    html_pagina = f'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {head}
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    {render_nav()}
+    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-4">O que mudou esta semana nas taxas de financiamento de veículos</h1>
+        <p class="text-slate-300 text-base font-light leading-relaxed">{lead}</p>
+        {tabela_cmp}
+        {historico_html}
+        <p class="text-slate-500 text-[11px] mt-4">Taxa média efetivamente contratada, por banco, na última janela de 5 dias úteis divulgada pelo Banco Central (modalidade 401101). Quando o Banco Central ainda não divulgou uma janela nova, a taxa de um banco pode ficar igual de uma atualização para a outra. Não é oferta de crédito. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>
+        <p class="mt-8 text-sm text-slate-300"><a href="{SLUG_INDICE_MENSAL}" class="text-sky-400 underline">Taxas mês a mês</a> · <a href="{slug_comparador('novo')}" class="text-sky-400 underline">Comparar carro novo</a> · <a href="feed.xml" class="text-sky-400 underline">Feed de atualizações (Atom)</a></p>
+    </main>
+    {render_footer()}
+</body>
+</html>'''
+    with open(os.path.join(pasta_saida, f"{SLUG_ATUALIZACOES}.html"), "w", encoding="utf-8") as f:
+        f.write(corrigir_concordancia(html_pagina))
+    return [url] if indexavel else []
+
+
+def _rfc3339(iso_data):
+    return f"{iso_data}T00:00:00Z"
+
+
+def gerar_feed_atom(pasta_saida, data_atualizacao, historico_mensal, historico_sem):
+    """feed.xml (Atom 1.0): uma entrada por mês da série do BACEN (últimos ENTRADAS_MENSAIS_NO_FEED) e uma por
+    atualização semanal (últimas ENTRADAS_SEMANAIS_NO_FEED). Fora do sitemap, de propósito."""
+    import xml.etree.ElementTree as ET
+    ns = "http://www.w3.org/2005/Atom"
+    ET.register_namespace("", ns)
+    feed = ET.Element(f"{{{ns}}}feed", {"{http://www.w3.org/XML/1998/namespace}lang": "pt-BR"})
+
+    def sub(pai, tag, texto=None, **attrs):
+        el = ET.SubElement(pai, f"{{{ns}}}{tag}", attrs)
+        if texto is not None:
+            el.text = texto
+        return el
+    sub(feed, "id", URL_FEED)
+    sub(feed, "title", TITULO_FEED)
+    sub(feed, "subtitle", "Taxas médias de juros do financiamento de carro novo, carro usado e moto por banco, com dados do Banco Central.")
+    sub(feed, "link", rel="self", type="application/atom+xml", href=URL_FEED)
+    sub(feed, "link", rel="alternate", type="text/html", href=f"{DOMINIO}/")
+    sub(feed, "updated", _rfc3339(data_atualizacao))
+    autor = sub(feed, "author")
+    sub(autor, "name", "Datalab Global")
+    sub(autor, "uri", f"{DOMINIO}/sobre")
+    entradas = []
+    por_mes = {}
+    fim_mes = {}
+    for r in historico_mensal:
+        por_mes.setdefault(r["mes_referencia"], {})[r["banco"]] = r["taxa_am"]
+        fim_mes[r["mes_referencia"]] = r["fim_periodo"]
+    for mes in sorted(por_mes)[-ENTRADAS_MENSAIS_NO_FEED:]:
+        taxas = por_mes[mes]
+        menor, maior = min(taxas, key=taxas.get), max(taxas, key=taxas.get)
+        nome = lambda b: BANCOS_VEICULOS[b]["nome_exibicao"] if b in BANCOS_VEICULOS else b
+        resumo = (f"Em {nome_mes(mes)}, a taxa média contratada no financiamento de veículos foi de {_pct2(taxas[menor])}% ao mês ({nome(menor)}) "
+                  f"a {_pct2(taxas[maior])}% ({nome(maior)}), com média de {_pct2(sum(taxas.values()) / len(taxas))}% entre {len(taxas)} bancos.")
+        entradas.append((fim_mes[mes], f"{DOMINIO}/{slug_mes(mes)}", f"Taxas de financiamento de veículos em {nome_mes(mes)}", resumo))
+    snaps = _snapshots(historico_sem)
+    datas = list(snaps)
+    for i, d in enumerate(datas):
+        if i == 0:
+            continue
+        cmp = comparar_snapshots(snaps[d], snaps[datas[i - 1]])
+        if cmp is None:
+            continue
+        resumo = f"Atualização de {_data_br(d)} frente à de {_data_br(datas[i - 1])}: {_texto_pontas(cmp)}."
+        entradas.append((d, f"{DOMINIO}/{SLUG_ATUALIZACOES}#{d}", f"Taxas de financiamento de veículos: atualização de {_data_br(d)}", resumo[0].upper() + resumo[1:]))
+    semanais = sorted((e for e in entradas if "#" in e[1]), key=lambda e: e[0])[-ENTRADAS_SEMANAIS_NO_FEED:]
+    mensais = [e for e in entradas if "#" not in e[1]]
+    for data, link, titulo, resumo in sorted(mensais + semanais, key=lambda e: e[0], reverse=True):
+        entrada = sub(feed, "entry")
+        sub(entrada, "id", link)
+        sub(entrada, "title", titulo)
+        sub(entrada, "link", rel="alternate", type="text/html", href=link.split("#")[0])
+        sub(entrada, "updated", _rfc3339(data))
+        sub(entrada, "summary", resumo)
+    ET.indent(feed)
+    ET.ElementTree(feed).write(os.path.join(pasta_saida, "feed.xml"), encoding="utf-8", xml_declaration=True)
+
+
+def html_como_citar(categoria, banco_exib, url, data_atualizacao):
+    """Caixa 'Como citar este dado' dos hubs de banco (sem JavaScript: o textarea seleciona o texto ao clicar)."""
+    texto = (f'Datalab Global, "Taxa do {banco_exib} para {CATEGORIA_LABEL[categoria].lower()}", dados do Banco Central, '
+             f'atualizado em {_data_br(data_atualizacao)}. {url}')
+    return (f'<section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Como citar este dado</h2>'
+            f'<textarea readonly rows="3" onclick="this.select()" aria-label="Texto para citar este dado" '
+            f'class="w-full bg-slate-900/60 border border-white/10 rounded-xl p-3 text-sm text-slate-200">{html.escape(texto, quote=False)}</textarea>'
+            f'<p class="text-slate-400 text-xs mt-2">Dados sob licença <a href="{LICENCA_DADOS_URL}" rel="noopener" class="underline">{LICENCA_DADOS}</a>: '
+            f'pode usar e adaptar, citando a fonte com link.</p></section>')
+
+
 def gerar_llms_full_txt(pasta_saida, data_atualizacao, historico):
     """llms-full.txt: versão longa do llms.txt, com as taxas de hoje em frases
     curtas e datadas, fáceis de citar por buscadores de IA."""
@@ -2515,6 +2763,8 @@ Calcula parcela (Tabela Price), CET estimado e economia de juros com amortizaç�
 - Parcela por valor e prazo: {DOMINIO}/financiamento-veiculos
 - Renda necessária por valor do veículo: {DOMINIO}/{SLUG_INDICE_RENDA}
 - Taxas mês a mês: {DOMINIO}/{SLUG_INDICE_MENSAL}
+- O que mudou esta semana: {DOMINIO}/atualizacoes
+- Feed Atom das atualizações: {DOMINIO}/feed.xml
 - Dados abertos (CSV, JSON): {DOMINIO}/dados-abertos
 - Metodologia: {DOMINIO}/metodologia
 - Guias: {DOMINIO}/aprenda
@@ -3474,7 +3724,7 @@ def gerar_pagina_imprensa(pasta_saida, data_atualizacao):
             <p class="text-slate-400 text-xs mt-3">Dados sob licença <a href="{LICENCA_DADOS_URL}" rel="noopener" class="underline">{LICENCA_DADOS}</a>: pode usar e adaptar, citando a fonte com link.</p></section>
         <section class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Contato</h2>
             <p class="text-slate-300 text-sm font-light">E-mail: <a href="mailto:contato@datalabglobal.com" class="text-sky-400 underline">contato@datalabglobal.com</a></p></section>
-        <p class="mt-10 text-center text-xs text-slate-400"><a href="financiamento-veiculos" class="text-sky-400 underline">Parcela por valor e prazo</a> · <a href="incorporar" class="text-sky-400 underline">Simulador para o seu site</a></p>
+        <p class="mt-10 text-center text-xs text-slate-400"><a href="financiamento-veiculos" class="text-sky-400 underline">Parcela por valor e prazo</a> · <a href="incorporar" class="text-sky-400 underline">Simulador para o seu site</a> · <a href="atualizacoes" class="text-sky-400 underline">O que mudou esta semana</a> · <a href="feed.xml" class="text-sky-400 underline">Feed de atualizações (Atom)</a></p>
     </main>'''
     html = f'''<!DOCTYPE html>
 <html lang="pt-BR">
@@ -3614,7 +3864,7 @@ def gerar_index(data_atualizacao):
         <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
         <div class="grid sm:grid-cols-3 gap-4">{cards_html}</div>
         {html_taxas_hoje_home(data_atualizacao)}
-        <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>.</p>
+        <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>. Quer saber o que mudou? Veja as <a href="atualizacoes" class="text-sky-400 underline">taxas desta semana</a>.</p>
         {faq_html}
     </main>'''
 
@@ -4132,6 +4382,8 @@ Total de páginas de simulação: {total_paginas}
 - [Imprensa: números atualizados para citar]({DOMINIO}/imprensa)
 - [Taxas de financiamento de veículos mês a mês, desde 2024]({DOMINIO}/taxas-financiamento-veiculos)
 - [Metodologia: fonte das taxas e fórmulas]({DOMINIO}/metodologia)
+- [O que mudou esta semana nas taxas]({DOMINIO}/atualizacoes)
+- [Feed Atom das atualizações de taxa]({DOMINIO}/feed.xml)
 - [Renda necessária para financiar um veículo, por valor]({DOMINIO}/renda-para-financiar-veiculo)
 - [Versão completa com os números atuais]({DOMINIO}/llms-full.txt)
 - [Sitemap completo]({DOMINIO}/sitemap.xml)
@@ -4223,6 +4475,9 @@ def gerar_site(pasta_saida='paginas_seo'):
     urls_sitemap.extend(gerar_pagina_imprensa(pasta_saida, data_atualizacao))
     urls_sitemap.extend(gerar_paginas_mensais(pasta_saida, data_atualizacao, historico_cache()))
     urls_sitemap.extend(gerar_pagina_metodologia(pasta_saida, data_atualizacao))
+    historico_semanal = registrar_snapshot_semanal(data_atualizacao)
+    urls_sitemap.extend(gerar_pagina_atualizacoes(pasta_saida, data_atualizacao, historico_semanal))
+    gerar_feed_atom(pasta_saida, data_atualizacao, historico_cache(), historico_semanal)
     urls_sitemap.extend(gerar_paginas_renda(pasta_saida, data_atualizacao))
     gerar_llms_full_txt(pasta_saida, data_atualizacao, historico_cache())
     gerar_medicao_js(pasta_saida)

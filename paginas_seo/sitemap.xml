@@ -5845,6 +5845,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://veiculos.datalabglobal.com/atualizacoes</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://veiculos.datalabglobal.com/renda-para-financiar-carro-novo-60-mil</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
