@@ -289,3 +289,92 @@ def test_comparador_tem_frase_de_resposta_igual_aos_dados_da_tabela():
         assert _re.search(r"Em \d{2}/\d{2}/\d{4}, a menor taxa de financiamento de", pagina)
         # os mesmos números aparecem na lista de bancos da página
         assert fmt(bancos[0]["taxa_am"]).replace("%", "") in pagina
+
+
+# ---- feed Atom, /atualizacoes e 'Como citar' (05/11/2026) ----
+def _snap(data, taxas):
+    return [{"data_referencia": data, "banco": b, "taxa_am": v, "taxa_aa": round(((1 + v / 100) ** 12 - 1) * 100, 2)} for b, v in taxas.items()]
+
+
+def test_historico_semanal_idempotente_e_limitado_a_26_semanas(tmp_path):
+    caminho = str(tmp_path / "hist.csv")
+    bancos = {"Caixa": {"taxa_am": 1.01, "taxa_aa": 12.8}, "Banco Pan": {"taxa_am": 2.85, "taxa_aa": 40.1}}
+    registrar = lambda d: gv.registrar_snapshot_semanal(d, caminho=caminho, bancos=bancos)
+    registrar("2026-01-05")
+    antes = open(caminho, encoding="utf-8").read()
+    registrar("2026-01-05")  # mesma data: não muda nada
+    assert open(caminho, encoding="utf-8").read() == antes
+    from datetime import date, timedelta
+    for k in range(1, 30):
+        registrar((date(2026, 1, 5) + timedelta(weeks=k)).isoformat())
+    linhas = gv.ler_historico_semanal(caminho)
+    assert len({r["data_referencia"] for r in linhas}) == gv.SEMANAS_NO_HISTORICO
+    assert min(r["data_referencia"] for r in linhas) > "2026-01-05"
+    assert antes.splitlines()[0] == "data_referencia;banco;taxa_am;taxa_aa"
+
+
+def test_atualizacoes_noindex_com_1_snapshot_e_indexavel_com_2(tmp_path):
+    um = _snap("2026-11-02", {"Caixa": 1.01, "Banco Pan": 2.85})
+    urls = gv.gerar_pagina_atualizacoes(str(tmp_path), "2026-11-02", um)
+    html = (tmp_path / "atualizacoes.html").read_text(encoding="utf-8")
+    assert urls == [] and 'name="robots" content="noindex,follow"' in html and "Primeira medição" in html
+    dois = um + _snap("2026-11-09", {"Caixa": 1.05, "Banco Pan": 2.80})
+    urls = gv.gerar_pagina_atualizacoes(str(tmp_path), "2026-11-09", dois)
+    html = (tmp_path / "atualizacoes.html").read_text(encoding="utf-8")
+    assert urls == [f"{gv.DOMINIO}/atualizacoes"] and "noindex" not in html
+    assert "+0,04 p.p." in html and "−0,05 p.p." in html  # Caixa sobe 0,04; Pan cai 0,05
+    assert "maior alta: Caixa" in html and "maior queda: Banco Pan" in html
+    assert "caiu" not in html.split("<h1")[1][:600] or "p.p. frente" in html  # sem sinal duplicado em "caiu"
+
+
+def test_feed_atom_valido_com_entradas_mensais_e_semanais(tmp_path):
+    import xml.etree.ElementTree as ET
+    sem = _snap("2026-10-26", {"Caixa": 1.00, "Banco Pan": 2.90}) + _snap("2026-11-02", {"Caixa": 1.01, "Banco Pan": 2.85})
+    mensal = [{"mes_referencia": m, "inicio_periodo": f"{m}-20", "fim_periodo": f"{m}-28", "banco": b, "taxa_am": v, "taxa_aa": 1.0}
+              for m in ("2026-08", "2026-09") for b, v in (("Caixa", 1.0), ("Banco Pan", 2.9))]
+    gv.gerar_feed_atom(str(tmp_path), "2026-11-02", mensal, sem)
+    raiz = ET.parse(tmp_path / "feed.xml").getroot()
+    ns = {"a": "http://www.w3.org/2005/Atom"}
+    assert raiz.tag == "{http://www.w3.org/2005/Atom}feed" and raiz.find("a:id", ns).text == gv.URL_FEED
+    entradas = raiz.findall("a:entry", ns)
+    assert len(entradas) == 3  # 2 meses + 1 atualização semanal (a primeira data não tem anterior)
+    ids = [e.find("a:id", ns).text for e in entradas]
+    assert len(set(ids)) == 3 and any("#2026-11-02" in i for i in ids)
+    import re
+    for e in entradas:
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T00:00:00Z", e.find("a:updated", ns).text)
+        assert e.find("a:summary", ns).text and e.find("a:title", ns).text
+
+
+def test_feed_atom_escapa_caracteres_especiais(tmp_path, monkeypatch):
+    import xml.etree.ElementTree as ET
+    monkeypatch.setitem(gv.BANCOS_VEICULOS, "Banco & <Teste>", {**gv.BANCOS_VEICULOS["Caixa"], "nome_exibicao": 'Banco & "Teste" <1>'})
+    sem = _snap("2026-10-26", {"Banco & <Teste>": 1.0}) + _snap("2026-11-02", {"Banco & <Teste>": 1.2})
+    gv.gerar_feed_atom(str(tmp_path), "2026-11-02", [], sem)
+    resumo = ET.parse(tmp_path / "feed.xml").getroot().find("{http://www.w3.org/2005/Atom}entry/{http://www.w3.org/2005/Atom}summary").text
+    assert 'Banco & "Teste" <1>' in resumo
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_site_gerado_tem_feed_atualizacoes_e_como_citar():
+    import glob, xml.etree.ElementTree as ET
+    raiz = ET.parse(os.path.join(PASTA, "feed.xml")).getroot()
+    assert len(raiz.findall("{http://www.w3.org/2005/Atom}entry")) >= 12
+    assert "feed.xml" not in _ler("sitemap.xml")
+    assert f"{gv.DOMINIO}/atualizacoes<" in _ler("sitemap.xml") and 'noindex' not in _ler("atualizacoes.html")
+    for pagina in ("index.html", "imprensa.html", "hub-caixa-carro-novo.html", "metodologia.html"):
+        assert 'type="application/atom+xml"' in _ler(pagina), pagina
+    assert 'atom+xml' not in _ler("embed.html")
+    hubs = glob.glob(os.path.join(PASTA, "hub-*.html"))
+    assert len(hubs) == 32
+    for f in hubs:
+        h = open(f, encoding="utf-8").read()
+        assert "Como citar este dado" in h and "<textarea readonly" in h and "CC BY 4.0" in h, f
+        assert 'href="atualizacoes"' in h, f  # link do bloco 'Mais sobre'
+    assert 'href="/atualizacoes"' in _ler("index.html") or 'href="atualizacoes"' in _ler("index.html")
+    assert "atualizacoes" in _ler("llms.txt") and "feed.xml" in _ler("llms-full.txt")
+
+
+def test_workflow_versiona_o_historico_semanal():
+    wf = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".github", "workflows", "atualiza_taxas.yml"), encoding="utf-8").read()
+    assert "historico_semanal.csv" in wf
