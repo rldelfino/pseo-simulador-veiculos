@@ -4,7 +4,7 @@ Taxa média de juros efetivamente contratada no financiamento de veículos (aqui
 
 - **Fonte original:** [Banco Central do Brasil](https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101), modalidade 401101.
 - **Licença:** CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.pt-br). Pode usar, copiar e adaptar, citando a fonte.
-- **Atualização:** a cada mês fechado. Última atualização: 2026-11-02.
+- **Atualização:** a cada mês fechado. Última atualização: 2026-11-11.
 - **Arquivos:** `taxas-financiamento-veiculos.csv`, `taxas-financiamento-veiculos.json`, `datapackage.json`.
 - **Colunas:** `mes_referencia`, `periodo_inicio`, `periodo_fim`, `instituicao`, `taxa_juros_am_pct`, `taxa_juros_aa_pct`.
 - **Limites:** são médias do que foi efetivamente contratado, não ofertas; a modalidade não separa carro novo, usado e moto.

@@ -2,7 +2,7 @@
  "titulo": "Taxas médias de juros do financiamento de veículos por banco (BACEN)",
  "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
  "licenca": "CC BY 4.0",
- "atualizado_em": "2026-11-02",
+ "atualizado_em": "2026-11-11",
  "organizacao": "Datalab Global",
  "dados": [
   {

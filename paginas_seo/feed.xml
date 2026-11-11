@@ -5,11 +5,18 @@
   <subtitle>Taxas médias de juros do financiamento de carro novo, carro usado e moto por banco, com dados do Banco Central.</subtitle>
   <link rel="self" type="application/atom+xml" href="https://veiculos.datalabglobal.com/feed.xml" />
   <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/" />
-  <updated>2026-11-02T00:00:00Z</updated>
+  <updated>2026-11-11T00:00:00Z</updated>
   <author>
     <name>Datalab Global</name>
     <uri>https://veiculos.datalabglobal.com/sobre</uri>
   </author>
+  <entry>
+    <id>https://veiculos.datalabglobal.com/atualizacoes#2026-11-11</id>
+    <title>Taxas de financiamento de veículos: atualização de 11/11/2026</title>
+    <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/atualizacoes" />
+    <updated>2026-11-11T00:00:00Z</updated>
+    <summary>Atualização de 11/11/2026 frente à de 02/11/2026: maior alta: BV Financeira (+0,05 p.p., de 2,11% para 2,16% ao mês); maior queda: Banco Honda (−0,03 p.p., de 2,47% para 2,44% ao mês).</summary>
+  </entry>
   <entry>
     <id>https://veiculos.datalabglobal.com/atualizacoes#2026-11-02</id>
     <title>Taxas de financiamento de veículos: atualização de 02/11/2026</title>
