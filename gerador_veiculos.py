@@ -1707,6 +1707,26 @@ def html_mais_sobre_banco(categoria, banco_exib):
             f'<ul class="space-y-2 text-sm">{links}</ul></section>')
 
 
+def html_requisitos_aprovacao(categoria, banco_exib=None):
+    """Bloco "Antes de pedir a proposta" (13/nov/2026). Achado real: no painel do parceiro, a maioria
+    dos pedidos encerrados foi "cadastro recusado na análise" (17 de 30) ou fora das regras do produto.
+    Só fatos gerais e conferíveis (Registrato do Banco Central, parcela até ~30% da renda, entrada,
+    documentos); nada sobre regras internas do parceiro, e avisa que não há garantia de aprovação."""
+    veiculo = {"novo": "carro novo", "usado": "carro usado", "moto": "moto"}[categoria]
+    quem, verbo = (f"O {banco_exib}", "costuma") if banco_exib else ("Os bancos", "costumam")
+    itens = [
+        ("Histórico de crédito", 'Nome sem restrições ativas e dívidas em dia pesam mais na análise do que a taxa. Você pode consultar de graça o seu extrato de dívidas e financiamentos no <a href="https://www.bcb.gov.br/meubc/registrato" target="_blank" rel="noopener" class="text-sky-400 underline">Registrato, do Banco Central</a>.'),
+        ("Parcela que cabe na renda", f"{quem} {verbo} limitar a parcela a cerca de 30% da renda bruta. Se a parcela passar disso, o pedido tende a ser recusado ou a exigir mais entrada ou menos parcelas. Dá para somar a renda do cônjuge ou companheiro(a)."),
+        ("Entrada", "Quanto maior a entrada, menor o valor financiado e a parcela, o que costuma facilitar a análise."),
+        ("Regras do veículo", f"Ano de fabricação, valor e tipo de {veiculo} aceitos variam por instituição. Se o pedido não se enquadrar nas regras do produto, a análise pode recusar mesmo com renda suficiente."),
+        ("Documentos", "Costumam ser exigidos documento com foto, CPF, comprovante de renda e de residência. Confirme a lista com a instituição."),
+    ]
+    lis = "".join(f'<li><strong class="text-white">{t}.</strong> {d}</li>' for t, d in itens)
+    return (f'<section id="antes-de-pedir" class="mt-10"><h2 class="font-serif text-xl font-bold mb-3">Antes de pedir a proposta: o que costuma pesar na aprovação</h2>'
+            f'<ul class="space-y-2 text-sm text-slate-300 font-light leading-relaxed list-disc pl-5">{lis}</ul>'
+            f'<p class="mt-3 text-xs text-slate-400">O pedido de proposta é analisado por um correspondente bancário parceiro e a aprovação depende da análise de crédito de cada instituição. Nenhuma simulação garante aprovação.</p></section>')
+
+
 def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     label_categoria = CATEGORIA_LABEL[categoria]
     slug_pagina = slug_hub(categoria, banco)
@@ -1811,6 +1831,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
 
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
         <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
+        {html_requisitos_aprovacao(categoria, banco_exib)}
         {html_mais_sobre_banco(categoria, banco_exib)}
         {html_como_citar(categoria, banco_exib, url_canonica, data_atualizacao)}
         {faq_html}
@@ -3209,6 +3230,8 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
         <p class="mt-6 text-sm text-slate-300">Quer ver outro valor ou prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>.</p>
 
         {html_evolucao_taxas(resumo_hist)}
+
+        {html_requisitos_aprovacao(categoria)}
 
         <section class="mt-10">
             <h2 class="font-serif text-xl font-bold mb-2">Como calculamos e de onde vêm os dados</h2>

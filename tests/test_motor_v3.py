@@ -403,3 +403,18 @@ def test_sitemap_so_tem_paginas_de_valor_proprio():
         arq = os.path.join(PASTA, nome + ".html")
         if os.path.exists(arq):
             assert 'name="robots" content="noindex' not in open(arq, encoding="utf-8").read(), u
+
+
+def test_bloco_requisitos_de_aprovacao_e_honesto():
+    from gerador_veiculos import html_requisitos_aprovacao
+    h = html_requisitos_aprovacao("usado", "Itaú")
+    assert "O Itaú costuma limitar a parcela" in h and "carro usado" in h
+    assert "Registrato" in h and "Nenhuma simulação garante aprovação" in h
+    assert "Os bancos costumam limitar a parcela" in html_requisitos_aprovacao("moto")
+    assert "garantida" not in h.lower()
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_hubs_e_comparadores_trazem_o_bloco_de_requisitos():
+    for nome in ("hub-itau-carro-usado.html", "hub-banco-inter-moto.html", "comparador-carro-novo.html", "comparador-moto.html"):
+        assert "Antes de pedir a proposta" in _ler(nome), nome
