@@ -48,15 +48,17 @@ def test_serie_do_banco_tem_no_maximo_12_meses_em_ordem():
 
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
-def test_paginas_individuais_tem_blocos_proprios_e_continuam_indexaveis():
+def test_paginas_individuais_tem_blocos_proprios_mas_ficam_fora_do_indice():
     nome = "financiamento-carro-novo-banco-do-brasil-60-mil-48-meses.html"
     html = _ler(nome)
     assert "Como a dívida evolui ao longo do contrato" in html
     assert "Taxa do Banco do Brasil nos últimos meses" in html
     assert "Valores vizinhos no Banco do Brasil" in html
     assert "posição entre" in html
-    assert 'name="robots" content="noindex' not in html
-    assert f"/{nome[:-5]}</loc>" in _ler("sitemap.xml")
+    # 13/nov/2026: a grade banco x valor x prazo saiu do índice (ver
+    # PAGINAS_VALOR_INDEXAVEIS): continua no ar, com noindex,follow e fora do sitemap.
+    assert 'name="robots" content="noindex,follow"' in html
+    assert f"/{nome[:-5]}</loc>" not in _ler("sitemap.xml")
     tab = lambda h: re.search(r"<tbody>(.*?)</tbody>", h[h.index("Como a dívida evolui"):], re.S).group(1)
     assert tab(html) != tab(_ler("financiamento-carro-novo-banco-do-brasil-80-mil-48-meses.html"))
 
@@ -378,3 +380,26 @@ def test_site_gerado_tem_feed_atualizacoes_e_como_citar():
 def test_workflow_versiona_o_historico_semanal():
     wf = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".github", "workflows", "atualiza_taxas.yml"), encoding="utf-8").read()
     assert "historico_semanal.csv" in wf
+
+
+def test_regra_de_indexacao_da_grade_valor_prazo():
+    from gerador_veiculos import PAGINAS_VALOR_INDEXAVEIS, pagina_valor_indexavel
+    assert PAGINAS_VALOR_INDEXAVEIS == frozenset()
+    assert not pagina_valor_indexavel("novo", 100_000, 48)
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_sitemap_so_tem_paginas_de_valor_proprio():
+    """Hubs, comparadores, guias, renda e meses ficam; a grade de simulações sai."""
+    urls = re.findall(r"<loc>([^<]+)</loc>", _ler("sitemap.xml"))
+    assert 120 <= len(urls) <= 220
+    assert sum("/hub-" in u for u in urls) == 32
+    assert sum("/comparador-" in u for u in urls) == 3
+    # nenhuma página com banco no nome da simulação (as de comparação sem marca ficam)
+    assert not any(re.search(r"/financiamento-(carro-novo|carro-usado|moto)-(?!\d)", u) for u in urls)
+    # toda página indexável fora do sitemap seria erro de consistência: sem noindex nas do sitemap
+    for u in urls[:40]:
+        nome = u.rsplit("/", 1)[-1] or "index"
+        arq = os.path.join(PASTA, nome + ".html")
+        if os.path.exists(arq):
+            assert 'name="robots" content="noindex' not in open(arq, encoding="utf-8").read(), u
