@@ -76,6 +76,7 @@ import html
 import json
 import math
 import os
+import re
 from datetime import date, datetime
 
 from bancos_veiculos import (
@@ -87,8 +88,55 @@ from bancos_veiculos import (
     obter_regra,
 )
 from icones import icone, tooltip
+import lastmod
 
 DOMINIO = 'https://veiculos.datalabglobal.com'
+
+# Datas reais de modificação (ver lastmod.py): preenchido no início de gerar_site().
+_MANIFESTO_LASTMOD = {}
+
+# Fontes oficiais dos guias que só tinham o link do parceiro (13/nov/2026). Só entram links que foram abertos e
+# lidos (ou cujo título a busca confirmou). O Google pergunta se o conteúdo mostra "clear sourcing" e trata
+# finanças como YMYL; o Bing perde elegibilidade de páginas finas.
+URL_CDC_PROCON = "https://www.procon.sp.gov.br/wp-content/uploads/2026/01/CDC-2026-site.pdf"
+URL_RES_3517 = "https://www.bcb.gov.br/pre/normativos/res/2007/pdf/res_3517_v1_o.pdf"
+FONTES_GUIAS = {
+    "aprenda-amortizacao-extra-veiculo": [
+        (URL_CDC_PROCON, "Código de Defesa do Consumidor (Lei 8.078/1990), art. 52, § 2º: liquidação antecipada do débito com redução proporcional dos juros (texto publicado pelo Procon-SP)"),
+    ],
+    "aprenda-quitacao-antecipada-financiamento-veiculo": [
+        (URL_CDC_PROCON, "Código de Defesa do Consumidor (Lei 8.078/1990), art. 52, § 2º (texto publicado pelo Procon-SP)"),
+    ],
+    "aprenda-entrada-ideal-financiamento-veiculo": [
+        ("https://www.bcb.gov.br/content/cidadaniafinanceira/documentos_cidadania/Cuidando_do_seu_dinheiro_Gestao_de_Financas_Pessoais/v4_modulo_3_caderno_educacao_financeira_430206_2026.pdf", "Banco Central, Caderno de Educação Financeira, módulo 3 (uso do crédito): exemplo de carro financiado com entrada e o peso dos juros"),
+        ("https://idec.org.br/em-acao/em-foco/vai-comprar-um-carro-confira-as-dicas-para-fugir-do-endividamento", "Idec: Vai comprar um carro? Dicas para fugir do endividamento (entrada maior e prazo menor)"),
+    ],
+    "aprenda-financiamento-x-consorcio-veiculo": [
+        ("https://aprendervalor.bcb.gov.br/content/estabilidadefinanceira/panoramaconsorcio/panorama_de_consorcios_2024.pdf", "Banco Central: Panorama do Sistema de Consórcios (dados de dezembro/2024)"),
+    ],
+    "aprenda-iof-financiamento-veiculo": [
+        ("https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/outros-tributos-em-especie-1/iof-2/iof-e-contratos-de-emprestimo", "Procuradoria-Geral da Fazenda Nacional: IOF e contratos de empréstimo"),
+    ],
+    "aprenda-o-que-e-cdc": [
+        ("https://www.procon.sp.gov.br/wp-content/uploads/files/CreditoDicaseOrientacoes.pdf", "Procon-SP: Alternativas de crédito, dicas e orientações (inclui o Crédito Direto ao Consumidor)"),
+    ],
+    "aprenda-o-que-e-cet": [
+        (URL_RES_3517, "Banco Central, Resolução CMN nº 3.517/2007: informação e divulgação do Custo Efetivo Total (CET)"),
+        ("https://www.bcb.gov.br/content/cidadaniafinanceira/documentos_cidadania/guia_de_excelencia/guia_de_excelencia_oferta_de_produtos_servi%C3%A7os_financeiros.pdf", "Banco Central, Cidadania Financeira: Guia de Excelência em oferta de produtos e serviços financeiros (o CET como \"preço\" do crédito)"),
+    ],
+    "aprenda-tabela-price": [
+        ("https://caixanoticias.caixa.gov.br/Paginas/Not%C3%ADcias/2026/02-FEVEREIRO/SAC-ou-Price-entenda-as-diferen%C3%A7as-entre-os-sistemas-de-amortiza%C3%A7%C3%A3o-e-fa%C3%A7a-a-melhor-escolha.aspx", "CAIXA Notícias (fev/2026): SAC ou Price, entenda as diferenças entre os sistemas de amortização (a Price é a tabela de parcela fixa)"),
+    ],
+}
+
+
+def html_fontes_guia(slug, fontes=None):
+    fontes = fontes if fontes is not None else FONTES_GUIAS.get(slug)
+    if not fontes:
+        return ""
+    lis = "".join(f'<li><a href="{u}" target="_blank" rel="noopener" class="text-sky-400 underline">{t}</a></li>' for u, t in fontes)
+    return (f'<div class="border-t border-white/10 pt-6"><h2 class="font-serif text-xl text-white mb-3">Fontes e referências</h2>'
+            f'<ul class="list-disc pl-6 space-y-1 text-sm">{lis}</ul></div>')
 # Identidade da empresa por trás do site — mesmo texto já publicado no rodapé
 # e no schema Organization do hub (www.datalabglobal.com). Achado de auditoria
 # (29/out/2026): os simuladores, que são tema YMYL (dinheiro), não mostravam
@@ -3874,7 +3922,7 @@ def gerar_index(data_atualizacao):
     schema_organization = {
         "@context": "https://schema.org", "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization",
         "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": f"{DOMINIO}/logo-schema.png",
-        "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
+        "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino"]},
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
 
@@ -3938,6 +3986,10 @@ def gerar_pagina_aprenda(art, data_atualizacao):
     relevante no fim, sem forçar (mantém o visitante no funil sem virar
     uma calculadora disfarçada de artigo)."""
     url_canonica = f"{DOMINIO}/{art['slug']}"
+    bloco_fontes = html_fontes_guia(art["slug"], art.get("fontes"))
+    # Data REAL da última mudança do texto do guia (hash do conteúdo, ver lastmod.py), não a data das taxas.
+    data_guia_iso = lastmod.registrar(_MANIFESTO_LASTMOD, "guia:" + art["slug"],
+                                      art["titulo_h1"] + art["meta_description"] + art["corpo_html"] + bloco_fontes)
     schema_article = {
         "@context": "https://schema.org", "@type": "Article",
         "headline": art["titulo_h1"], "url": url_canonica,
@@ -3946,7 +3998,7 @@ def gerar_pagina_aprenda(art, data_atualizacao):
             "@type": "Organization", "name": "Datalab Global",
             "logo": {"@type": "ImageObject", "url": f"{DOMINIO}/logo-schema.png"},
         },
-        "dateModified": data_atualizacao, "mainEntityOfPage": url_canonica,
+        "dateModified": data_guia_iso[:10], "mainEntityOfPage": url_canonica,
     }
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -3963,7 +4015,9 @@ def gerar_pagina_aprenda(art, data_atualizacao):
         <h1 class="font-serif text-3xl font-bold mb-8">{art["titulo_h1"]}</h1>
         <div class="glass-panel-sky rounded-2xl p-6 md:p-10 space-y-6 text-slate-300 leading-relaxed">
             {art["corpo_html"]}
+            {bloco_fontes}
         </div>
+        <p class="text-xs text-slate-400 mt-4">Texto atualizado em {lastmod.data_br(data_guia_iso)}. Conteúdo educativo da Datalab Global (<a href="/sobre" class="underline">quem somos</a> · <a href="/metodologia" class="underline">como calculamos</a>); não é recomendação de crédito.</p>
         <div class="flex flex-wrap gap-3 mt-8">
             <a href="{art['cta_href']}" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">{art['cta_texto']}</a>
             <a href="aprenda" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver todos os artigos</a>
@@ -4297,7 +4351,7 @@ def gerar_pagina_sobre():
         "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
         "mainEntity": {
             "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/",
-            "founder": {"@type": "Person", "name": "Rodolfo Delfino"},
+            "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino"]},
             "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
         },
     }
@@ -4342,11 +4396,23 @@ def gerar_pagina_sobre():
 # sitemap.xml / robots.txt / llms.txt / _headers
 # ---------------------------------------------------------------------------
 
-def gerar_sitemap(urls, data_atualizacao):
+def gerar_sitemap(urls, data_atualizacao, pasta_saida="paginas_seo"):
+    """Sitemap com `lastmod` REAL por URL (ISO 8601 com hora, UTC): a data só avança quando o HTML da página muda
+    (ver lastmod.py). `changefreq` e `priority` não entram: o Bing diz que ignora (blog do Bing, jul/2025) e o
+    Google também não usa."""
+    def lm(url):
+        caminho = url[len(DOMINIO):].strip("/")
+        arquivo = os.path.join(pasta_saida, (caminho or "index") + ".html")
+        if os.path.exists(arquivo):
+            with open(arquivo, "rb") as f:
+                # O link do CSS leva um carimbo de build (styles.css?v=AAAAMMDDHHMMSS) que muda a cada
+                # geração; ele não conta como mudança de conteúdo da página.
+                conteudo = re.sub(rb"styles\.css\?v=\d+", b"styles.css?v=0", f.read())
+                return lastmod.registrar(_MANIFESTO_LASTMOD, "url:" + url, conteudo)
+        return f"{data_atualizacao}T00:00:00+00:00"
     partes = ['<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    partes.append(f"  <url>\n    <loc>{DOMINIO}/</loc>\n    <lastmod>{data_atualizacao}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>")
-    for url in urls:
-        partes.append(f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{data_atualizacao}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>")
+    for url in [f"{DOMINIO}/"] + list(urls):
+        partes.append(f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{lm(url)}</lastmod>\n  </url>")
     partes.append('</urlset>')
     return "\n".join(partes)
 
@@ -4478,7 +4544,9 @@ def gerar_headers():
 # ---------------------------------------------------------------------------
 
 def gerar_site(pasta_saida='paginas_seo'):
+    global _MANIFESTO_LASTMOD
     os.makedirs(pasta_saida, exist_ok=True)
+    _MANIFESTO_LASTMOD = lastmod.carregar()
     data_atualizacao = obter_data_ultima_atualizacao()
 
     paginas = gerar_grade_paginas()
@@ -4554,7 +4622,8 @@ def gerar_site(pasta_saida='paginas_seo'):
         f.write(gerar_calculo_js())
 
     with open(os.path.join(pasta_saida, "sitemap.xml"), "w", encoding="utf-8") as f:
-        f.write(gerar_sitemap(urls_sitemap, data_atualizacao))
+        f.write(gerar_sitemap(urls_sitemap, data_atualizacao, pasta_saida))
+    lastmod.salvar(_MANIFESTO_LASTMOD)
 
     with open(os.path.join(pasta_saida, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(gerar_robots_txt())
