@@ -153,6 +153,23 @@ VALORES_POR_CATEGORIA = {
 }
 PRAZOS_MESES = [12, 24, 36, 48, 60]
 
+# Páginas "banco x valor x prazo" INDEXÁVEIS (categoria, valor, prazo). Vazio
+# de propósito. Achado real (13/nov/2026, API de Inspeção de URL do Search
+# Console nas 1.004 URLs do sitemap): só 7 estavam indexadas (<1%), 763
+# "rastreadas, mas não indexadas" e 234 nunca descobertas; o Google rastreou
+# a grade inteira em setembro e a recusou. 92% do sitemap era essa grade
+# (920 de 1.004) e as consultas reais (Bing e Google) caem nos hubs de banco
+# e nos comparadores, não nas simulações por valor. Essas páginas continuam no
+# ar (links internos, slider, quem chega por busca ou compartilhamento), mas
+# levam <meta robots="noindex,follow"> e saem do sitemap, para o Google
+# avaliar o site pelas ~85 páginas de valor próprio. Reversível: inclua
+# tuplas aqui e regere.
+PAGINAS_VALOR_INDEXAVEIS = frozenset()
+
+
+def pagina_valor_indexavel(categoria, valor, prazo):
+    return (categoria, int(round(valor)), prazo) in PAGINAS_VALOR_INDEXAVEIS
+
 
 # ---------------------------------------------------------------------------
 # Motor de cálculo
@@ -1411,7 +1428,8 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
         (faq_q3, faq_a3),
     ])
 
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_faq, schema_breadcrumb, schema_software])
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_faq, schema_breadcrumb, schema_software],
+                       robots=(None if pagina_valor_indexavel(categoria, valor, prazo) else "noindex,follow"))
     breadcrumb = render_breadcrumb([
         ("Datalab Global", "/"),
         (label_categoria, href_comparador),
@@ -4449,7 +4467,8 @@ def gerar_site(pasta_saida='paginas_seo'):
         html = gerar_pagina_individual(p, paginas, lookup, data_atualizacao)
         with open(os.path.join(pasta_saida, f"{p['slug']}.html"), "w", encoding="utf-8") as f:
             f.write(corrigir_concordancia(html))
-        urls_sitemap.append(f"{DOMINIO}/{p['slug']}")
+        if pagina_valor_indexavel(p["categoria"], p["valor_veiculo"], p["prazo"]):
+            urls_sitemap.append(f"{DOMINIO}/{p['slug']}")
 
     hubs = {}
     for p in paginas:
