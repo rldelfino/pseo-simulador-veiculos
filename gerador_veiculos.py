@@ -2795,6 +2795,24 @@ def gerar_feed_atom(pasta_saida, data_atualizacao, historico_mensal, historico_s
     ET.ElementTree(feed).write(os.path.join(pasta_saida, "feed.xml"), encoding="utf-8", xml_declaration=True)
 
 
+def html_link_e_compartilhar(titulo, url, classe_link="text-sky-400"):
+    """Facilita criar um link para a página, como pedem as Diretrizes do Bing ("copy-and-paste code snippets" e
+    compartilhamento social). Texto de âncora descritivo e de marca, sem palavra-chave empilhada; botões sem JavaScript
+    e com rel nofollow (são só atalhos de compartilhar)."""
+    import urllib.parse as _up
+    codigo = f'<a href="{url}">{titulo} (Datalab Global)</a>'
+    u, t = _up.quote(url, safe=""), _up.quote(f"{titulo} (Datalab Global)", safe="")
+    botoes = [("WhatsApp", f"https://api.whatsapp.com/send?text={t}%20{u}"),
+              ("LinkedIn", f"https://www.linkedin.com/sharing/share-offsite/?url={u}"),
+              ("X", f"https://twitter.com/intent/tweet?url={u}&text={t}"),
+              ("Facebook", f"https://www.facebook.com/sharer/sharer.php?u={u}")]
+    links = " · ".join(f'<a href="{h}" target="_blank" rel="noopener nofollow" class="underline {classe_link}">{n}</a>' for n, h in botoes)
+    return (f'<h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest mt-5 mb-2">Link para esta página</h3>'
+            f'<textarea readonly rows="2" onclick="this.select()" aria-label="Código HTML do link para esta página" '
+            f'class="w-full bg-slate-900/60 border border-white/10 rounded-xl p-3 text-xs text-slate-200 font-mono">{html.escape(codigo, quote=True)}</textarea>'
+            f'<p class="text-slate-400 text-xs mt-2">Compartilhar: {links}</p>')
+
+
 def html_como_citar(categoria, banco_exib, url, data_atualizacao):
     """Caixa 'Como citar este dado' dos hubs de banco (sem JavaScript: o textarea seleciona o texto ao clicar)."""
     texto = (f'Datalab Global, "Taxa do {banco_exib} para {CATEGORIA_LABEL[categoria].lower()}", dados do Banco Central, '
@@ -2803,7 +2821,8 @@ def html_como_citar(categoria, banco_exib, url, data_atualizacao):
             f'<textarea readonly rows="3" onclick="this.select()" aria-label="Texto para citar este dado" '
             f'class="w-full bg-slate-900/60 border border-white/10 rounded-xl p-3 text-sm text-slate-200">{html.escape(texto, quote=False)}</textarea>'
             f'<p class="text-slate-400 text-xs mt-2">Dados sob licença <a href="{LICENCA_DADOS_URL}" rel="noopener" class="underline">{LICENCA_DADOS}</a>: '
-            f'pode usar e adaptar, citando a fonte com link.</p></section>')
+            f'pode usar e adaptar, citando a fonte com link.</p>'
+            + html_link_e_compartilhar(f"Taxa do {banco_exib} para {CATEGORIA_LABEL[categoria].lower()}", url) + '</section>')
 
 
 def gerar_llms_full_txt(pasta_saida, data_atualizacao, historico):
@@ -3971,6 +3990,19 @@ def gerar_index(data_atualizacao):
 </html>'''
 
 
+_EXEMPLOS_GUIAS = None
+
+
+def _exemplos_guias():
+    """Exemplos calculados dos guias (ver exemplos_guias.py); montados na primeira chamada."""
+    global _EXEMPLOS_GUIAS
+    if _EXEMPLOS_GUIAS is None:
+        import exemplos_guias
+        _EXEMPLOS_GUIAS = exemplos_guias.montar_exemplos(
+            calcular_pmt_price, calcular_iof_veiculo, calcular_cet_veiculo, TARIFA_REGISTRO_CONTRATO, formatar_reais, calcular_renda_sugerida)
+    return _EXEMPLOS_GUIAS
+
+
 def gerar_pagina_aprenda(art, data_atualizacao):
     """Página de conteúdo evergreen (educativo, sem calculadora) —
     segunda camada de profundidade de conteúdo, complementar às páginas
@@ -3986,10 +4018,12 @@ def gerar_pagina_aprenda(art, data_atualizacao):
     relevante no fim, sem forçar (mantém o visitante no funil sem virar
     uma calculadora disfarçada de artigo)."""
     url_canonica = f"{DOMINIO}/{art['slug']}"
+    bloco_exemplo = _exemplos_guias().get(art["slug"], "")
     bloco_fontes = html_fontes_guia(art["slug"], art.get("fontes"))
+    bloco_exemplo_html = ("\n            " + bloco_exemplo) if bloco_exemplo else ""
     # Data REAL da última mudança do texto do guia (hash do conteúdo, ver lastmod.py), não a data das taxas.
     data_guia_iso = lastmod.registrar(_MANIFESTO_LASTMOD, "guia:" + art["slug"],
-                                      art["titulo_h1"] + art["meta_description"] + art["corpo_html"] + bloco_fontes)
+                                      art["titulo_h1"] + art["meta_description"] + art["corpo_html"] + bloco_exemplo + bloco_fontes)
     schema_article = {
         "@context": "https://schema.org", "@type": "Article",
         "headline": art["titulo_h1"], "url": url_canonica,
@@ -4014,7 +4048,7 @@ def gerar_pagina_aprenda(art, data_atualizacao):
         {breadcrumb}
         <h1 class="font-serif text-3xl font-bold mb-8">{art["titulo_h1"]}</h1>
         <div class="glass-panel-sky rounded-2xl p-6 md:p-10 space-y-6 text-slate-300 leading-relaxed">
-            {art["corpo_html"]}
+            {art["corpo_html"]}{bloco_exemplo_html}
             {bloco_fontes}
         </div>
         <p class="text-xs text-slate-400 mt-4">Texto atualizado em {lastmod.data_br(data_guia_iso)}. Conteúdo educativo da Datalab Global (<a href="/sobre" class="underline">quem somos</a> · <a href="/metodologia" class="underline">como calculamos</a>); não é recomendação de crédito.</p>

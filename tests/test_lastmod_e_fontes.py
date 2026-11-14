@@ -65,3 +65,31 @@ def test_fontes_dos_guias_sao_https_e_sem_duplicata():
         urls = [u for u, _ in fontes]
         assert len(urls) == len(set(urls)), slug
         assert all(u.startswith("https://") for u in urls), slug
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_guias_com_exemplo_calculado_trazem_numeros_do_simulador():
+    for slug in ("aprenda-tabela-price", "aprenda-entrada-ideal-financiamento-veiculo", "aprenda-amortizacao-extra-veiculo",
+                 "aprenda-iof-financiamento-veiculo", "aprenda-o-que-e-cet"):
+        with open(os.path.join(PASTA, slug + ".html"), encoding="utf-8") as f:
+            h = f.read()
+        assert "Exemplo calculado" in h and len(re.findall(r"R\$ [\d.]+,\d{2}", h)) >= 2, slug
+
+
+def test_amortizacao_extra_da_menos_juros_ao_encurtar_o_prazo():
+    import exemplos_guias
+    from gerador_veiculos import calcular_pmt_price
+    jp, mp, _ = exemplos_guias._price_com_extra(50_000, 48, 1.9, 12, 10_000, "prazo", calcular_pmt_price)
+    jq, mq, _ = exemplos_guias._price_com_extra(50_000, 48, 1.9, 12, 10_000, "parcela", calcular_pmt_price)
+    assert mp < 48 and mq == 48 and jp < jq
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_hubs_oferecem_link_para_copiar_e_compartilhar():
+    hubs = [n for n in os.listdir(PASTA) if n.startswith("hub-") and n.endswith(".html")]
+    assert len(hubs) >= 30
+    for n in hubs:
+        with open(os.path.join(PASTA, n), encoding="utf-8") as f:
+            h = f.read()
+        assert "Link para esta página" in h and "&lt;a href=" in h, n
+        assert h.count('rel="noopener nofollow"') >= 4, n
