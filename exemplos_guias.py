@@ -123,4 +123,38 @@ def montar_exemplos(pmt_fn, iof_fn, cet_fn, tarifa_registro, reais, renda_fn):
         f"sobre R$ 50.000. Somando também um seguro prestamista estimado, o CET fica em {_b(_pct(cet) + '% ao ano')}, acima dos {_pct(ta)}% da taxa de juros.</p>"
         f"<p>Por isso a comparação entre propostas deve ser feita pelo CET que consta no contrato, e não pela taxa mensal anunciada. "
         f"Seguro e tarifas variam por banco e por pessoa; aqui são estimativas de mercado.</p>"))
+
+    # ---- CDC: a garantia dura até o saldo zerar
+    v, n = 50_000, 48
+    pmt = pmt_fn(v, n, TAXA_AM)
+    i = TAXA_AM / 100
+
+    def saldo(pagas):
+        return pmt * (1 - (1 + i) ** -(n - pagas)) / i
+
+    linhas = "".join(
+        f"<li>{_b(f'Depois de {k} parcelas:')} você já pagou {reais(pmt * k)} e o saldo devedor ainda é de {_b(reais(saldo(k)))} "
+        f"({_pct(100 * saldo(k) / v)}% do valor financiado).</li>" for k in (12, 24, 36, 47))
+    ex["aprenda-o-que-e-cdc"] = _H2.format(t="Exemplo calculado: quanto você ainda deve enquanto o veículo é a garantia", c=(
+        f"<p>Um exemplo hipotético, calculado como o simulador calcula: CDC de {_b('R$ 50.000')} em {_b('48 parcelas fixas')} de {_b(reais(pmt))} "
+        f"a {_pct(TAXA_AM)}% ao mês (Tabela Price, sem IOF, tarifas e seguro). Enquanto houver saldo devedor, o veículo segue como garantia (alienação fiduciária):</p>"
+        f'<ul class="list-disc pl-6 space-y-2">{linhas}</ul>'
+        f"<p>Os juros pesam mais no começo, por isso o saldo cai devagar nas primeiras parcelas: na metade do contrato você já pagou "
+        f"{reais(pmt * 24)}, mas ainda deve {_pct(100 * saldo(24) / v)}% do valor financiado. A restrição no documento só sai quando o saldo chega a zero. "
+        f"Veja como isso muda se você {_a('aprenda-amortizacao-extra-veiculo', 'amortizar antes')} e o que entra no custo no guia {_a('aprenda-o-que-e-cet', 'o que é CET')}.</p>"))
+
+    # ---- Financiamento x consórcio
+    carta = 50_000
+    juros = pmt * n - carta
+    j24 = pmt_fn(carta, 24, TAXA_AM) * 24 - carta
+    ex["aprenda-financiamento-x-consorcio-veiculo"] = _H2.format(t="Exemplo calculado: quanto o financiamento cobra de juros em R$ 50 mil", c=(
+        f"<p>Um exemplo hipotético, calculado como o simulador calcula (Tabela Price, {_pct(TAXA_AM)}% ao mês, sem IOF, tarifas e seguro). "
+        f"Para ter {_b('R$ 50.000')} de crédito, o financiamento cobra:</p>"
+        f'<ul class="list-disc pl-6 space-y-2">'
+        f"<li>{_b('Em 48 meses:')} parcela de {reais(pmt)} e {_b(reais(juros))} de juros no total, o equivalente a {_b(_pct(100 * juros / carta) + '% do crédito')}.</li>"
+        f"<li>{_b('Em 24 meses:')} parcela de {reais(pmt_fn(carta, 24, TAXA_AM))} e {_b(reais(j24))} de juros, ou {_b(_pct(100 * j24 / carta) + '% do crédito')}.</li></ul>"
+        f"<p>No consórcio não há juros, mas há a taxa de administração, a correção monetária da carta e da mensalidade, e outros itens que o contrato "
+        f"prever (como fundo de reserva e seguro). Esses percentuais variam por administradora e estão no contrato. A comparação justa é: some tudo o que "
+        f"o contrato do consórcio cobra, calcule o percentual sobre a carta e compare com os percentuais acima. E lembre que o financiamento entrega o "
+        f"veículo no mesmo dia, enquanto no consórcio a data depende de sorteio ou lance. Simule o financiamento no {_a('comparador-carro-novo', 'comparador')}.</p>"))
     return ex
