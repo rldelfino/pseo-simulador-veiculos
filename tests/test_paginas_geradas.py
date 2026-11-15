@@ -112,7 +112,7 @@ def test_calculo_js_existe_e_e_referenciado_pelas_paginas_individuais():
     assert paginas_individuais, "nenhuma página individual encontrada pra checar"
     sem_calculo_js = [
         n for n in paginas_individuais
-        if 'src="calculo.js"' not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()
+        if 'src="calculo.js' not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()
     ]
     assert not sem_calculo_js, f"páginas individuais sem calculo.js: {sem_calculo_js[:10]}"
 
