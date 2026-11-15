@@ -158,6 +158,7 @@ EMPRESA_RODAPE = "Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73"
 # Um timestamp gerado a cada rodagem, anexado como query string no link do
 # stylesheet, garante que toda regeneração force o navegador a buscar o
 # CSS de novo — elimina essa classe de confusão de vez.
+# O mesmo carimbo vai em calculo.js e medicao.js (a borda do Cloudflare também os segura por horas).
 VERSAO_BUILD = datetime.now().strftime('%Y%m%d%H%M%S')
 ARQUIVO_ULTIMA_ATUALIZACAO = 'ultima_atualizacao_taxas.txt'
 
@@ -1710,7 +1711,7 @@ def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
     {render_nav()}
     {corpo}
     {render_footer()}
-    <script src="calculo.js"></script>
+    <script src="calculo.js?v={VERSAO_BUILD}"></script>
     <script>iniciarSimulador({dados_pagina_js});</script>
     {SCRIPT_AJUSTA_TOOLTIPS}
 </body>
@@ -2922,7 +2923,7 @@ def tags_medicao():
         return []
     host = DOMINIO.replace("https://", "")
     return [f'<script defer src="{UMAMI_SCRIPT}" data-website-id="{UMAMI_WEBSITE_ID}" data-domains="{host}" data-do-not-track="true"></script>',
-            '<script defer src="/medicao.js"></script>']
+            f'<script defer src="/medicao.js?v={VERSAO_BUILD}"></script>']
 
 
 def gerar_dados_abertos(pasta_saida, data_atualizacao):
@@ -4442,6 +4443,8 @@ def gerar_sitemap(urls, data_atualizacao, pasta_saida="paginas_seo"):
                 # O link do CSS leva um carimbo de build (styles.css?v=AAAAMMDDHHMMSS) que muda a cada
                 # geração; ele não conta como mudança de conteúdo da página.
                 conteudo = re.sub(rb"styles\.css\?v=\d+", b"styles.css?v=0", f.read())
+                # idem para calculo.js/medicao.js: tira o carimbo (sem bump falso de lastmod ao introduzi-lo)
+                conteudo = re.sub(rb"\.js\?v=\d{14}", b".js", conteudo)
                 return lastmod.registrar(_MANIFESTO_LASTMOD, "url:" + url, conteudo)
         return f"{data_atualizacao}T00:00:00+00:00"
     partes = ['<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
