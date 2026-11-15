@@ -74,6 +74,7 @@ de busca diferente):
 
 import html
 import json
+import bancos_veiculos as _bancos_veiculos
 import math
 import os
 import re
@@ -1776,6 +1777,29 @@ def html_requisitos_aprovacao(categoria, banco_exib=None):
             f'<p class="mt-3 text-xs text-slate-400">O pedido de proposta é analisado por um correspondente bancário parceiro e a aprovação depende da análise de crédito de cada instituição. Nenhuma simulação garante aprovação.</p></section>')
 
 
+def periodo_taxa_bacen(banco=None):
+    """Janela de 5 dias úteis do Banco Central de onde vem a taxa (ex.: '23/10 a 29/10/2026'), lida do cache do ETL.
+    Sem banco, devolve o período mais comum do cache. Devolve None se não houver (o texto então só diz 'média do Banco Central').
+    Por que existe (15/nov/2026): as páginas diziam 'taxa hoje', mas o dado é a última média semanal divulgada,
+    com mais de uma semana de atraso; dizer 'hoje' num tema de dinheiro é afirmar o que não dá para sustentar."""
+    try:
+        with open(_bancos_veiculos._ARQUIVO_CACHE_TAXAS, encoding="utf-8") as f:
+            cache = json.load(f)
+    except (FileNotFoundError, ValueError):
+        return None
+    if banco is not None:
+        bruto = cache.get(banco, {}).get("periodo")
+    else:
+        periodos = [v.get("periodo") for v in cache.values() if v.get("periodo")]
+        bruto = max(set(periodos), key=periodos.count) if periodos else None
+    if not bruto or " a " not in bruto:
+        return None
+    ini, fim = bruto.split(" a ", 1)
+    if ini[-4:] == fim[-4:]:
+        ini = ini[:-5]
+    return f"{ini} a {fim}"
+
+
 def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     label_categoria = CATEGORIA_LABEL[categoria]
     slug_pagina = slug_hub(categoria, banco)
@@ -1799,9 +1823,12 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         f"Financiamento {label_categoria} {banco_exib}: simulações | Datalab",
     )
     titulo_pagina = next((t for t in candidatos_titulo if len(t) <= 60), candidatos_titulo[-1])
+    periodo_txt = periodo_taxa_bacen(banco)
+    ref_curta = f"média de {periodo_txt} (Banco Central)" if periodo_txt else "média do Banco Central"
+    ref_longa = f"média contratada de {periodo_txt}, segundo o Banco Central" if periodo_txt else "média contratada, segundo o Banco Central"
     meta_description = (
-        f"Taxa do {banco_exib} hoje para {label_categoria.lower()}: {taxa_am_fmt}% ao mês ({taxa_aa_fmt}% ao ano). "
-        f"Simulações por valor e prazo, até {dados_banco['prazo_max']} meses."
+        f"Taxa do {banco_exib} para {label_categoria.lower()}: {taxa_am_fmt}% ao mês ({taxa_aa_fmt}% ao ano), {ref_curta}. "
+        f"Simulações até {dados_banco['prazo_max']} meses."
     )
 
     paginas_por_valor = {}
@@ -1872,7 +1899,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         {breadcrumb}
         <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento {label_categoria} pelo {banco_exib}</h1>
-        <p class="text-white text-lg font-medium mb-3">Taxa do {banco_exib} hoje para {label_categoria.lower()}: {taxa_am_fmt}% ao mês ({taxa_aa_fmt}% ao ano).</p>
+        <p class="text-white text-lg font-medium mb-3">Taxa do {banco_exib} para {label_categoria.lower()}: {taxa_am_fmt}% ao mês ({taxa_aa_fmt}% ao ano), {ref_longa}.</p>
         <p class="text-slate-400 text-sm mb-8">Taxa média real: {taxa_am_fmt}% a.m. ({taxa_aa_fmt}% a.a.) · Prazo máximo: {dados_banco['prazo_max']} meses. Escolha um valor e prazo para ver a simulação completa.</p>
 
         <div class="mb-8">{faixa_html}</div>
@@ -2854,7 +2881,7 @@ def gerar_llms_full_txt(pasta_saida, data_atualizacao, historico):
 ## O que é e o que não é
 Calcula parcela (Tabela Price), CET estimado e economia de juros com amortização extra. Não é oferta de crédito: as taxas são médias efetivamente contratadas, divulgadas pelo Banco Central (modalidade 401101), e a proposta de cada pessoa depende da análise do banco.
 
-## Taxas usadas nas simulações hoje ({data_br})
+## Taxas usadas nas simulações (média do Banco Central de {periodo_taxa_bacen() or "última semana divulgada"}; página atualizada em {data_br})
 {chr(10).join(linhas)}
 {serie}
 ## Como os números são calculados
@@ -3875,11 +3902,13 @@ def html_taxas_hoje_home(data_atualizacao):
             f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(am)}</td>'
             f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(aa)}</td></tr>'
             for b, am, aa in assinatura)
-        resumo = (f"Em {data_br}, a taxa de financiamento de {rotulo} nos bancos que acompanhamos vai de "
+        periodo_home = periodo_taxa_bacen()
+        quando = f"Na semana de {periodo_home}, a última divulgada pelo Banco Central" if periodo_home else f"Na última semana divulgada pelo Banco Central (página atualizada em {data_br})"
+        resumo = (f"{quando}, a taxa de financiamento de {rotulo} nos bancos que acompanhamos vai de "
                   f"{pct(assinatura[0][1])} ao mês ({nome(bancos[0])}) a {pct(assinatura[-1][1])} ({nome(bancos[-1])}).")
         links = " · ".join(f'<a href="{slug_comparador(c)}" class="underline hover:text-sky-400">Comparar CET e parcela de {CATEGORIA_LABEL[c].lower()}</a>' for c in categorias)
         blocos.append(f'''<section class="mt-8">
-            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de {rotulo} hoje, por banco</h2>
+            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de {rotulo}, por banco</h2>
             <p class="text-slate-300 text-sm font-light leading-relaxed mb-3">{resumo}</p>
             <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
                 <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Banco</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao mês</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao ano</th></tr></thead>

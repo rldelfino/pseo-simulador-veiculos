@@ -92,8 +92,10 @@ def test_metodologia_hub_footer_e_llms():
     assert "401101" in met and "TIR" in met and "contato@datalabglobal.com" in met and "0,0082%" in met
     assert "/metodologia</loc>" in _ler("sitemap.xml")
     hub = _ler("hub-banco-do-brasil-carro-novo.html")
-    assert re.search(r"Taxa do Banco do Brasil hoje para carro novo: \d+,\d{2}% ao mês", hub)
-    assert 'content="Taxa do Banco do Brasil hoje' in hub
+    assert re.search(r"Taxa do Banco do Brasil para carro novo: \d+,\d{2}% ao mês", hub)
+    assert 'content="Taxa do Banco do Brasil para carro novo' in hub
+    assert re.search(r'content="[^"]*média de \d{2}/\d{2} a \d{2}/\d{2}/\d{4} \(Banco Central\)', hub)
+    assert " hoje" not in re.search(r'<p class="text-white text-lg[^>]*>(.*?)</p>', hub).group(1)
     assert 'href="/metodologia"' in _ler("index.html")
     assert "taxas-financiamento-veiculos" in _ler("llms.txt")
 
@@ -138,7 +140,7 @@ def test_paginas_de_renda_no_sitemap_com_faq_igual_ao_json_ld():
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_llms_full_itemlist_dataset_e_medicao_desligada():
     full = _ler("llms-full.txt")
-    assert "Taxas usadas nas simulações hoje" in full and "% ao mês" in full and "401101" in full
+    assert "Taxas usadas nas simulações (média do Banco Central" in full and "% ao mês" in full and "401101" in full
     comp = _ler(gv.slug_comparacao("novo", 100_000, 48) + ".html")
     lista = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', comp, re.S) if '"ItemList"' in b]
     assert lista and all("url" not in it for it in lista[0]["itemListElement"])
@@ -218,7 +220,7 @@ def test_home_tem_tabela_de_taxas_do_dia_igual_aos_hubs():
         import pytest as _pytest
         _pytest.skip("paginas_seo/ não gerada")
     html = open(caminho, encoding="utf-8").read()
-    assert html.count("<table") >= 2 and "hoje, por banco" in html
+    assert html.count("<table") >= 2 and ", por banco" in html and " hoje, por banco" not in html
     # sem tabelas repetidas: cada <tbody> aparece uma vez
     corpos = _re.findall(r"<tbody>(.*?)</tbody>", html, _re.S)
     assert len(corpos) == len(set(corpos))
