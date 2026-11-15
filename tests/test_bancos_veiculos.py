@@ -13,6 +13,7 @@ Rodar com: python -m pytest tests/ -v
 (precisa estar na raiz do projeto — bancos_veiculos.py é importado com
 path relativo).
 """
+import json
 import os
 import sys
 
@@ -77,7 +78,13 @@ def test_taxas_nao_regridem_para_valores_promocionais_descartados():
         "Banco Inter": 1.69,
         "Itau": 1.98,
     }
+    # A média semanal real do BACEN pode coincidir com um valor promocional (Itaú: 1,98% a.m. na semana de 23 a 29/10/2026, 26,57% a.a.,
+    # fonte bcb.gov.br). Nesse caso o dado é legítimo: só barra o valor se NÃO vier da fonte oficial do BACEN no cache semanal.
+    with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "taxas_cache_veiculos.json"), encoding="utf-8") as f:
+        cache = json.load(f)
     for banco, taxa_promocional in valores_promocionais_descartados.items():
+        if "bcb.gov.br" in cache.get(banco, {}).get("fonte", ""):
+            continue
         assert BANCOS_VEICULOS[banco]["taxa_am"] != taxa_promocional, (
             f"{banco} voltou pra taxa promocional/marketing descartada "
             f"({taxa_promocional}% a.m.) em vez da média real do BACEN — "

@@ -1123,7 +1123,7 @@ def render_footer():
             <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
-                <a href="https://www.datalabglobal.com/pix-no-cartao/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
+                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
                 <a href="https://dados.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Lente B2B: dados de empresas</a>
                 <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
                 <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
