@@ -114,3 +114,12 @@ def test_exemplo_do_consorcio_usa_os_juros_do_financiamento():
     ex = g._exemplos_guias()["aprenda-financiamento-x-consorcio-veiculo"]
     pmt = g.calcular_pmt_price(50_000, 48, exemplos_guias.TAXA_AM)
     assert g.formatar_reais(pmt * 48 - 50_000) in ex
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_comparadores_citam_a_semana_do_dado_e_nao_a_data_de_geracao():
+    for nome in ("comparador-carro-novo", "comparador-carro-usado", "comparador-moto"):
+        with open(os.path.join(PASTA, nome + ".html"), encoding="utf-8") as f:
+            h = re.sub(r"<[^>]+>", " ", f.read())
+        assert re.search(r"Na semana de \d{2}/\d{2} a \d{2}/\d{2}/\d{4}, a última divulgada pelo Banco Central", h), nome
+        assert not re.search(r"Em \d{2}/\d{2}/\d{4}, a menor taxa", h), nome

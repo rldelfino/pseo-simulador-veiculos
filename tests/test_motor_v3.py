@@ -290,7 +290,7 @@ def test_comparador_tem_frase_de_resposta_igual_aos_dados_da_tabela():
         esperado_maior = corrigir_concordancia(f"a maior, a do {bancos[-1]['nome_exibicao']} ({fmt(bancos[-1]['taxa_am'])})")
         assert f"entre os {len(bancos)} bancos que acompanhamos" in pagina, arquivo
         assert esperado_menor in pagina and esperado_maior in pagina, arquivo
-        assert _re.search(r"Em \d{2}/\d{2}/\d{4}, a menor taxa de financiamento de", pagina)
+        assert _re.search(r"Na semana de \d{2}/\d{2} a \d{2}/\d{2}/\d{4}, a última divulgada pelo Banco Central, a menor taxa de financiamento de", pagina)
         # os mesmos números aparecem na lista de bancos da página
         assert fmt(bancos[0]["taxa_am"]).replace("%", "") in pagina
 

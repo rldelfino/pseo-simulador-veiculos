@@ -3289,7 +3289,10 @@ def gerar_comparador(categoria, lookup, data_atualizacao):
                                                                        schema_webpage(url_canonica, titulo_pagina, meta_description, data_atualizacao)])
     por_taxa = sorted(ranking, key=lambda r: (r["taxa_am"], r["nome_exibicao"]))
     pct_am = lambda v: f"{v:.2f}".replace('.', ',') + "%"
-    frase_resposta = (f"Em {d_atual.strftime('%d/%m/%Y')}, a menor taxa de financiamento de {nome_cat} entre os {len(ranking)} bancos que acompanhamos "
+    periodo_cmp = periodo_taxa_bacen()
+    quando_cmp = (f"Na semana de {periodo_cmp}, a última divulgada pelo Banco Central," if periodo_cmp
+                  else f"Na atualização de {d_atual.strftime('%d/%m/%Y')},")
+    frase_resposta = (f"{quando_cmp} a menor taxa de financiamento de {nome_cat} entre os {len(ranking)} bancos que acompanhamos "
                       f"é a do {por_taxa[0]['nome_exibicao']} ({pct_am(por_taxa[0]['taxa_am'])} ao mês) e a maior, a do {por_taxa[-1]['nome_exibicao']} "
                       f"({pct_am(por_taxa[-1]['taxa_am'])}).")
     breadcrumb = render_breadcrumb([("Datalab Global", "/"), (label_categoria, None)])
