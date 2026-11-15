@@ -5,7 +5,7 @@
 ## O que é e o que não é
 Calcula parcela (Tabela Price), CET estimado e economia de juros com amortização extra. Não é oferta de crédito: as taxas são médias efetivamente contratadas, divulgadas pelo Banco Central (modalidade 401101), e a proposta de cada pessoa depende da análise do banco.
 
-## Taxas usadas nas simulações hoje (15/11/2026)
+## Taxas usadas nas simulações (média do Banco Central de 23/10 a 29/10/2026; página atualizada em 15/11/2026)
 - Caixa: taxa de 1,02% ao mês (12,97% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
 - Banco do Brasil: taxa de 1,12% ao mês (14,25% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
 - Bradesco: taxa de 1,63% ao mês (21,45% ao ano), prazo de até 60 meses (carro novo, carro usado, moto).
