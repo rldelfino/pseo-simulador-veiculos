@@ -70,7 +70,8 @@ def test_fontes_dos_guias_sao_https_e_sem_duplicata():
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_guias_com_exemplo_calculado_trazem_numeros_do_simulador():
     for slug in ("aprenda-tabela-price", "aprenda-entrada-ideal-financiamento-veiculo", "aprenda-amortizacao-extra-veiculo",
-                 "aprenda-iof-financiamento-veiculo", "aprenda-o-que-e-cet"):
+                 "aprenda-iof-financiamento-veiculo", "aprenda-o-que-e-cet",
+                 "aprenda-o-que-e-cdc", "aprenda-financiamento-x-consorcio-veiculo"):
         with open(os.path.join(PASTA, slug + ".html"), encoding="utf-8") as f:
             h = f.read()
         assert "Exemplo calculado" in h and len(re.findall(r"R\$ [\d.]+,\d{2}", h)) >= 2, slug
@@ -93,3 +94,23 @@ def test_hubs_oferecem_link_para_copiar_e_compartilhar():
             h = f.read()
         assert "Link para esta página" in h and "&lt;a href=" in h, n
         assert h.count('rel="noopener nofollow"') >= 4, n
+
+
+def test_exemplo_do_cdc_bate_com_o_saldo_devedor_do_simulador():
+    import exemplos_guias
+    import gerador_veiculos as g
+    ex = g._exemplos_guias()["aprenda-o-que-e-cdc"]
+    pmt = g.calcular_pmt_price(50_000, 48, exemplos_guias.TAXA_AM)
+    i = exemplos_guias.TAXA_AM / 100
+    saldo24 = pmt * (1 - (1 + i) ** -24) / i
+    assert g.formatar_reais(saldo24) in ex and g.formatar_reais(pmt) in ex
+    # o saldo depois de todas as parcelas é zero: confere o fechamento da conta
+    assert abs(pmt * (1 - (1 + i) ** -0) / i) < 1e-9
+
+
+def test_exemplo_do_consorcio_usa_os_juros_do_financiamento():
+    import exemplos_guias
+    import gerador_veiculos as g
+    ex = g._exemplos_guias()["aprenda-financiamento-x-consorcio-veiculo"]
+    pmt = g.calcular_pmt_price(50_000, 48, exemplos_guias.TAXA_AM)
+    assert g.formatar_reais(pmt * 48 - 50_000) in ex
