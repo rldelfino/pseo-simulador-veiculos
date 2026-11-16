@@ -123,3 +123,23 @@ def test_comparadores_citam_a_semana_do_dado_e_nao_a_data_de_geracao():
             h = re.sub(r"<[^>]+>", " ", f.read())
         assert re.search(r"Na semana de \d{2}/\d{2} a \d{2}/\d{2}/\d{4}, a última divulgada pelo Banco Central", h), nome
         assert not re.search(r"Em \d{2}/\d{2}/\d{4}, a menor taxa", h), nome
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_hubs_trazem_analise_propria_com_numeros_do_calculo_e_sem_recomendar():
+    import gerador_veiculos as g
+    from bancos_veiculos import bancos_para_categoria, obter_regra
+    hubs = [n for n in os.listdir(PASTA) if n.startswith("hub-") and n.endswith(".html")]
+    assert len(hubs) >= 30
+    for n in hubs:
+        categoria = "novo" if n.endswith("-carro-novo.html") else "usado" if n.endswith("-carro-usado.html") else "moto"
+        media = sum(obter_regra(b)["taxa_am"] for b in bancos_para_categoria(categoria)) / len(bancos_para_categoria(categoria))
+        with open(os.path.join(PASTA, n), encoding="utf-8") as f:
+            h = re.sub(r"<[^>]+>", " ", f.read())
+        assert "frente à média dos bancos" in h and "Exemplo calculado" in h, n
+        bloco = h[h.index("frente à média dos bancos"):h.index("Antes de pedir a proposta")]
+        assert f"{media:.2f}".replace(".", ",") + "% ao mês" in bloco, n
+        assert g.formatar_reais(g.calcular_pmt_price(60_000, 48, media)) in bloco or g.formatar_reais(g.calcular_pmt_price(60_000, min(48, obter_regra("Caixa")["prazo_max"]), media)) in bloco, n
+        assert not re.search(r"\b(melhor|pior|recomend[ao]|vencedor)\b", bloco.replace("Não é recomendação de banco", "")), n
+    with open(os.path.join(PASTA, "dados-abertos.html"), encoding="utf-8") as f:
+        assert '"keywords"' in f.read()

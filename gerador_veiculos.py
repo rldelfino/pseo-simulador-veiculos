@@ -1904,6 +1904,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
 
         <div class="mb-8">{faixa_html}</div>
         {html_serie_banco(historico_cache(), banco, banco_exib, dados_banco['taxa_am'])}
+        {html_comparacao_mercado(categoria, banco, banco_exib, dados_banco, historico_cache())}
 
         <div class="grid sm:grid-cols-2 gap-4">{grade_html}</div>
         <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-8 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
@@ -2169,6 +2170,47 @@ def html_serie_banco(historico, banco, banco_exib, taxa_simulada):
         </div></section>'''
 
 
+VALOR_ANALISE_HUB = 60_000
+PRAZO_ANALISE_HUB = 48
+KEYWORDS_DATASET = ["financiamento de veículos", "taxa de juros", "Banco Central", "CET", "carro novo", "carro usado", "moto", "Brasil", "dados abertos"]
+
+
+def html_comparacao_mercado(categoria, banco, banco_exib, dados_banco, historico):
+    """Análise própria do hub (15/nov/2026): taxa do banco frente à média simples dos bancos da categoria, quantos dos últimos meses
+    ficou acima ou abaixo dela e o efeito em reais da diferença, com o mesmo cálculo do simulador (Tabela Price). Texto neutro:
+    não ordena nem recomenda banco; os números mudam de banco para banco, o que também reduz o texto repetido entre hubs."""
+    bancos = list(bancos_para_categoria(categoria))
+    if len(bancos) < 3:
+        return ""
+    taxas = {b: obter_regra(b)["taxa_am"] for b in bancos}
+    media = sum(taxas.values()) / len(taxas)
+    taxa_banco = dados_banco["taxa_am"]
+    dif = taxa_banco - media
+    posicao = "igual à" if abs(dif) < 0.005 else (f"{_pct2(abs(dif))} p.p. acima da" if dif > 0 else f"{_pct2(abs(dif))} p.p. abaixo da")
+    por_mes = {}
+    for b in bancos:
+        for m, t in serie_do_banco(historico, b):
+            por_mes.setdefault(m, {})[b] = t
+    acima = abaixo = 0
+    for d in por_mes.values():
+        if banco in d and len(d) >= 3:
+            m_ = sum(d.values()) / len(d)
+            acima += d[banco] > m_
+            abaixo += d[banco] < m_
+    hist = (f" Nos últimos {acima + abaixo} meses de dados do Banco Central, ficou acima dessa média em {acima} e abaixo em {abaixo}."
+            if acima + abaixo >= 3 else "")
+    prazo = min(PRAZO_ANALISE_HUB, dados_banco["prazo_max"])
+    p_a = calcular_pmt_price(VALOR_ANALISE_HUB, prazo, taxa_banco)
+    p_m = calcular_pmt_price(VALOR_ANALISE_HUB, prazo, media)
+    j_a, j_m = p_a * prazo - VALOR_ANALISE_HUB, p_m * prazo - VALOR_ANALISE_HUB
+    return f'''<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">O {banco_exib} frente à média dos bancos</h2>
+        <div class="glass-panel rounded-2xl p-6 md:p-8">
+            <p class="text-slate-400 text-xs mb-4">Análise própria com dados do Banco Central. Não é recomendação de banco.</p>
+            <p class="text-slate-300 text-sm font-light leading-relaxed mb-4">Na média simples dos {len(bancos)} bancos desta categoria, a taxa média é de {_pct2(media)}% ao mês. A do {banco_exib} ({_pct2(taxa_banco)}%) está {posicao} média.{hist}</p>
+            <p class="text-slate-300 text-sm font-light leading-relaxed"><strong class="text-white">Exemplo calculado</strong>, como no simulador ({formatar_reais(VALOR_ANALISE_HUB)} em {prazo} meses, Tabela Price, sem IOF, tarifas e seguro): com a taxa do {banco_exib}, a parcela é de {formatar_reais(p_a)} e os juros somam {formatar_reais(j_a)}; com a taxa média dos bancos, {formatar_reais(p_m)} e {formatar_reais(j_m)}. A diferença é de {formatar_reais(abs(p_a - p_m))} por mês e {formatar_reais(abs(j_a - j_m))} nos juros do contrato. A sua taxa depende da análise do banco.</p>
+        </div></section>'''
+
+
 def html_vizinhas(p, todas_paginas):
     """Links para o valor anterior e o seguinte (mesmo banco, categoria e prazo) e
     para os índices de taxas e a metodologia. Os outros prazos do mesmo valor já
@@ -2283,7 +2325,7 @@ def gerar_paginas_mensais(pasta_saida, data_atualizacao, historico):
             vizinhos += f' &nbsp;·&nbsp; <a href="{slug_mes(meses[k + 1])}" class="underline hover:text-sky-400">{nome_mes(meses[k + 1])} →</a>'
         cobertura = [(r["inicio_periodo"], r["fim_periodo"]) for r in historico if r["mes_referencia"] == mes]
         schema_dados = {
-            "@context": "https://schema.org", "@type": "Dataset", "name": f"Taxas do financiamento de veículos por banco em {mes_ano}",
+            "@context": "https://schema.org", "@type": "Dataset", "keywords": KEYWORDS_DATASET, "name": f"Taxas do financiamento de veículos por banco em {mes_ano}",
             "description": f"Taxa média de juros contratada (% ao mês) por banco em {mes_ano}, segundo o Banco Central do Brasil.",
             "url": url, "inLanguage": "pt-BR", "license": LICENCA_DADOS_URL, "isAccessibleForFree": True,
             "creator": {"@type": "Organization", "name": "Datalab Global", "url": f"{DOMINIO}/"},
@@ -3019,7 +3061,7 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
 """)
 
     schema_dataset = {
-        "@context": "https://schema.org", "@type": "Dataset",
+        "@context": "https://schema.org", "@type": "Dataset", "keywords": KEYWORDS_DATASET,
         "name": "Taxas médias de juros do financiamento de veículos por banco (BACEN)",
         "description": descricao, "url": url_pagina, "inLanguage": "pt-BR",
         "license": LICENCA_DADOS_URL, "isAccessibleForFree": True,
