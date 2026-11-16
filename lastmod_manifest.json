@@ -104,8 +104,8 @@
   "lastmod": "2026-11-15T22:11:52+00:00"
  },
  "url:https://veiculos.datalabglobal.com/dados-abertos": {
-  "hash": "b4a853b53d4721d3820006644633d059a8d0591cee699df310bb67d914eed167",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "f9ecafb40521e301b1b023f0a88dc5b396ef7614bfa7342f4936d2ee754bb829",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/financiamento-carro-novo-100-mil-12-meses": {
   "hash": "e3cc4b53d856a55e693053ed1dec82fcc5d21bb5c07ad276ee540adec06dde67",
@@ -432,132 +432,132 @@
   "lastmod": "2026-11-15T18:46:05+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-do-brasil-carro-novo": {
-  "hash": "0acc2503c8d07c4bc0d38b032ea1c246574d3f693990c45b35785e5f259995b2",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "26fd7a0a88fd56361eecc671e1bfb6c7414cda05fc79f5cd3fe5791bb69be9e9",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-do-brasil-carro-usado": {
-  "hash": "4077c824e5b003249be863befd6ed33a6af856d79415d1183a4ad884bcca14c7",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "a5879294112ae15200d0649711c2a37b74c4642f525345fcc6bac719783d52a4",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-do-brasil-moto": {
-  "hash": "04fd2bd81fdfddd470662c4e317e08ded6315181ca309874b4e484e3ac19ffb9",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "98274e9dcc6a5219956aaafc0e3147dd262cb1c15b23a7d81bc1c053d665525f",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-honda-moto": {
-  "hash": "a6715e2cd79a43acebc23cf920a8e02ef90f628eb3f2831c6f797a1fcb0655cc",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "8cf79394387b98d46e61fc566d15e416b205820e5444e7d3e134ca5d1f8533c5",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-inter-carro-novo": {
-  "hash": "253f3dbb2135a7ef4594900849509ad7c19432f488476ccde2e1804fdbdc7bcb",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "d11c65b05d3590ad7f4196f0c4f6f08c71a284b388863a32df162ed85fa841e0",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-inter-carro-usado": {
-  "hash": "774521aae98d168a122314053c74e42ad348e5d13ffee4a1c779ac7a3c5f019e",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "0d6b704af080b60177fd0fde4c55d99873e712d3a0e1da1969948a2aafeea144",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-inter-moto": {
-  "hash": "4fa18658c9bd09144feb117a3ea35df881ad30ef75346879b972002a456f6eac",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "c4899d4e86c6b89e2e6dd477a9f2419537ea27153a0eb399326342d82036d833",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-pan-carro-novo": {
-  "hash": "d61a9ae8fe5fdd500dbf78b2115f16db70900fb69b9113cee13cbba3582475b4",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "3ef1d14a600437c5c9e4f7365c6e35e425d0a865573e39d8958f467253662769",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-pan-carro-usado": {
-  "hash": "d298e6c5252e02559b7fcded309b20821ba0de53e9573b2c120462495eda3380",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "bfa8ce54728aaad84737e6b1dd9b89793f209bda25c6fa184f849b86daf2a708",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-pan-moto": {
-  "hash": "103e76137efbfe2c42dd5e09c4d1711176ff2bccfbf95a921379d1f8d36b4f57",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "e954962c5295d2600351609ee61c3799e5f5ac7380c468ee69e6c9e011e28b77",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-banco-yamaha-moto": {
-  "hash": "18b6a2fe1f903399da86571cd8370cc2688a20f856a660ff976ff6716b3f2852",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "e653d1f261d4677de491488955fb86127754d27c73b0bc7e223564634bc3bd6b",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bradesco-carro-novo": {
-  "hash": "e1d8b7b6abd4bed4c13af7e8f560eb6960d4cc185d263c187599c1af7ac0faab",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "7cc6bfef076ea81070631f711ea88c05c12062171aaf50b7b0933a4cfc7d007d",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bradesco-carro-usado": {
-  "hash": "18026b65653ff3a80a67bd83cc9ff81ca3c35e100b4c3f5b817e8a8a7b1d1c49",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "8ed25edf7002045e6ba3ea3eaae539141fa02ee7c0a5075cb95ac9440ed63e6e",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bradesco-moto": {
-  "hash": "83a2cdc0bb1f9ecd2491d02001c9405b5d42077ceecbdcf788f9df078af2a755",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "83ecc2d2eb292c790ab7208996ff94868724f43d20dbae4e61bf5eee01357ff0",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bv-financeira-carro-novo": {
-  "hash": "923a4955b47b226b9a0f161e337793b2d98f73bfa8f55267c0eb7f1fee499057",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "e90cb9debddcd6ddb3302df2cc736bfc8c8e36e2d4431a8dd290320fa29a19dc",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bv-financeira-carro-usado": {
-  "hash": "9a249299a23c3159c927176d47eb45259d33f9522f5574773e8aecf3d7f874f4",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "c3a77bc6699120649ecb0ce89623d70b8b9f174b02b43d9a94502e22eb860309",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-bv-financeira-moto": {
-  "hash": "30246bd10b0793652d9356b90ae33190ff091f5a63c8963ea5f4df0c121ea4a1",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "e1414102c10b61a9c966cfdba5d6cd373e462bf430126eee07924c949091bc16",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-c6-bank-carro-novo": {
-  "hash": "3e86e1e4e5e01c55ea57e7372c794e6bf16e67e7976cd78eebd8e81a18bae056",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "fd6c28343ad5c33b794ad8f71cb3ef3c88d0748e0e2c63b99cd5869f6cac87bd",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-c6-bank-carro-usado": {
-  "hash": "a7c9f0ddbcd26f9f72489327b7ea55205eb6624d4a4a982f090689a9f6496a4c",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "0ccfd3feb7a126b4c4a0c68f2674da2f8b646eaab67709b00b3cf5673af05b9d",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-c6-bank-moto": {
-  "hash": "0e388621c3e96a4916228426e74091b288c03c115a7a55cdd2dc9ad6798efb7f",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "473f0b61e1f033028baddc445a02a5ea838faf01a8363123482d880635fea718",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-caixa-carro-novo": {
-  "hash": "a66d0cc1ad7a67b76ddf56ad73e2f6e30dad9066e896910c66ce5a478697e842",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "b959d2eec213dd64dd8bff2c579010e18780b2df490fe3f339f4bb5167cdf9aa",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-caixa-carro-usado": {
-  "hash": "eed37c0fba1da2b7ca3ccb74dee83b8d0338cbf5c35b30328adf018490172aa2",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "efd072db97f92315964e08da768f62d9614c5c3f59149c9aaa6464563b718f08",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-caixa-moto": {
-  "hash": "df3fac1e6aa99b146e25075566207e36e9cd570bcf24350641e1fa48069f22bc",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "5f3c28f3de8917f51a1ffce1db61529f43eb578f5a2b8d9ed49c9ec9b4f82ccd",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-itau-carro-novo": {
-  "hash": "a7ffe18a75dd030caa282419a7813d4c1f1a2ac96b7a257a4546f13146f8a913",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "aff31a6d767d76362b8198b60b00c7686525d4a8df4374117e6ecc310ef37574",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-itau-carro-usado": {
-  "hash": "7b012a5c6b46581decb57bee63621c53b22948334ae7d5933ffb1758009978a0",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "91250c2703ca7cb973591e3d59165309bdbd45ba9d7909f630e86ea03c2d8606",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-itau-moto": {
-  "hash": "6b25980cadbb02312dc65293dae1be6304cc90d3a39d14c58c8c852d0a414458",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "2d42996b1ab8e48ad72131d5f25cad3da001811d12ddfedc1619710e08e56cd7",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-omni-financeira-carro-novo": {
-  "hash": "1a6613b3bf9034bbcdd4ef101ef8ba15897e9383dfbef559d4df8fca10106c74",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "23d38a4ceba408413e1d69ffba33184fc7a12e908f1c2c3a94de09a745423333",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-omni-financeira-carro-usado": {
-  "hash": "beec324957c843f7a974bb061df44a520fa26601549424a3d4f45920bd76857f",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "997827b2a3ed435ff04087a4fd79773178c6bb944b57e432763e0b6ff1dbb1b1",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-omni-financeira-moto": {
-  "hash": "b1d1bc51c550590c63fd0d115216c77fff0fb868dc3667a63a52cba92da5a7ea",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "10b474c79d7a8e3c3ade253368a318d6e4373eb32ef5fef0815bfc6e8302dace",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-santander-carro-novo": {
-  "hash": "ff9b5c178af265957c820b650ac300e807cdbb438598f06c11ade88914699715",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "9e22e86a0273a20b1927e694c9cf2064f184a61d74493e310cb1bf59567e7373",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-santander-carro-usado": {
-  "hash": "edf85e56805a2ecb667c7b9bccd9d9cc0144eef7b6713fdc5dd4d273aaf2adb3",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "8bb001970ca883c5b70a53c41ea5bbc60e51b56a11403f36bd49e1985ca85f09",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/hub-santander-moto": {
-  "hash": "cc55173ad382a4ad78d0b7afa081952668f078db7a5d8ad7974420e1802e5e1c",
-  "lastmod": "2026-11-15T21:47:25+00:00"
+  "hash": "11e23b1d2bb2c50bd17436a205aee652cf187ebbc46502e005139f6aaacfb77b",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/imprensa": {
   "hash": "86e75e90ecbb0b723340452704c76cd9dc3f563a60ef612d9a0595df492d59d8",
@@ -648,51 +648,51 @@
   "lastmod": "2026-11-15T18:46:05+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-abril-2026": {
-  "hash": "f252f3bf6ca8b4d4c4d945f53a95dd77f2578bdb660333915db9f3a62eef5965",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "5c5509043582e2472e9a70318ef1fa3f31bc605698b3fd00a17b85e469e3dda3",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-agosto-2026": {
-  "hash": "86378a03cca789839a8b2da9dc8979ca817cd26a59e0c54ed363fbabf5d06fd1",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "e6ed8ae1e18a58e733968857e517ffd7b8c5432cb3d2b92c5280137d389ecdad",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-dezembro-2025": {
-  "hash": "09a262ad40dbc047071e77b3e02db125248449f2f9100ebaa993c7e9aee48162",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "13098ac8e3cc3c441b1f6ef19bf2f435676cf73628843a1c99ab03bfbf27777a",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-fevereiro-2026": {
-  "hash": "eac98c77fdefe631bb7b30d35971ce942e794faccb9a0a75a2baed52d752c8a1",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "56794dba9e3c27e701f8ce98a02a1dda93725c968534d1b37dc3f25dec92f550",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-janeiro-2026": {
-  "hash": "245d88ca578f79e11217837e04eaf1bba7e3ba7045a96f8eefc8b5c565919c06",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "ca72bb309864127a17d0eeb3fbb65b7aac24516c620ebc2c22d264c87ad249a1",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-julho-2026": {
-  "hash": "b7fba4f32ff4690fb7a42b2d892204d7713f4acce2d3981e63516d48fa5da4c0",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "59b6c3d1800004a41516c2ac3c3afdbe50e5d174fa427003f2216acec938cd6a",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-junho-2026": {
-  "hash": "6659c80e3b295c40e457d170f98d59cedbafeebda0bdb546138c6b5681688d92",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "10cbce80a155e5007319ec7e979fe04823c8728fbdfdd2b9b553e68a79ee7a04",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-maio-2026": {
-  "hash": "95a76d132a3a5e45d36df1e27b3e3cbc82c134e65199d4424bee3c6ba333c969",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "8699c1c96e3f513356b19cfd0115733ca402934e80183b5215a600cc95057125",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-marco-2026": {
-  "hash": "17b2936fe0a267e9d25c1067d9e22b33654629bbecdc8ff4ea5dfbb70440b612",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "5d7ac174d6d9d53bd76a33c929544f940671b22affb8551cbde76c7d776c181b",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-novembro-2025": {
-  "hash": "d6e58717404caa48fc0b5d3aea1332a63bc92ef82180c9ef77d469eeeae77e4a",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "ec2b21ce37231c052a7bc7586a249453bca3c6885b4f118d7eeacc619d9be6dc",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-outubro-2026": {
-  "hash": "911fce9d3973df7e067a8915be05eadfb18a1ce7de558f9be935d1037e167794",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "9a149808ceac26cc05d32392e2235b330c2255b64d2a83b1a19d2a38978e8260",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  },
  "url:https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-setembro-2026": {
-  "hash": "c1590a9f04b651be7ccbf9101df0e5befe5972b2f3bc8fc55122d45add6ab7cb",
-  "lastmod": "2026-11-15T18:46:05+00:00"
+  "hash": "f3515a904ab8e2691ec7ddb13a4887840e86d5278b2933a3fb345edcd3bc2325",
+  "lastmod": "2026-11-16T13:24:33+00:00"
  }
 }
