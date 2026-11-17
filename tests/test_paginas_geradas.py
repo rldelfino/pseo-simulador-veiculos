@@ -236,7 +236,9 @@ def test_dominio_correto_em_todas_as_paginas():
         m = re.search(r'rel="canonical" href="([^"]+)"', conteudo)
         if not m or not m.group(1).startswith(DOMINIO_ESPERADO):
             problemas.append(f"{nome_arquivo}: canonical={m.group(1) if m else None}")
-        if "simulador.datalabglobal.com" in conteudo or ("datalabglobal.com" in conteudo and DOMINIO_ESPERADO not in conteudo):
+        # o rodapé tem um link direto e proposital para a home do simulador imobiliário; qualquer outra referência a esse domínio é erro
+        sem_link_do_rodape = conteudo.replace('href="https://simulador.datalabglobal.com/"', "")
+        if "simulador.datalabglobal.com" in sem_link_do_rodape or ("datalabglobal.com" in conteudo and DOMINIO_ESPERADO not in conteudo):
             problemas.append(f"{nome_arquivo}: referência a domínio errado")
     assert not problemas, f"{len(problemas)} página(s) com domínio incorreto: {problemas[:10]}"
 
