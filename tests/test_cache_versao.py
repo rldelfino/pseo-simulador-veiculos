@@ -43,3 +43,18 @@ def test_lastmod_do_sitemap_ignora_o_carimbo_mas_acompanha_mudanca_real(tmp_path
     arq.write_text(_pagina("20260303030303", "<p>conteúdo novo</p>"), encoding="utf-8")
     gerar()
     assert g._MANIFESTO_LASTMOD != antes  # mudança real de conteúdo: o lastmod avança
+
+
+def test_lastmod_do_sitemap_ignora_fim_de_linha_crlf_do_windows(tmp_path, monkeypatch):
+    """Gerar no Windows grava CRLF; o git guarda LF. O resumo do conteúdo tem de ser o mesmo nas duas plataformas."""
+    monkeypatch.setattr(g, "_MANIFESTO_LASTMOD", {})
+    arq = tmp_path / "a.html"
+    urls = [g.DOMINIO + "/a"]
+    corpo = _pagina("20260101000000", "\n<p>linha 2</p>\n<p>linha 3</p>\n")
+
+    arq.write_bytes(corpo.replace("\n", "\r\n").encode("utf-8"))
+    g.gerar_sitemap(urls, "2026-01-01", str(tmp_path))
+    antes = {k: dict(v) for k, v in g._MANIFESTO_LASTMOD.items()}
+    arq.write_bytes(corpo.encode("utf-8"))
+    g.gerar_sitemap(urls, "2026-01-01", str(tmp_path))
+    assert g._MANIFESTO_LASTMOD == antes  # só o fim de linha mudou: lastmod e hash intactos
