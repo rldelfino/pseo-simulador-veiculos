@@ -4023,7 +4023,8 @@ def gerar_index(data_atualizacao):
     schema_organization = {
         "@context": "https://schema.org", "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization",
         "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": f"{DOMINIO}/logo-schema.png",
-        "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino"]},
+        "sameAs": ["https://huggingface.co/datalabglobal"],
+        "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino", "https://www.kaggle.com/rodolfodelfino"]},
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
 
@@ -4467,7 +4468,8 @@ def gerar_pagina_sobre():
         "@context": "https://schema.org", "@type": "AboutPage", "url": url_canonica,
         "mainEntity": {
             "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/",
-            "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino"]},
+            "sameAs": ["https://huggingface.co/datalabglobal"],
+            "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino", "https://www.kaggle.com/rodolfodelfino"]},
             "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
         },
     }
