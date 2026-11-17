@@ -92,3 +92,24 @@ def test_rodape_linka_privacidade_e_termos():
         if "datalabglobal.com/privacidade/" not in texto or "datalabglobal.com/termos/" not in texto:
             faltando.append(nome)
     assert not faltando, faltando[:5]
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_rodape_linka_os_outros_simuladores_da_datalab():
+    # links diretos (sem redirecionamento) para o empréstimo e para o simulador imobiliário, em toda página com rodapé
+    import re
+    sitemap = open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8").read()
+    # só as páginas do sitemap: sobram arquivos antigos em paginas_seo/ que o gerador não escreve mais
+    nomes = {(u.rstrip("/").rsplit("/", 1)[-1] + ".html") if u.rstrip("/").count("/") > 2 else "index.html"
+             for u in re.findall(r"<loc>([^<]+)</loc>", sitemap)}
+    faltando = []
+    for nome in sorted(nomes):
+        caminho = os.path.join(PASTA_SAIDA, nome)
+        if not os.path.exists(caminho):
+            continue
+        texto = open(caminho, encoding="utf-8").read()
+        if "<footer" not in texto:
+            continue
+        if 'href="https://emprestimo.datalabglobal.com/"' not in texto or 'href="https://simulador.datalabglobal.com/"' not in texto:
+            faltando.append(nome)
+    assert not faltando, faltando[:5]
