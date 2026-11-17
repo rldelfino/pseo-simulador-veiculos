@@ -1950,6 +1950,8 @@ FONTE_BACEN_URL = "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegme
 LICENCA_DADOS = "CC BY 4.0"
 # Cópia do conjunto de dados no Kaggle (publicada em 04/11/2026).
 URL_KAGGLE = "https://www.kaggle.com/datasets/rodolfodelfino/taxas-financiamento-de-veculos-por-banco-bacen"
+URL_ZENODO_DOI = "https://doi.org/10.5281/zenodo.24295614"  # DOI do conceito: resolve sempre para a versão mais recente do dataset
+URL_HUGGINGFACE = "https://huggingface.co/datasets/datalabglobal/taxas-financiamento-veiculos"
 LICENCA_DADOS_URL = "https://creativecommons.org/licenses/by/4.0/deed.pt-br"
 MESES_NA_TABELA_EVOLUCAO = 6
 NOTA_MODALIDADE = ("O Banco Central publica uma única modalidade para aquisição de veículos (pessoa física, pré-fixada), "
@@ -3049,6 +3051,7 @@ def gerar_dados_abertos(pasta_saida, data_atualizacao):
 - **Fonte original:** [Banco Central do Brasil]({FONTE_BACEN_URL}), modalidade 401101.
 - **Licença:** {LICENCA_DADOS} ({LICENCA_DADOS_URL}). Pode usar, copiar e adaptar, citando a fonte.
 - **Atualização:** a cada mês fechado. Última atualização: {data_atualizacao}.
+- **DOI (Zenodo):** {URL_ZENODO_DOI} (aponta sempre para a versão mais recente).
 - **Arquivos:** `taxas-financiamento-veiculos.csv`, `taxas-financiamento-veiculos.json`, `datapackage.json`.
 - **Colunas:** `mes_referencia`, `periodo_inicio`, `periodo_fim`, `instituicao`, `taxa_juros_am_pct`, `taxa_juros_aa_pct`.
 - **Limites:** são médias do que foi efetivamente contratado, não ofertas; a modalidade não separa carro novo, usado e moto.
@@ -3066,7 +3069,7 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
         "description": descricao, "url": url_pagina, "inLanguage": "pt-BR",
         "license": LICENCA_DADOS_URL, "isAccessibleForFree": True,
         "creator": {"@type": "Organization", "name": "Datalab Global", "url": f"{DOMINIO}/"},
-        "isBasedOn": FONTE_BACEN_URL, "dateModified": data_atualizacao, "sameAs": URL_KAGGLE,
+        "isBasedOn": FONTE_BACEN_URL, "dateModified": data_atualizacao, "sameAs": [URL_KAGGLE, URL_HUGGINGFACE, URL_ZENODO_DOI], "identifier": URL_ZENODO_DOI,
         "temporalCoverage": f"{ini}/{fim}", "spatialCoverage": {"@type": "Country", "name": "Brasil"},
         "variableMeasured": ["Taxa média de juros contratada (% ao mês)", "Taxa média de juros contratada (% ao ano)"],
         "distribution": [
@@ -3099,6 +3102,8 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
                 <li><a href="dados/datapackage.json" download class="text-sky-400 underline">datapackage.json</a> <span class="text-slate-400">· metadados (Frictionless Data)</span></li>
                 <li><a href="dados/README.md" class="text-sky-400 underline">README.md</a> <span class="text-slate-400">· descrição e como citar</span></li>
                 <li><a href="{URL_KAGGLE}" rel="noopener" class="text-sky-400 underline">Kaggle</a> <span class="text-slate-400">· mesma série, com notebook de exemplo</span></li>
+                <li><a href="{URL_HUGGINGFACE}" rel="noopener" class="text-sky-400 underline">Hugging Face</a> <span class="text-slate-400">· mesma série</span></li>
+                <li><a href="{URL_ZENODO_DOI}" rel="noopener" class="text-sky-400 underline">Zenodo (DOI)</a> <span class="text-slate-400">· registro citável; o DOI aponta sempre para a versão mais recente</span></li>
             </ul>
         </section>
 
@@ -3121,6 +3126,7 @@ Publicado por Datalab Global ({DOMINIO}/), marca de {EMPRESA_RODAPE}.
         <section class="mt-10">
             <h2 class="font-serif text-xl font-bold mb-3">Como citar</h2>
             <p class="text-slate-300 text-sm font-light leading-relaxed bg-white/5 border border-white/10 rounded-xl p-4">{citacao.format(data="AAAA-MM-DD")}</p>
+            <p class="text-slate-400 text-xs font-light mt-3">DOI (sempre a versão mais recente): <a href="{URL_ZENODO_DOI}" rel="noopener" class="underline">{URL_ZENODO_DOI}</a></p>
             <p class="text-slate-400 text-xs font-light mt-3">Licença <a href="{LICENCA_DADOS_URL}" rel="noopener" class="underline">{LICENCA_DADOS}</a>. Fonte original: <a href="{FONTE_BACEN_URL}" rel="noopener" class="underline">Banco Central do Brasil</a>. Atualizado em {date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')}.</p>
         </section>
 
