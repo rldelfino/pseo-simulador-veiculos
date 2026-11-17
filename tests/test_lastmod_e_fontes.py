@@ -143,3 +143,14 @@ def test_hubs_trazem_analise_propria_com_numeros_do_calculo_e_sem_recomendar():
         assert not re.search(r"\b(melhor|pior|recomend[ao]|vencedor)\b", bloco.replace("Não é recomendação de banco", "")), n
     with open(os.path.join(PASTA, "dados-abertos.html"), encoding="utf-8") as f:
         assert '"keywords"' in f.read()
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_dados_abertos_mostra_doi_hugging_face_e_markup_com_identifier():
+    import gerador_veiculos as g
+    with open(os.path.join(PASTA, "dados-abertos.html"), encoding="utf-8") as f:
+        h = f.read()
+    assert f'href="{g.URL_ZENODO_DOI}"' in h and f'href="{g.URL_HUGGINGFACE}"' in h
+    assert f'"identifier": "{g.URL_ZENODO_DOI}"' in h and g.URL_HUGGINGFACE in h
+    with open(os.path.join(PASTA, "dados", "README.md"), encoding="utf-8") as f:
+        assert g.URL_ZENODO_DOI in f.read()
