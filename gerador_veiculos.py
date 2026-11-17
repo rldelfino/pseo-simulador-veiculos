@@ -4525,7 +4525,9 @@ def gerar_sitemap(urls, data_atualizacao, pasta_saida="paginas_seo"):
             with open(arquivo, "rb") as f:
                 # O link do CSS leva um carimbo de build (styles.css?v=AAAAMMDDHHMMSS) que muda a cada
                 # geração; ele não conta como mudança de conteúdo da página.
-                conteudo = re.sub(rb"styles\.css\?v=\d+", b"styles.css?v=0", f.read())
+                # CRLF vira LF: gerar no Windows grava CRLF e o git guarda LF; sem isso o resumo muda de uma
+                # plataforma para a outra e TODAS as URLs ganham lastmod novo (visto em 17/nov/2026)
+                conteudo = re.sub(rb"styles\.css\?v=\d+", b"styles.css?v=0", f.read().replace(b"\r\n", b"\n"))
                 # idem para calculo.js/medicao.js: tira o carimbo (sem bump falso de lastmod ao introduzi-lo)
                 conteudo = re.sub(rb"\.js\?v=\d{14}", b".js", conteudo)
                 return lastmod.registrar(_MANIFESTO_LASTMOD, "url:" + url, conteudo)
