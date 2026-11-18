@@ -7,7 +7,7 @@ Campos para copiar (portal de dados abertos, "Cadastrar conjunto de dados"):
 - **Organização / publicador:** Datalab Global (Satori Soluções Comerciais LTDA, CNPJ 63.998.502/0001-73)
 - **Licença:** CC BY 4.0
 - **Frequência de atualização:** semanal (série mensal)
-- **Cobertura temporal:** 2024-11-25 a 2026-10-16
+- **Cobertura temporal:** 2024-11-25 a 2026-10-30
 - **Tags:** financiamento de veículos, taxa de juros, CDC, carro, moto, bancos, Banco Central
 - **Recursos (por link, sem upload):**
   - CSV: https://veiculos.datalabglobal.com/dados/taxas-financiamento-veiculos.csv
