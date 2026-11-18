@@ -1,0 +1,16 @@
+{
+  "0": "test_calculos_veiculos.py",
+  "1": "test_bancos_veiculos.py",
+  "2": "test_paginas_geradas.py",
+  "3": "gerador_veiculos.py",
+  "4": "etl_taxas_veiculos.py",
+  "5": "calculo.js",
+  "6": "gerar_pagina_individual",
+  "7": "gerar_comparador",
+  "8": "render_head",
+  "9": "package.json",
+  "10": "test_calculo_js.mjs",
+  "11": "formatar_reais",
+  "12": "rasterizar_favicon_png",
+  "13": "tailwind.config.js"
+}
