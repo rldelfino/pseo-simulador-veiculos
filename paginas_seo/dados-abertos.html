@@ -12,7 +12,7 @@
     <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="ba3c0b88-59e8-47dd-866d-0b05e5e7dae9" data-domains="veiculos.datalabglobal.com" data-do-not-track="true"></script>
-    <script defer src="/medicao.js?v=20261117161952"></script>
+    <script defer src="/medicao.js?v=20261118151430"></script>
     <link rel="alternate" type="application/atom+xml" title="Taxas de financiamento de veículos" href="/feed.xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Dados abertos: taxas de financiamento de veículos por banco">
     <meta name="twitter:description" content="Baixe grátis a série de 24 meses de taxas de juros do financiamento de veículos por banco, do Banco Central, em CSV e JSON (CC BY 4.0).">
-    <link rel="stylesheet" href="styles.css?v=20261117161952">
+    <link rel="stylesheet" href="styles.css?v=20261118151430">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
@@ -82,9 +82,17 @@
 
         <section class="mt-10">
             <h2 class="font-serif text-xl font-bold mb-3">Como citar</h2>
+            <div data-citar>
             <p class="text-slate-300 text-sm font-light leading-relaxed bg-white/5 border border-white/10 rounded-xl p-4">Datalab Global. Taxas médias de juros do financiamento de veículos por banco (dados do BACEN). https://veiculos.datalabglobal.com/dados-abertos, acesso em AAAA-MM-DD.</p>
+            <div class="flex flex-wrap gap-3 mt-3">
+                <button type="button" data-copiar="Datalab Global. Taxas médias de juros do financiamento de veículos por banco (dados do BACEN). https://veiculos.datalabglobal.com/dados-abertos, acesso em AAAA-MM-DD." class="px-3 py-2 rounded-lg border border-white/10 text-sky-400 text-xs">Copiar citação</button>
+                <button type="button" data-copiar="&lt;a href=&quot;https://veiculos.datalabglobal.com/dados-abertos&quot;&gt;Datalab Global&lt;/a&gt;" class="px-3 py-2 rounded-lg border border-white/10 text-sky-400 text-xs">Copiar link em HTML</button>
+            </div>
+            <p class="text-slate-400 text-xs mt-2" role="status" data-citar-status></p>
+            <script>document.addEventListener('click',function(e){var b=e.target.closest('[data-copiar]');if(!b)return;var t=b.getAttribute('data-copiar'),s=b.closest('[data-citar]').querySelector('[data-citar-status]');function ok(){s.textContent='Copiado.';}function falha(){s.textContent='Não foi possível copiar automaticamente: selecione o texto e copie.';}if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,falha);}else{var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():falha();}catch(x){falha();}document.body.removeChild(a);}});</script>
+        </div>
             <p class="text-slate-400 text-xs font-light mt-3">DOI (sempre a versão mais recente): <a href="https://doi.org/10.5281/zenodo.24295614" rel="noopener" class="underline">https://doi.org/10.5281/zenodo.24295614</a></p>
-            <p class="text-slate-400 text-xs font-light mt-3">Licença <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" rel="noopener" class="underline">CC BY 4.0</a>. Fonte original: <a href="https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101" rel="noopener" class="underline">Banco Central do Brasil</a>. Atualizado em 16/11/2026.</p>
+            <p class="text-slate-400 text-xs font-light mt-3">Licença <a href="https://creativecommons.org/licenses/by/4.0/deed.pt-br" rel="noopener" class="underline">CC BY 4.0</a>. Fonte original: <a href="https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101" rel="noopener" class="underline">Banco Central do Brasil</a>. Leia também a <a href="analise-do-mes" class="underline">análise do mês</a>. Atualizado em 16/11/2026.</p>
         </section>
 
         <section class="mt-10">
