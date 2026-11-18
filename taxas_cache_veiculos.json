@@ -1,86 +1,86 @@
 {
   "BV Financeira": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 30.14,
-    "taxa_am": 2.22
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 30.82,
+    "taxa_am": 2.26
   },
   "Banco Honda": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 32.94,
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 32.9,
     "taxa_am": 2.4
   },
   "Banco Inter": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 21.76,
-    "taxa_am": 1.65
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 22.11,
+    "taxa_am": 1.68
   },
   "Banco Pan": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 41.37,
-    "taxa_am": 2.93
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 41.85,
+    "taxa_am": 2.96
   },
   "Banco Yamaha": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 36.85,
-    "taxa_am": 2.65
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 36.26,
+    "taxa_am": 2.61
   },
   "Banco do Brasil": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 14.1,
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 14.18,
     "taxa_am": 1.11
   },
   "Bradesco": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 21.81,
-    "taxa_am": 1.66
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 22.17,
+    "taxa_am": 1.68
   },
   "C6 Bank": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 26.16,
-    "taxa_am": 1.96
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 26.59,
+    "taxa_am": 1.98
   },
   "Caixa": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 12.94,
-    "taxa_am": 1.02
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 12.76,
+    "taxa_am": 1.01
   },
   "Itau": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 26.95,
-    "taxa_am": 2.01
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 27.74,
+    "taxa_am": 2.06
   },
   "Omni Financeira": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 48.82,
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 48.91,
     "taxa_am": 3.37
   },
   "Santander": {
-    "atualizado_em": "2026-11-16",
+    "atualizado_em": "2026-11-18",
     "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
-    "periodo": "26/10/2026 a 30/10/2026",
-    "taxa_aa": 24.49,
-    "taxa_am": 1.84
+    "periodo": "28/10/2026 a 04/11/2026",
+    "taxa_aa": 24.36,
+    "taxa_am": 1.83
   }
 }

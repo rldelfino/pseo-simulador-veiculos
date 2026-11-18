@@ -5,11 +5,18 @@
   <subtitle>Taxas médias de juros do financiamento de carro novo, carro usado e moto por banco, com dados do Banco Central.</subtitle>
   <link rel="self" type="application/atom+xml" href="https://veiculos.datalabglobal.com/feed.xml" />
   <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/" />
-  <updated>2026-11-16T00:00:00Z</updated>
+  <updated>2026-11-18T00:00:00Z</updated>
   <author>
     <name>Datalab Global</name>
     <uri>https://veiculos.datalabglobal.com/sobre</uri>
   </author>
+  <entry>
+    <id>https://veiculos.datalabglobal.com/atualizacoes#2026-11-18</id>
+    <title>Taxas de financiamento de veículos: atualização de 18/11/2026</title>
+    <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/atualizacoes" />
+    <updated>2026-11-18T00:00:00Z</updated>
+    <summary>Atualização de 18/11/2026 frente à de 16/11/2026: maior alta: Itaú (+0,05 p.p., de 2,01% para 2,06% ao mês); maior queda: Banco Yamaha (−0,04 p.p., de 2,65% para 2,61% ao mês).</summary>
+  </entry>
   <entry>
     <id>https://veiculos.datalabglobal.com/atualizacoes#2026-11-16</id>
     <title>Taxas de financiamento de veículos: atualização de 16/11/2026</title>
@@ -39,6 +46,13 @@
     <summary>Atualização de 02/11/2026 frente à de 26/10/2026: maior alta: Banco do Brasil (+0,02 p.p., de 1,06% para 1,08% ao mês); maior queda: BV Financeira (−0,09 p.p., de 2,20% para 2,11% ao mês).</summary>
   </entry>
   <entry>
+    <id>https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-outubro-2026</id>
+    <title>Taxas de financiamento de veículos em outubro de 2026</title>
+    <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-outubro-2026" />
+    <updated>2026-10-30T00:00:00Z</updated>
+    <summary>Em outubro de 2026, a taxa média contratada no financiamento de veículos foi de 1,02% ao mês (Caixa) a 3,37% (Omni Financeira), com média de 2,07% entre 12 bancos.</summary>
+  </entry>
+  <entry>
     <id>https://veiculos.datalabglobal.com/atualizacoes#2026-10-26</id>
     <title>Taxas de financiamento de veículos: atualização de 26/10/2026</title>
     <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/atualizacoes" />
@@ -51,13 +65,6 @@
     <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/atualizacoes" />
     <updated>2026-10-19T00:00:00Z</updated>
     <summary>Atualização de 19/10/2026 frente à de 12/10/2026: maior alta: Banco do Brasil (+0,02 p.p., de 1,07% para 1,09% ao mês); maior queda: Banco Honda (−0,12 p.p., de 2,38% para 2,26% ao mês).</summary>
-  </entry>
-  <entry>
-    <id>https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-outubro-2026</id>
-    <title>Taxas de financiamento de veículos em outubro de 2026</title>
-    <link rel="alternate" type="text/html" href="https://veiculos.datalabglobal.com/taxas-financiamento-veiculos-outubro-2026" />
-    <updated>2026-10-16T00:00:00Z</updated>
-    <summary>Em outubro de 2026, a taxa média contratada no financiamento de veículos foi de 1,01% ao mês (Caixa) a 3,40% (Omni Financeira), com média de 2,05% entre 12 bancos.</summary>
   </entry>
   <entry>
     <id>https://veiculos.datalabglobal.com/atualizacoes#2026-10-12</id>

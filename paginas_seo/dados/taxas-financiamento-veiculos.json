@@ -2,7 +2,7 @@
  "titulo": "Taxas médias de juros do financiamento de veículos por banco (BACEN)",
  "fonte": "https://www.bcb.gov.br/estatisticas/reporttxjuros?codigoSegmento=1&codigoModalidade=401101",
  "licenca": "CC BY 4.0",
- "atualizado_em": "2026-11-16",
+ "atualizado_em": "2026-11-18",
  "organizacao": "Datalab Global",
  "dados": [
   {
@@ -2207,99 +2207,99 @@
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "BV Financeira",
-   "taxa_juros_am_pct": 2.11,
-   "taxa_juros_aa_pct": 28.54
+   "taxa_juros_am_pct": 2.22,
+   "taxa_juros_aa_pct": 30.14
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Banco Honda",
-   "taxa_juros_am_pct": 2.47,
-   "taxa_juros_aa_pct": 34.0
+   "taxa_juros_am_pct": 2.4,
+   "taxa_juros_aa_pct": 32.94
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Banco Inter",
-   "taxa_juros_am_pct": 1.63,
-   "taxa_juros_aa_pct": 21.43
+   "taxa_juros_am_pct": 1.65,
+   "taxa_juros_aa_pct": 21.76
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Banco Pan",
-   "taxa_juros_am_pct": 2.85,
-   "taxa_juros_aa_pct": 40.12
+   "taxa_juros_am_pct": 2.93,
+   "taxa_juros_aa_pct": 41.37
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Banco Yamaha",
-   "taxa_juros_am_pct": 2.66,
-   "taxa_juros_aa_pct": 37.02
+   "taxa_juros_am_pct": 2.65,
+   "taxa_juros_aa_pct": 36.85
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Banco do Brasil",
-   "taxa_juros_am_pct": 1.08,
-   "taxa_juros_aa_pct": 13.7
+   "taxa_juros_am_pct": 1.11,
+   "taxa_juros_aa_pct": 14.1
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Bradesco",
-   "taxa_juros_am_pct": 1.61,
-   "taxa_juros_aa_pct": 21.1
+   "taxa_juros_am_pct": 1.66,
+   "taxa_juros_aa_pct": 21.81
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "C6 Bank",
-   "taxa_juros_am_pct": 1.95,
-   "taxa_juros_aa_pct": 26.07
+   "taxa_juros_am_pct": 1.96,
+   "taxa_juros_aa_pct": 26.16
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Caixa",
-   "taxa_juros_am_pct": 1.01,
-   "taxa_juros_aa_pct": 12.76
+   "taxa_juros_am_pct": 1.02,
+   "taxa_juros_aa_pct": 12.94
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Itaú",
-   "taxa_juros_am_pct": 1.94,
-   "taxa_juros_aa_pct": 25.96
+   "taxa_juros_am_pct": 2.01,
+   "taxa_juros_aa_pct": 26.95
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Omni Financeira",
-   "taxa_juros_am_pct": 3.4,
-   "taxa_juros_aa_pct": 49.42
+   "taxa_juros_am_pct": 3.37,
+   "taxa_juros_aa_pct": 48.82
   },
   {
    "mes_referencia": "2026-10",
-   "periodo_inicio": "2026-10-09",
-   "periodo_fim": "2026-10-16",
+   "periodo_inicio": "2026-10-26",
+   "periodo_fim": "2026-10-30",
    "instituicao": "Santander",
-   "taxa_juros_am_pct": 1.85,
-   "taxa_juros_aa_pct": 24.57
+   "taxa_juros_am_pct": 1.84,
+   "taxa_juros_aa_pct": 24.49
   }
  ]
 }

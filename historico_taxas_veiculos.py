@@ -141,13 +141,20 @@ def salvar_historico(linhas, caminho=ARQUIVO_HISTORICO):
 
 def atualizar_historico(caminho=ARQUIVO_HISTORICO, meses=MESES_HISTORICO):
     """Acrescenta ao CSV os meses (dos últimos `meses` publicados) que ainda
-    não estão lá. Devolve (qtd_meses_novos, total_de_meses)."""
+    não estão lá e SUBSTITUI o mês que foi gravado com uma janela mais antiga
+    que a última publicada (achado de 18/nov/2026: out/2026 ficou com a janela
+    de 09 a 16/10 porque o mês foi gravado antes de sair a de 26 a 30/10).
+    Devolve (qtd_meses_novos_ou_corrigidos, total_de_meses)."""
     existentes = ler_historico(caminho)
-    ja_tem = {r["mes_referencia"] for r in existentes}
+    fim_gravado = {}
+    for r in existentes:
+        fim_gravado[r["mes_referencia"]] = max(fim_gravado.get(r["mes_referencia"], ""), r["fim_periodo"])
     periodos = listar_periodos_mensais()[:meses]
     linhas = list(existentes)
     adicionados = 0
-    for p in [p for p in periodos if p["mes"] not in ja_tem]:
+    for p in periodos:
+        if p["mes"] in fim_gravado and fim_gravado[p["mes"]] >= p["fim"]:
+            continue
         try:
             taxas = buscar_taxas_periodo(p["inicio"])
         except (requests.RequestException, ValueError) as e:
@@ -156,6 +163,8 @@ def atualizar_historico(caminho=ARQUIVO_HISTORICO, meses=MESES_HISTORICO):
         if not taxas:
             print(f"⚠️  histórico: mês {p['mes']} sem nenhum banco casado — ignorado")
             continue
+        # só troca as linhas antigas do mês depois de ter a janela nova em mãos
+        linhas = [r for r in linhas if r["mes_referencia"] != p["mes"]]
         for banco, (am, aa) in taxas.items():
             linhas.append({"mes_referencia": p["mes"], "inicio_periodo": p["inicio"], "fim_periodo": p["fim"],
                            "banco": banco, "taxa_am": am, "taxa_aa": aa})
