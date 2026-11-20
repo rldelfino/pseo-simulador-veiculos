@@ -189,7 +189,7 @@ def test_cada_guia_recebe_varios_links_contextuais_e_paginas_novas_sao_alcancave
     from gerador_veiculos import ARTIGOS_APRENDA
     textos = {n: open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read() for n in os.listdir(PASTA_SAIDA) if n.endswith(".html")}
     for art in ARTIGOS_APRENDA:
-        recebidos = sum(1 for n, t in textos.items() if n != art["slug"] + ".html" and f'href="{art["slug"]}"' in t)
+        recebidos = sum(1 for n, t in textos.items() if n != art["slug"] + ".html" and (f'href="{art["slug"]}"' in t or f'href="/{art["slug"]}"' in t))
         assert recebidos >= 20, (art["slug"], recebidos)
     for destino in ("incorporar", "imprensa"):
-        assert f'href="{destino}"' in textos["index.html"], destino  # rodapé da home
+        assert f'href="{destino}"' in textos["index.html"] or f'href="/{destino}"' in textos["index.html"], destino  # rodapé da home

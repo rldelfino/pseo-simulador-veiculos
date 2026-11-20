@@ -220,12 +220,13 @@ def test_home_tem_tabela_de_taxas_do_dia_igual_aos_hubs():
         import pytest as _pytest
         _pytest.skip("paginas_seo/ não gerada")
     html = open(caminho, encoding="utf-8").read()
-    assert html.count("<table") >= 2 and ", por banco" in html and " hoje, por banco" not in html
+    # home nova (20/11/2026): uma tabela só (o Banco Central não separa carro novo, usado e moto), com a coluna "Vale para"
+    assert html.count("<table") >= 1 and "por banco" in html and "Vale para" in html
     # sem tabelas repetidas: cada <tbody> aparece uma vez
     corpos = _re.findall(r"<tbody>(.*?)</tbody>", html, _re.S)
     assert len(corpos) == len(set(corpos))
     # a taxa de um banco na home é a mesma do hub dele
-    m = _re.search(r'<a href="(hub-[a-z0-9-]+)" class="hover:text-sky-400">([^<]+)</a></th><td[^>]*>([\d,]+%)', html)
+    m = _re.search(r'<a href="/(hub-[a-z0-9-]+)">([^<]+)</a></td><td[^>]*>([\d,]+%)', html)
     hub = open(_os.path.join(raiz, "paginas_seo", m.group(1) + ".html"), encoding="utf-8").read()
     assert m.group(3) in hub
 
