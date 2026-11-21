@@ -34,7 +34,8 @@ def _eh_noindex(nome):
 
 
 def _arquivos_html():
-    return sorted(f for f in os.listdir(PASTA_SAIDA) if f.endswith(".html"))
+    # yandex_*.html é só o arquivo de verificação do Yandex Webmaster (sem rodapé, canonical nem JSON-LD de propósito)
+    return sorted(f for f in os.listdir(PASTA_SAIDA) if f.endswith(".html") and not f.startswith("yandex_"))
 
 def _paginas_individuais_de_banco():
     """Páginas "categoria x BANCO x valor x prazo". As páginas de comparação
@@ -85,7 +86,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
     é a mesma verificação de sempre, só reconhecendo o formato de URL
     novo."""
     paginas_por_slug = {n[:-len(".html")] for n in _arquivos_html()}
-    assets = {"styles.css", "logo-full.png", "logo-header.webp", "sitemap.xml", "calculo.js", "medicao.js", "feed.xml", "favicon-32.png", "favicon-192.png", "og-image.png", "logo-schema.png", "favicon.ico", "apple-touch-icon.png"}
+    assets = {"styles.css", "logo-full.png", "logo-header.webp", "sitemap.xml", "calculo.js", "medicao.js", "home.css", "home.js", "menu.js", "feed.xml", "favicon-32.png", "favicon-192.png", "og-image.png", "logo-schema.png", "favicon.ico", "apple-touch-icon.png"}
     faltando = []
     for nome_arquivo in _arquivos_html():
         with open(os.path.join(PASTA_SAIDA, nome_arquivo), encoding="utf-8") as f:
@@ -96,7 +97,7 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
             if ref == "/":
                 continue  # home — sempre resolve (index.html sempre existe)
             ref_sem_query = ref.split("?", 1)[0]  # styles.css?v=... — cache-busting não é parte do path real
-            if ref_sem_query.startswith("dados/") and os.path.isfile(os.path.join(PASTA_SAIDA, ref_sem_query)):
+            if ref_sem_query.lstrip("/").startswith(("dados/", "fonts/")) and os.path.isfile(os.path.join(PASTA_SAIDA, ref_sem_query.lstrip("/"))):
                 continue  # arquivos de dados abertos publicados em dados/ (csv, json, md)
             if "." in ref_sem_query.rsplit("/", 1)[-1]:  # tem extensão: asset (.css/.svg/.js/.ico/.png) ou .html direto
                 if ref_sem_query.lstrip("/") not in assets and ref_sem_query not in set(_arquivos_html()):

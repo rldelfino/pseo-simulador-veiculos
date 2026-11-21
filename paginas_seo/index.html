@@ -1,185 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Financiamento de Veículos: Carro e Moto</title>
-    <meta name="description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
-    <link rel="canonical" href="https://veiculos.datalabglobal.com/" />
-    
-    <link rel="icon" href="favicon.ico?v=20261012" sizes="any">
-    <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
-    <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="ba3c0b88-59e8-47dd-866d-0b05e5e7dae9" data-domains="veiculos.datalabglobal.com" data-do-not-track="true"></script>
-    <script defer src="/medicao.js?v=20261118165757"></script>
-    <link rel="alternate" type="application/atom+xml" title="Taxas de financiamento de veículos" href="/feed.xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Datalab Global">
-    <meta property="og:title" content="Simulador de Financiamento de Veículos: Carro e Moto">
-    <meta property="og:description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
-    <meta property="og:url" content="https://veiculos.datalabglobal.com/">
-    <meta property="og:image" content="https://veiculos.datalabglobal.com/og-image.png">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Simulador de Financiamento de Veículos: Carro e Moto">
-    <meta name="twitter:description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
-    <link rel="stylesheet" href="styles.css?v=20261118165757">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": "https://veiculos.datalabglobal.com/"}]}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador de Financiamento de Veículos: Carro e Moto</title>
+<meta name="description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
+<link rel="canonical" href="https://veiculos.datalabglobal.com/">
+<link rel="icon" href="/favicon.ico?v=20261120" sizes="any">
+<link rel="icon" href="/favicon-32.png?v=20261120" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-192.png?v=20261120" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261120">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Datalab Global">
+<meta property="og:title" content="Simulador de Financiamento de Veículos: Carro e Moto">
+<meta property="og:description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
+<meta property="og:url" content="https://veiculos.datalabglobal.com/">
+<meta property="og:image" content="https://veiculos.datalabglobal.com/og-image.png?v=20261120">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simulador de Financiamento de Veículos: Carro e Moto">
+<meta name="twitter:description" content="Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.">
+<meta name="twitter:image" content="https://veiculos.datalabglobal.com/og-image.png?v=20261120">
+<meta name="theme-color" content="#020617">
+<link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/home.css?v=c8687ccec2">
+<link rel="alternate" type="application/atom+xml" title="Taxas de financiamento de veículos" href="/feed.xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": "https://veiculos.datalabglobal.com/"}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Datalab Global", "url": "https://veiculos.datalabglobal.com/", "dateModified": "2026-11-18", "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Simulador de Financiamento de Veículos", "url": "https://veiculos.datalabglobal.com/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "inLanguage": "pt-BR", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BRL"}, "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": "https://veiculos.datalabglobal.com/logo-schema.png", "sameAs": ["https://huggingface.co/datalabglobal"], "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino", "https://www.kaggle.com/rodolfodelfino", "https://www.linkedin.com/in/rodolfo-leal-delfino"]}, "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como funciona o simulador de financiamento de veículos da Datalab?", "acceptedAnswer": {"@type": "Answer", "text": "Você escolhe a categoria do veículo (carro novo, carro usado ou moto), compara a taxa real de cada banco e simula a parcela pro valor e prazo que quiser. Os dados de taxa vêm direto do Banco Central e são atualizados semanalmente."}}, {"@type": "Question", "name": "As taxas mostradas são reais ou só uma estimativa de marketing?", "acceptedAnswer": {"@type": "Answer", "text": "São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada mensalmente pelo Banco Central (BACEN) — não é uma taxa promocional \"a partir de\". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito."}}, {"@type": "Question", "name": "O simulador cobra alguma coisa pra usar?", "acceptedAnswer": {"@type": "Answer", "text": "Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe."}}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://veiculos.datalabglobal.com/", "name": "Simulador de Financiamento de Veículos: Carro e Moto | Datalab", "description": "Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.", "inLanguage": "pt-BR", "dateModified": "2026-11-18", "isPartOf": {"@type": "WebSite", "url": "https://veiculos.datalabglobal.com/", "name": "Datalab Global"}, "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"}}</script>
-</head>
-<body class="antialiased flex flex-col min-h-screen">
-    <nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="168" height="54" class="w-auto" style="height:54px;max-width:45vw"></a>
-            <div class="flex items-center gap-2">
-                <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"></path><path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9"></path></svg> <span class="hidden sm:inline">Início</span></a>
-                <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors"><svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h7a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H2z"></path><path d="M22 5h-7a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H22z"></path></svg> <span class="hidden sm:inline">Aprenda</span></a>
-                <a href="https://ftudo.com/rodolfo-financiamento-de-automoveis/" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
-                    Análise Grátis <svg class="inline-block align-[-0.125em] ml-1.5 text-xs" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </a>
-            </div>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como funciona o simulador de financiamento de veículos da Datalab?", "acceptedAnswer": {"@type": "Answer", "text": "Você escolhe o tipo de veículo (carro novo, carro usado ou moto), o valor, a entrada e o prazo, e vê a parcela, o CET e o total pago com a taxa de um banco ou a média dos bancos. Os dados de taxa vêm do Banco Central e são atualizados semanalmente."}}, {"@type": "Question", "name": "As taxas mostradas são reais ou só uma estimativa de marketing?", "acceptedAnswer": {"@type": "Answer", "text": "São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada pelo Banco Central (BACEN) — não é uma taxa promocional \"a partir de\". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito."}}, {"@type": "Question", "name": "O simulador cobra alguma coisa pra usar?", "acceptedAnswer": {"@type": "Answer", "text": "Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://veiculos.datalabglobal.com/", "name": "Simulador de Financiamento de Veículos: Carro e Moto", "description": "Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos do Brasil, com dados do Banco Central. Simule parcela e CET.", "inLanguage": "pt-BR", "dateModified": "2026-11-18", "isPartOf": {"@type": "WebSite", "url": "https://veiculos.datalabglobal.com/", "name": "Datalab Global"}, "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"}}</script>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="ba3c0b88-59e8-47dd-866d-0b05e5e7dae9" data-domains="veiculos.datalabglobal.com" data-do-not-track="true"></script>
+<script defer src="/medicao.js?v=20261121121412"></script></head>
+<body>
+<a href="#conteudo" class="skip">Ir para o conteúdo</a>
+<header class="top">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="Datalab Global — Financiamento de veículos, página inicial"><span class="tile"><svg viewBox="0 0 48 48" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.4 5.8h13.2" stroke-width="2.2"/><path d="M19.6 5.8V19.2L9.3 37.6c-1.3 2.3.4 4.9 3 4.9h23.4c2.6 0 4.3-2.6 3-4.9L28.4 19.2V5.8" stroke-width="2.2"/><path d="M13.4 30.6c3.1-2 5.9 1.4 10.6-.1s7.2-1.7 10.9.1l4 7c.9 1.6-.3 3.4-2.1 3.4H11.5c-1.8 0-3-1.8-2.1-3.4z" fill="currentColor" fill-opacity=".2" stroke="none"/><path d="M13.2 30.8c3.1-1.8 5.9 1.2 10.8-.2s7.2-1.6 10.9.2" stroke-width="1.5"/><g fill="currentColor" stroke="none"><rect x="15.6" y="35.2" width="3.2" height="4.4" rx="1"/><rect x="20.4" y="33.1" width="3.2" height="6.5" rx="1"/><rect x="25.2" y="34.2" width="3.2" height="5.4" rx="1"/><rect x="30" y="32" width="3.2" height="7.6" rx="1"/><circle cx="24" cy="14.6" r="1.3"/><circle cx="24.9" cy="10.6" r=".9"/><circle cx="23.3" cy="22.3" r="1.6"/><circle cx="34.6" cy="9.4" r="1.7"/><circle cx="40.2" cy="4.8" r="1.7"/></g><path d="M34.6 9.4l5.6-4.6" stroke-width="1.4"/></svg></span><span class="wm"><b>Datalab</b><i>GLOBAL</i></span><span class="prod">Veículos</span></a>
+    <nav class="m" aria-label="Principal"><a href="#simulador">Simular</a><a href="#comparar">Comparar bancos</a><a href="#taxas">Taxas de hoje</a><a href="/aprenda">Aprenda</a><a href="/metodologia">Como calculamos</a></nav>
+    <div class="free"><span class="dot"></span>Simulação gratuita</div>
+    <details class="menu">
+      <summary>Menu</summary>
+      <nav aria-label="Menu"><a href="#simulador">Simular</a><a href="#comparar">Comparar bancos</a><a href="#taxas">Taxas de hoje</a><a href="/aprenda">Aprenda</a><a href="/metodologia">Como calculamos</a><a href="/sobre">Sobre</a></nav>
+    </details>
+  </div>
+</header>
+
+<main id="conteudo" class="wrap">
+  <section class="hero">
+    <h1>Simulador de financiamento de <em>veículos</em></h1>
+    <p>Veja a parcela, o CET e o custo total de carro novo, carro usado ou moto, com as taxas dos bancos divulgadas pelo Banco Central.</p>
+    <div class="fine">Grátis · sem cadastro · estimativa, não proposta</div>
+  </section>
+
+  <div class="grid" id="simulador">
+    <section class="panel" aria-labelledby="t-cenario">
+      <h2 id="t-cenario">Seu cenário</h2>
+      <div class="f">
+        <div class="lb" id="lb-categoria">Tipo de veículo</div>
+        <div class="seg s3" role="radiogroup" aria-labelledby="lb-categoria">
+          <input type="radio" name="categoria" id="cat-novo" value="novo" checked><label for="cat-novo">Carro novo</label>
+          <input type="radio" name="categoria" id="cat-usado" value="usado"><label for="cat-usado">Carro usado</label>
+          <input type="radio" name="categoria" id="cat-moto" value="moto"><label for="cat-moto">Moto</label>
         </div>
-    </nav>
-    <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
-        <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
-        <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
-        <div class="grid sm:grid-cols-3 gap-4"><a href="comparador-carro-novo" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
-            <div class="mb-3 flex justify-center"><svg viewBox="0 0 99.382 99.382" class="w-14 h-14" aria-hidden="true">
-        <defs><linearGradient id="il-grad-novo" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs>
-        <g fill="url(#il-grad-novo)"><path d="M17.001,49.693c-4.12,0-7.46,3.338-7.46,7.459c0,0.319,0.026,0.631,0.066,0.938c0.462,3.677,3.593,6.521,7.394,6.521c3.906,0,7.105-3.002,7.429-6.823c0.019-0.211,0.032-0.422,0.032-0.638C24.463,53.031,21.123,49.693,17.001,49.693z M13.264,54.342l1.522,1.521c-0.119,0.203-0.211,0.423-0.271,0.656H12.37C12.483,55.706,12.794,54.967,13.264,54.342z M12.364,57.812h2.16c0.062,0.229,0.15,0.447,0.27,0.646l-1.524,1.524C12.798,59.361,12.479,58.62,12.364,57.812z M16.356,61.787c-0.809-0.111-1.543-0.429-2.164-0.896l1.517-1.518c0.199,0.116,0.418,0.201,0.647,0.262V61.787z M16.356,54.672c-0.235,0.062-0.455,0.153-0.66,0.274l-1.521-1.521c0.625-0.475,1.366-0.788,2.181-0.901V54.672z M17.647,52.524c0.813,0.113,1.555,0.428,2.18,0.902l-1.52,1.52c-0.205-0.121-0.426-0.214-0.66-0.274V52.524z M17.647,61.786v-2.151c0.229-0.061,0.447-0.146,0.646-0.264l1.519,1.52C19.191,61.357,18.456,61.675,17.647,61.786z M20.738,59.988l-1.53-1.531c0.118-0.199,0.217-0.414,0.278-0.646h2.144C21.516,58.62,21.21,59.367,20.738,59.988z M19.487,56.52c-0.061-0.233-0.152-0.453-0.271-0.656l1.522-1.521c0.471,0.625,0.782,1.364,0.894,2.179L19.487,56.52L19.487,56.52z"/>
-<path d="M78.611,49.758c-4.103,0-7.428,3.324-7.428,7.428c0,0.317,0.025,0.627,0.064,0.934c0.46,3.66,3.578,6.494,7.363,6.494c3.889,0,7.074-2.989,7.396-6.794c0.019-0.21,0.032-0.42,0.032-0.634C86.04,53.082,82.715,49.758,78.611,49.758z M74.891,54.387l1.516,1.516c-0.118,0.202-0.21,0.421-0.27,0.653h-2.136C74.112,55.744,74.422,55.009,74.891,54.387z M73.994,57.842h2.15c0.062,0.229,0.15,0.444,0.269,0.644l-1.519,1.52C74.427,59.386,74.108,58.646,73.994,57.842z M77.969,61.801c-0.805-0.112-1.535-0.429-2.154-0.896l1.51-1.51c0.198,0.115,0.417,0.201,0.645,0.26V61.801z M77.969,54.715c-0.233,0.061-0.453,0.152-0.656,0.272l-1.514-1.514c0.622-0.471,1.36-0.784,2.17-0.897V54.715z M79.255,52.576c0.812,0.113,1.549,0.428,2.17,0.898l-1.513,1.513c-0.204-0.12-0.423-0.213-0.657-0.272V52.576z M79.255,61.8v-2.145c0.229-0.059,0.446-0.146,0.645-0.262l1.511,1.512C80.792,61.371,80.061,61.687,79.255,61.8z M82.332,60.009l-1.523-1.524c0.117-0.199,0.216-0.412,0.276-0.643h2.134C83.106,58.646,82.802,59.389,82.332,60.009z M81.087,56.555c-0.06-0.232-0.15-0.451-0.27-0.653l1.516-1.516c0.469,0.622,0.778,1.357,0.889,2.169H81.087z"/>
-<path d="M99.352,52.001c-0.026-0.983-0.331-1.941-0.882-2.759l-0.402-0.6l-1.757-4.635c-0.331-0.875-1.139-1.484-2.07-1.562c-1.728-0.146-4.663-0.368-7.465-0.471c-9.794-5.201-27.904-10.43-43.262-4.731c-3.151,1.169-12.154,5.744-12.154,5.744s-14.62-0.37-25.047,3.349c-4.108,1.465-6.699,5.543-6.266,9.884c0.087,0.869,0.215,1.642,0.341,2.266c0.199,0.987,1.014,1.731,2.015,1.842l6.487,0.711c-0.408-0.852-0.695-1.773-0.818-2.755c-0.052-0.401-0.078-0.772-0.078-1.132c0-4.967,4.041-9.008,9.008-9.008c4.968,0,9.01,4.042,9.01,9.008c0,0.26-0.017,0.514-0.038,0.768c-0.095,1.115-0.399,2.172-0.868,3.135h45.045l0.365-0.021c-0.4-0.842-0.683-1.753-0.804-2.72c-0.052-0.403-0.077-0.773-0.077-1.127c0-4.95,4.026-8.978,8.977-8.978s8.978,4.026,8.978,8.978c0,0.259-0.017,0.511-0.038,0.764c-0.062,0.734-0.223,1.438-0.453,2.11L88.112,60l6.979-0.923c1.214-0.161,2.285-0.876,2.898-1.936l0.695-1.199c0.479-0.83,0.721-1.777,0.695-2.735L99.352,52.001z M74.63,43.068H40.469c0,0,0.203-0.809-0.69-1.786c0,0,8.733-5.633,22.22-4.226c3.711,0.388,8.246,0.651,14.42,3.86L74.63,43.068z"/></g>
-        <circle cx="93" cy="50" r="3.4" fill="#fef08a"/>
-    </svg></div>
-            <h2 class="font-serif text-xl font-bold mb-1">Carro Novo</h2>
-            <p class="text-sm text-slate-400 mb-4">Compare 10 bancos e simule sua parcela.</p>
-            <span class="inline-flex items-center gap-1.5 text-xs text-sky-400 group-hover:gap-2.5 transition-all">Ver comparador <svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
-        </a>
-<a href="comparador-carro-usado" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
-            <div class="mb-3 flex justify-center"><svg viewBox="0 0 329.638 329.637" class="w-14 h-14" aria-hidden="true">
-            <defs><linearGradient id="il-grad-usado" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs>
-            <g fill="url(#il-grad-usado)"><path d="M324.873,165.878c0,0-0.823-13.567-2.485-18.543c-1.657-4.971-1.652-4.971,0.828-8.119c2.48-3.144-7.291-0.994-8.953-0.663c-1.657,0.337-0.994,1.491-0.994,1.491c-19.222,0.829-63.303-23.86-98.26-27.34c-34.958-3.475-69.097-0.161-81.69,2.817c-12.593,2.982-54.018,25.352-58.652,26.512c-4.635,1.16-2.651-1.16-2.651-1.16c-23.855,0.989-64.783,21.375-64.783,21.375c-1.657,1.16-2.983,7.953-2.983,7.953l0.829,2.32c-6.794,6.302-4.806,19.558-4.806,19.558l3.325-1.165c1.175,2.154,1.481,6.959,1.481,6.959c-5.629,2.651-1.491,4.972-1.491,4.972s2.49-2.149,12.593,0.999c3.904,1.212,12.599,1.636,21.805,1.704c-1.294-3.268-2.03-6.814-2.03-10.538c0-15.84,12.883-28.723,28.723-28.723c15.834,0,28.723,12.883,28.723,28.723c0,3.438-0.642,6.727-1.755,9.792l147.467-0.248c-1.056-2.994-1.662-6.193-1.662-9.544c0-15.84,12.884-28.723,28.724-28.723c15.834,0,28.723,12.883,28.723,28.723c0,2.946-0.45,5.794-1.279,8.472c14.675-3.392,31.769-5.769,31.769-5.769l3.147-4.143c0,0,2.485-17.729,0-20.547C326.048,170.212,324.873,165.878,324.873,165.878z"/>
-<path d="M64.672,218.42c9.419,0,17.487-5.598,21.205-13.618c1.382-2.988,2.211-6.286,2.211-9.803c0-12.935-10.486-23.42-23.42-23.42c-12.935,0-23.421,10.48-23.421,23.42c0,3.807,0.994,7.354,2.61,10.527C47.729,213.149,55.543,218.42,64.672,218.42z"/>
-<path d="M266.163,218.42c9.311,0,17.284-5.479,21.055-13.349c1.471-3.056,2.361-6.452,2.361-10.072c0-12.935-10.486-23.42-23.421-23.42c-12.936,0-23.421,10.48-23.421,23.42c0,3.402,0.761,6.618,2.066,9.533C248.47,212.704,256.636,218.42,266.163,218.42z"/></g>
-            <circle cx="315" cy="145" r="3.4" fill="#fef08a"/>
-        </svg></div>
-            <h2 class="font-serif text-xl font-bold mb-1">Carro Usado</h2>
-            <p class="text-sm text-slate-400 mb-4">Compare 10 bancos e simule sua parcela.</p>
-            <span class="inline-flex items-center gap-1.5 text-xs text-sky-400 group-hover:gap-2.5 transition-all">Ver comparador <svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
-        </a>
-<a href="comparador-moto" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
-            <div class="mb-3 flex justify-center"><svg viewBox="0 0 332.72 332.719" class="w-14 h-14" aria-hidden="true">
-            <defs><linearGradient id="il-grad-moto" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs>
-            <g fill="url(#il-grad-moto)"><path d="M305.079,162.353c6.063-2.512,7.322-13.002-0.729-15.095c-6.137-1.595-12.396-2.092-18.601-1.631c13.381-12.339,19.688-22.022,9.859-24.171c-8.533-1.87-15.514-5.163-21.8-8.596c1.688-21.117,3.412-51.906-25.922-51.388c-10.242,0.181-10.263,16.088,0,15.907c12.936-0.228,12.34,15.213,10.998,27.195c-10.589-5.225-21.022-7.177-36.624,2.63c-30.935,19.449-88.375,17.678-134.331-3.531c-45.956-21.209-46.836-5.303-46.836-5.303s-49.552,70.221-15.907,43.305c12.27-9.812,30.463-8.569,50.341-1.683c-22.848-4.552-48.951,1.962-68.561,20.588c-4.973,4.718-1.6,11.263,3.395,13.018C3.834,183.091,0,194.576,0,206.967c0,32.576,26.411,58.989,58.989,58.989c32.371,0,58.629-26.082,58.958-58.383c4.357,0.559,8.992-1.942,8.647-7.57c-1.145-18.693-8.319-33.265-18.924-43.543c0.238-0.436,0.456-0.886,0.689-1.326c20.951,11.688,41.291,26.273,56.475,38.023c-0.259,0.336-0.507,0.673-0.704,1.062c-1.766,3.536-3.537,7.067-5.303,10.604c-1.941,3.879-1.066,8.586,2.854,10.879c3.552,2.087,8.945,1.025,10.879-2.853c1.618-3.231,3.236-6.468,4.853-9.704c8.119,6.628,13.027,10.993,13.027,10.993s5.013-3.138,12.873-8.243c-0.699,3.438-1.108,6.995-1.165,10.677c-0.119,7.793,9.016,9.647,13.489,5.603c4.723,27.849,28.899,49.078,58.093,49.078c32.576,0,58.989-26.413,58.989-58.988C332.726,191.215,321.665,172.792,305.079,162.353z M58.989,250.049c-23.755,0-43.082-19.33-43.082-43.082c0-23.757,19.327-43.082,43.082-43.082c7.933,0,15.351,2.196,21.74,5.95c-8.091,11.821-17.064,23.068-26.698,33.828c-6.825,7.612,4.391,18.9,11.247,11.247c9.852-10.998,19.12-22.493,27.514-34.574c5.789,7.337,9.279,16.575,9.279,26.626C102.071,230.719,82.744,250.049,58.989,250.049z M264.995,189.931c-4.329-4.971-8.922-9.729-13.546-14.467c3.832-2.331,8.047-4.081,12.547-5.127C264.281,176.873,264.581,183.402,264.995,189.931z M273.736,255.352c-23.758,0-43.082-19.33-43.082-43.082c0-9.906,3.396-19.015,9.035-26.295c11.098,11.304,21.873,22.815,29.169,37.268c4.417,8.756,15.721,2.076,14.54-6.126c-2.278-15.742-3.055-31.592-3.671-47.463c20.925,2.926,37.096,20.894,37.096,42.616C316.818,236.022,297.493,255.352,273.736,255.352z"/></g>
-            <circle cx="290" cy="120" r="9" fill="#fef08a"/>
-        </svg></div>
-            <h2 class="font-serif text-xl font-bold mb-1">Moto</h2>
-            <p class="text-sm text-slate-400 mb-4">Compare 12 bancos e simule sua parcela.</p>
-            <span class="inline-flex items-center gap-1.5 text-xs text-sky-400 group-hover:gap-2.5 transition-all">Ver comparador <svg class="inline-block align-[-0.125em]" style="width:1em;height:1em" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
-        </a></div>
-        <section class="mt-8">
-            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de carro novo e carro usado, por banco</h2>
-            <p class="text-slate-300 text-sm font-light leading-relaxed mb-3">Na semana de 28/10 a 04/11/2026, a última divulgada pelo Banco Central, a taxa de financiamento de carro novo e carro usado nos bancos que acompanhamos vai de 1,01% ao mês (Caixa) a 3,37% (Omni Financeira).</p>
-            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
-                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Banco</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao mês</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao ano</th></tr></thead>
-                <tbody><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-caixa-carro-novo" class="hover:text-sky-400">Caixa</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,01%</td><td class="px-3 py-2 text-right whitespace-nowrap">12,76%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-do-brasil-carro-novo" class="hover:text-sky-400">Banco do Brasil</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,11%</td><td class="px-3 py-2 text-right whitespace-nowrap">14,18%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-inter-carro-novo" class="hover:text-sky-400">Banco Inter</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,68%</td><td class="px-3 py-2 text-right whitespace-nowrap">22,11%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-bradesco-carro-novo" class="hover:text-sky-400">Bradesco</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,68%</td><td class="px-3 py-2 text-right whitespace-nowrap">22,17%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-santander-carro-novo" class="hover:text-sky-400">Santander</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,83%</td><td class="px-3 py-2 text-right whitespace-nowrap">24,36%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-c6-bank-carro-novo" class="hover:text-sky-400">C6 Bank</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,98%</td><td class="px-3 py-2 text-right whitespace-nowrap">26,59%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-itau-carro-novo" class="hover:text-sky-400">Itaú</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,06%</td><td class="px-3 py-2 text-right whitespace-nowrap">27,74%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-bv-financeira-carro-novo" class="hover:text-sky-400">BV Financeira</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,26%</td><td class="px-3 py-2 text-right whitespace-nowrap">30,82%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-pan-carro-novo" class="hover:text-sky-400">Banco Pan</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,96%</td><td class="px-3 py-2 text-right whitespace-nowrap">41,85%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-omni-financeira-carro-novo" class="hover:text-sky-400">Omni Financeira</a></th><td class="px-3 py-2 text-right whitespace-nowrap">3,37%</td><td class="px-3 py-2 text-right whitespace-nowrap">48,91%</td></tr></tbody></table></div>
-            <p class="text-slate-500 text-[11px] mt-2"><a href="comparador-carro-novo" class="underline hover:text-sky-400">Comparar CET e parcela de carro novo</a> · <a href="comparador-carro-usado" class="underline hover:text-sky-400">Comparar CET e parcela de carro usado</a></p>
-        </section>
-<section class="mt-8">
-            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de moto, por banco</h2>
-            <p class="text-slate-300 text-sm font-light leading-relaxed mb-3">Na semana de 28/10 a 04/11/2026, a última divulgada pelo Banco Central, a taxa de financiamento de moto nos bancos que acompanhamos vai de 1,01% ao mês (Caixa) a 3,37% (Omni Financeira).</p>
-            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
-                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Banco</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao mês</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao ano</th></tr></thead>
-                <tbody><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-caixa-moto" class="hover:text-sky-400">Caixa</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,01%</td><td class="px-3 py-2 text-right whitespace-nowrap">12,76%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-do-brasil-moto" class="hover:text-sky-400">Banco do Brasil</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,11%</td><td class="px-3 py-2 text-right whitespace-nowrap">14,18%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-inter-moto" class="hover:text-sky-400">Banco Inter</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,68%</td><td class="px-3 py-2 text-right whitespace-nowrap">22,11%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-bradesco-moto" class="hover:text-sky-400">Bradesco</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,68%</td><td class="px-3 py-2 text-right whitespace-nowrap">22,17%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-santander-moto" class="hover:text-sky-400">Santander</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,83%</td><td class="px-3 py-2 text-right whitespace-nowrap">24,36%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-c6-bank-moto" class="hover:text-sky-400">C6 Bank</a></th><td class="px-3 py-2 text-right whitespace-nowrap">1,98%</td><td class="px-3 py-2 text-right whitespace-nowrap">26,59%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-itau-moto" class="hover:text-sky-400">Itaú</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,06%</td><td class="px-3 py-2 text-right whitespace-nowrap">27,74%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-bv-financeira-moto" class="hover:text-sky-400">BV Financeira</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,26%</td><td class="px-3 py-2 text-right whitespace-nowrap">30,82%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-honda-moto" class="hover:text-sky-400">Banco Honda</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,40%</td><td class="px-3 py-2 text-right whitespace-nowrap">32,90%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-yamaha-moto" class="hover:text-sky-400">Banco Yamaha</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,61%</td><td class="px-3 py-2 text-right whitespace-nowrap">36,26%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-banco-pan-moto" class="hover:text-sky-400">Banco Pan</a></th><td class="px-3 py-2 text-right whitespace-nowrap">2,96%</td><td class="px-3 py-2 text-right whitespace-nowrap">41,85%</td></tr><tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap"><a href="hub-omni-financeira-moto" class="hover:text-sky-400">Omni Financeira</a></th><td class="px-3 py-2 text-right whitespace-nowrap">3,37%</td><td class="px-3 py-2 text-right whitespace-nowrap">48,91%</td></tr></tbody></table></div>
-            <p class="text-slate-500 text-[11px] mt-2"><a href="comparador-moto" class="underline hover:text-sky-400">Comparar CET e parcela de moto</a></p>
-        </section><p class="text-slate-500 text-[11px] mt-6">Taxa média efetivamente contratada, atualizada em 18/11/2026, com base no Banco Central do Brasil. Não é oferta de crédito: a sua taxa depende da análise do banco. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>
-        <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>. Quer saber o que mudou? Veja as <a href="atualizacoes" class="text-sky-400 underline">taxas desta semana</a>.</p>
-        <div class="mt-16 mb-8">
-            <h3 class="text-2xl font-serif text-white mb-6 text-center">Perguntas Frequentes</h3>
-            <div class="space-y-3 max-w-3xl mx-auto">
-                <details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">Como funciona o simulador de financiamento de veículos da Datalab?</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">Você escolhe a categoria do veículo (carro novo, carro usado ou moto), compara a taxa real de cada banco e simula a parcela pro valor e prazo que quiser. Os dados de taxa vêm direto do Banco Central e são atualizados semanalmente.</p>
-                </details>
-<details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">As taxas mostradas são reais ou só uma estimativa de marketing?</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada mensalmente pelo Banco Central (BACEN) — não é uma taxa promocional "a partir de". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito.</p>
-                </details>
-<details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
-                    <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">O simulador cobra alguma coisa pra usar?</h4>
-                        <span class="faq-toggle-icon shrink-0 text-slate-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                    </summary>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe.</p>
-                </details>
-            </div>
+      </div>
+      <div class="f">
+        <label for="campo-valor">Valor do veículo <span id="rot-valor">preço de tabela ou da loja</span></label>
+        <div class="inp"><span class="pre">R$</span><input id="campo-valor" type="text" inputmode="numeric" autocomplete="off" value="80.000" class="num"></div>
+        <input id="range-valor" type="range" aria-label="Valor do veículo, controle deslizante" min="30000" max="400000" step="5000" value="80000">
+        <div class="slabel"><span id="min-valor">R$ 30 mil</span><span id="max-valor">R$ 400 mil</span></div>
+      </div>
+      <div class="f">
+        <label for="campo-entrada">Entrada <span id="rot-entrada">20% do valor</span></label>
+        <div class="inp"><span class="pre">R$</span><input id="campo-entrada" type="text" inputmode="numeric" autocomplete="off" value="16.000" class="num"></div>
+        <input id="range-entrada" type="range" aria-label="Entrada, controle deslizante" min="16000" max="72000" step="500" value="16000">
+        <div class="slabel"><span id="min-entrada">R$ 16 mil</span><span id="max-entrada">R$ 72 mil</span></div>
+        <div class="hint warn" id="msg-entrada" hidden></div>
+      </div>
+      <div class="f">
+        <label for="campo-prazo">Prazo <span id="rot-prazo">de 12 a 60 meses</span></label>
+        <div class="inp combo" id="combo-prazo">
+          <input id="campo-prazo" type="text" inputmode="numeric" autocomplete="off" value="48" class="num" role="combobox" aria-autocomplete="none" aria-expanded="false" aria-controls="lista-prazo" aria-describedby="msg-prazo" aria-label="Prazo em meses: escolha na lista ou digite">
+          <em>meses</em>
+          <button type="button" class="caret" id="btn-prazo" aria-label="Abrir a lista de prazos" aria-haspopup="listbox" aria-controls="lista-prazo"><svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <ul class="opts" id="lista-prazo" role="listbox" aria-label="Prazos disponíveis" hidden></ul>
         </div>
-    </main>
-    <footer class="border-t border-white/5 mt-16 py-8">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
-            <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
-            <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
-            <p class="mt-1">Datalab Global é uma marca de Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
-            <p class="mt-3 flex items-center justify-center gap-4">
-                <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
-                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
-                <a href="https://simulador.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Financiamento imobiliário</a>
-                <a href="https://homeequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Home Equity</a>
-                <a href="https://autoequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Auto Equity</a>
-                <a href="https://condominio.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Empréstimo para Condomínios</a>
-                <a href="https://dados.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Lente B2B: dados de empresas</a>
-                <a href="/aprenda" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Aprenda</a>
-                <a href="/sobre" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Sobre a Datalab Global</a>
-                <a href="/metodologia" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Metodologia</a>
-                <a href="/taxas-financiamento-veiculos" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Taxas mês a mês</a>
-                <a href="/renda-para-financiar-veiculo" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Renda para financiar</a>
-                <a href="/atualizacoes" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">O que mudou esta semana</a>
-            </p>
+        <input id="range-prazo" type="range" aria-label="Prazo em meses, controle deslizante" min="12" max="60" step="1" value="48">
+        <div class="slabel"><span>12 meses</span><span id="max-prazo">60 meses</span></div>
+        <div class="hint warn" id="msg-prazo" hidden></div>
+      </div>
+      <div class="f">
+        <label for="campo-banco">Taxa de referência <span id="rot-banco">média dos bancos</span></label>
+        <div class="inp combo" id="combo-banco">
+          <input id="campo-banco" type="text" readonly value="Média dos bancos" class="num" role="combobox" aria-autocomplete="none" aria-expanded="false" aria-controls="lista-banco" aria-label="Taxa de referência: escolha um banco na lista">
+          <button type="button" class="caret" id="btn-banco" aria-label="Abrir a lista de bancos" aria-haspopup="listbox" aria-controls="lista-banco"><svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <ul class="opts" id="lista-banco" role="listbox" aria-label="Bancos" hidden></ul>
         </div>
-    </footer>
-    
-    <script>
-        function ajustarTooltips() {
-            const margem = 8;
-            // clientWidth (não window.innerWidth) é a largura real
-            // renderizada da página: nesta página o <body> tem
-            // overflow-x:hidden, e nesse caso window.innerWidth pode
-            // devolver um valor maior que a área visível de verdade
-            // (confirmado ao vivo nesta sessão: innerWidth relatou 404px
-            // numa tela de 375px). Usar innerWidth aqui faria a correção
-            // clampar contra um limite errado maior que a tela real,
-            // deixando o balão ainda estourando por fora.
-            const larguraTela = document.documentElement.clientWidth;
-            document.querySelectorAll('.tooltip-box').forEach(box => {
-                const metade = box.offsetWidth / 2;
-                box.style.setProperty('--tt-shift', (-metade) + 'px');
-                const r = box.getBoundingClientRect();
-                let shift = 0;
-                if (r.right > larguraTela - margem) shift = (larguraTela - margem) - r.right;
-                else if (r.left < margem) shift = margem - r.left;
-                if (shift !== 0) box.style.setProperty('--tt-shift', (-metade + shift).toFixed(0) + 'px');
-            });
-        }
-        ajustarTooltips();
-        window.addEventListener('resize', ajustarTooltips);
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(ajustarTooltips).catch(() => {});
-        }
-    </script>
+        <div class="hint" id="hint-banco">Média simples das taxas dos 10 bancos que acompanhamos (Banco Central). Escolha um banco para usar a taxa dele.</div>
+      </div>
+      <details class="outra" id="det-taxa">
+        <summary>Já tem uma proposta? Use a taxa dela</summary>
+        <div class="oi">
+          <label for="campo-taxa-prop">Taxa da proposta <span>% ao mês</span></label>
+          <div class="inp"><input id="campo-taxa-prop" type="text" inputmode="decimal" autocomplete="off" placeholder="ex.: 1,89" class="num" aria-describedby="msg-taxa-prop"><em>% a.m.</em></div>
+          <div class="hint" id="msg-taxa-prop">Deixe em branco para usar a taxa de referência acima. Vale de 0,3 a 6% ao mês.</div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel resp" id="resultado" aria-labelledby="t-resultado" aria-live="polite">
+      <h2 class="kicker kres" id="t-resultado">Resultado da simulação</h2>
+      <div class="res">
+        <div>
+          <div class="kicker" id="r-kicker">Parcela estimada</div>
+          <div class="big num"><span id="r-parcela">R$ 2.083,97</span> <small>/mês</small></div>
+          <div class="dim" id="r-sub">em 48 meses · taxa 1,99% a.m.</div>
+          <hr class="sep">
+          <div class="dim lab">Total estimado das parcelas</div>
+          <div class="mid num" id="r-total">R$ 100.031</div>
+          <div class="dim"><a href="/metodologia">Como calculamos</a></div>
+        </div>
+        <div class="ctx sis">
+          <div class="t">CET estimado</div>
+          <div class="v num" id="r-cet">29,99% a.a.</div>
+          <div class="hint" id="hint-cet">Custo efetivo total ao ano: juros, IOF, registro do contrato e seguro típicos.</div>
+        </div>
+      </div>
+      <div class="callout"><p id="r-resumo">Você financia R$ 64.000 e paga R$ 100.031 no total: R$ 36.031 a mais em juros.</p></div>
+      <div class="rosca">
+        <svg viewBox="0 0 120 120" width="120" height="120" role="img" id="rosca-svg" aria-label="Do total das parcelas, 36% é juros">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#e3a96b" stroke-width="14"/>
+          <circle id="rosca-cred" cx="60" cy="60" r="46" fill="none" stroke="#0ea5e9" stroke-width="14" stroke-dasharray="184.9 289.03" transform="rotate(-90 60 60)"/>
+          <text x="60" y="61" text-anchor="middle" class="rc-n" id="rosca-pct">36%</text>
+          <text x="60" y="77" text-anchor="middle" class="rc-t">em juros</text>
+        </svg>
+        <div class="rc-l">
+          <div class="kicker">Para onde vai o total</div>
+          <div class="lg"><span><s></s>Valor financiado</span><b class="num" id="rosca-cred-v">R$ 64.000</b></div>
+          <div class="lg"><span><s class="jr"></s>Juros</span><b class="num" id="rosca-juros-v">R$ 36.031</b></div>
+        </div>
+      </div>
+      <div class="rodape-res">
+        <div class="cta">
+          <div><strong>Peça uma análise gratuita</strong><span class="s">Com um parceiro de crédito · sem compromisso</span></div>
+          <button type="button" class="btn" id="btn-cta">Consultar opções →</button>
+        </div>
+        <div class="fine2">Estimativa: a taxa final depende da análise do banco e do seu perfil. <a href="/metodologia">Veja como calculamos</a>.</div>
+        <div class="copiar"><button type="button" id="btn-copiar">Copiar o link desta simulação</button><span id="msg-copiado" role="status"></span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="uso" aria-label="Quanto do valor do veículo é entrada e quanto é financiado">
+    <div class="uso-t"><span class="t">Valor do veículo</span><b class="v num" id="c-valor">R$ 80.000</b></div>
+    <div class="uso-b"><svg class="bar" id="bar-fin" width="100%" height="12" role="img" aria-label="Quanto do valor do veículo é entrada e quanto é financiado">
+            <rect width="100%" height="12" rx="6" fill="rgba(255,255,255,.1)"/><rect id="bar-fill" width="80.0%" height="12" rx="6" fill="#0ea5e9"/><rect id="bar-mark" x="20%" y="-3" width="2" height="18" fill="#e2e8f0"/>
+          </svg></div>
+    <div class="uso-l">
+      <div class="lg"><span><s></s>Financiado (<span id="c-fin-pct">80%</span>)</span><b class="num" id="c-financiado">R$ 64.000</b></div>
+      <div class="lg"><span><s class="lim"></s><span id="c-ent-rot">Entrada (20%)</span></span><b class="num" id="c-entrada">R$ 16.000</b></div>
+    </div>
+  </div>
+
+  <div class="kpis" aria-label="Três números para ler o custo">
+    <div class="kp"><span class="t">Quita por volta de</span><b class="num" id="k-quita">nov/2030</b><small id="k-quita-s">48 parcelas, se contratar este mês</small></div>
+    <div class="kp"><span class="t">Cada R$ 1 financiado custa</span><b class="num" id="k-juro1">R$ 0,56</b><small>de juros até o fim</small></div>
+    <div class="kp"><span class="t">Taxa equivalente ao ano</span><b class="num" id="k-aa">26,73%</b><small id="k-aa-s">para comparar com outras taxas</small></div>
+  </div>
+  <p class="hint kpn" id="k-nota">Estimativa, não é oferta. Taxas dos bancos: Banco Central, semana de 28/10 a 04/11/2026.</p>
+
+  <section class="band fatos" aria-label="Taxas dos bancos que acompanhamos">
+    <div class="fatos-g">
+      <div><b class="num">12</b><span>bancos e financeiras acompanhados</span></div>
+      <div><b class="num">1,01%</b><span>ao mês, a menor taxa média (Caixa)</span></div>
+      <div><b class="num">3,37%</b><span>ao mês, a maior taxa média (Omni Financeira)</span></div>
+      <div><b class="num">R$ 0</b><span>e sem cadastro para simular</span></div>
+    </div>
+    <p class="hint">Taxa média efetivamente contratada, do Banco Central (modalidade aquisição de veículos, pessoa física). Não é taxa de oferta: a sua depende da análise do banco.</p>
+  </section>
+
+  <section class="blk" id="comparar" aria-labelledby="t-cmp">
+    <div class="kicker">Comparativo</div>
+    <h2 id="t-cmp">O mesmo financiamento, em cada banco</h2>
+    <p class="lead" id="cm-lead">Quanto o mesmo carro novo de R$ 80.000 custa em cada banco, com a mesma entrada e o mesmo prazo, ordenado do menor para o maior CET.</p>
+    <div class="panel cmpx">
+      <div class="cmleg"><span><s class="cr"></s>Valor financiado</span><span><s class="jr3"></s>Juros pagos até o fim</span></div>
+      <div class="cmrows" id="cm-linhas"></div>
+      <div class="cmgap">
+        <div class="gv num" id="cm-gap-v">R$ 48.936</div>
+        <p id="cm-gap">É a diferença nos juros pagos entre Omni Financeira e Caixa neste cenário. Vale pedir mais de uma proposta.</p>
+      </div>
+    </div>
+    <div class="hint" id="cm-nota">Mesma entrada e mesmo prazo em todos (limitado ao prazo máximo de cada banco). Taxas médias do Banco Central; a sua proposta pode ser diferente. Veja o <a href="/comparador-carro-novo" id="a-comparador">comparador de carro novo</a>.</div>
+  </section>
+
+  <section class="blk" aria-labelledby="t-raio">
+    <div class="raio">
+      <div class="hd">
+        <div><div class="kicker">Raio-X da decisão</div><h2 id="t-raio">Essa parcela cabe no seu mês?</h2></div>
+      </div>
+      <div class="mini-in"><label for="campo-conforto">Parcela confortável: quanto cabe por mês?</label><div class="inp"><span class="pre">R$</span><input id="campo-conforto" type="text" inputmode="numeric" autocomplete="off" value="2.000" class="num"><em>/mês</em></div></div>
+      <p id="raio-texto">Com a estimativa de R$ 2.083,97 por mês, veja o que muda com a mesma taxa:</p>
+      <div class="alts" id="alts"></div>
+      <div class="regra" id="regra-renda">
+        <div class="rt"><b>E o limite de 30% da renda?</b> <span id="renda-texto">Com a referência de até cerca de 30% da renda, a parcela estimada de R$ 2.083,97 pede uma renda mensal comprovada de cerca de R$ 6.947 (conta nossa, não é análise de crédito).</span></div>
+        <details class="rdet" id="det-renda">
+          <summary>Como a renda entra na análise</summary>
+          <p>Não existe um percentual único em lei para financiamento de veículo: cada banco define na análise do crédito. A referência de mercado mais citada é a soma das parcelas de dívidas de até cerca de 30% da renda mensal. A conta acima é nossa, não é análise de crédito.</p>
+          <p>O banco também olha o histórico de pagamento, o score e o valor da entrada. Uma entrada maior costuma ajudar na aprovação e baixa a parcela.</p>
+        </details>
+      </div>
+      <div class="hint">Não dizemos qual é “melhor”: depende do que importa para você. A parcela confortável é só uma conta sua; não é análise de crédito.</div>
+    </div>
+  </section>
+
+  <section class="blk amsec" id="amortizacao" aria-labelledby="t-amort">
+    <div class="kicker">Amortização</div>
+    <h2 id="t-amort">Pagar antes pode poupar milhares de reais</h2>
+    <p class="lead amlead">No começo do financiamento, boa parte da parcela é juros. Quando você paga um valor a mais, a dívida em que os juros incidem diminui: você termina antes e paga menos. Veja quanto isso vale no seu cenário.</p>
+
+    <div class="split amwhy">
+      <div class="split-t">
+        <h3 class="sub"><span class="n" aria-hidden="true">1</span>Os juros vêm primeiro</h3>
+        <div class="giga num"><span id="amort-pct">57%</span><small>do 1º ano é juros</small></div>
+        <p class="lead" id="amort-resumo">No primeiro ano, de R$ 25.008 pagos em parcelas, R$ 14.177 são juros e só R$ 10.831 abatem a dívida. Por isso pagar a mais cedo faz diferença.</p>
+      </div>
+      <div class="panel graf">
+        <div class="leg">
+          <span><s class="jr"></s>Juros do ano</span><span><s></s>Amortização do ano</span><span><s class="ln"></s>Saldo devedor</span>
+        </div>
+        <svg id="amort-graf" viewBox="0 0 640 220" preserveAspectRatio="none" role="img" aria-label="Gráfico: juros e amortização de cada ano e saldo devedor"></svg>
+        <div class="eixo"><span>Ano 1</span><span id="amort-ano-fim">Ano 4</span></div>
+      </div>
+    </div>
+
+    <details class="amort amsim" id="det-amsim">
+      <summary>Simular: pagar a mais todo mês ou amortizar de uma vez</summary>
+    <div class="panel amx">
+      <h3 class="sub"><span class="n" aria-hidden="true">2</span>Amortização: quanto você poupa pagando a mais</h3>
+      <p class="amsub">Escolha o valor e o momento. Quanto mais cedo, maior a economia. A parcela continua a mesma e o prazo encurta.</p>
+      <div class="amin">
+        <div class="f">
+          <label for="campo-extra">Pagar a mais todo mês <span>além da parcela</span></label>
+          <div class="inp"><span class="pre">R$</span><input id="campo-extra" type="text" inputmode="numeric" autocomplete="off" value="300" class="num"><em>/mês</em></div>
+        </div>
+        <div class="f">
+          <label for="campo-unico">Amortização única <span>um valor de uma vez</span></label>
+          <div class="inp"><span class="pre">R$</span><input id="campo-unico" type="text" inputmode="numeric" autocomplete="off" value="5.000" class="num"></div>
+        </div>
+        <div class="f">
+          <label for="range-quando">Quando fazer a única <span id="quando-rot">daqui a 6 meses</span></label>
+          <input id="range-quando" type="range" min="0" max="47" step="1" value="6" aria-describedby="quando-rot">
+        </div>
+      </div>
+      <div class="amcards" id="am-cartoes"></div>
+      <p class="qtxt" id="am-texto"></p>
+    </div>
+
+    <div class="amdicas">
+      <div class="amd"><h4>Prazo ou parcela?</h4><p>Reduzir o prazo costuma poupar mais juros: as últimas parcelas somem. Reduzir a parcela dá folga no orçamento do mês. Pergunte ao banco o que o seu contrato permite.</p></div>
+      <div class="amd"><h4>Veja o que o contrato diz</h4><p>O Código de Defesa do Consumidor (art. 52, § 2º) garante a liquidação antecipada com redução proporcional dos juros. Confirme com o banco como pedir, se há tarifa e se o abatimento reduz o prazo ou a parcela. <a href="/aprenda-amortizacao-extra-veiculo">Leia o guia</a>.</p></div>
+      <div class="amd"><h4>Compare com outro uso do dinheiro</h4><p>Amortizar equivale a render a taxa da dívida: <b id="am-taxa-aa">26,73%</b> ao ano nesta simulação. Compare com o que o mesmo dinheiro renderia, já descontados impostos, e mantenha uma reserva de emergência. Não é recomendação de investimento.</p></div>
+    </div>
+    </details>
+
+    <details class="amort" id="det-amort">
+      <summary>Ver a amortização ano a ano</summary>
+      <div class="tw"><table id="tab-amort">
+        <caption id="amort-cap">Parcela fixa (Tabela Price): juros, amortização e saldo devedor no fim de cada ano</caption>
+        <thead><tr><th scope="col">Ano</th><th scope="col">Juros</th><th scope="col">Amortização</th><th scope="col">Saldo devedor</th></tr></thead>
+        <tbody id="amort-corpo"><tr><th scope="row">Ano 1</th><td>R$ 14.177</td><td>R$ 10.831</td><td>R$ 53.169</td></tr><tr><th scope="row">Ano 2</th><td>R$ 11.281</td><td>R$ 13.726</td><td>R$ 39.443</td></tr><tr><th scope="row">Ano 3</th><td>R$ 7.612</td><td>R$ 17.396</td><td>R$ 22.047</td></tr><tr><th scope="row">Ano 4</th><td>R$ 2.961</td><td>R$ 22.047</td><td>R$ 0</td></tr></tbody>
+        <tfoot id="amort-rodape"><tr><th scope="row">Total</th><td>R$ 36.031</td><td>R$ 64.000</td><td>—</td></tr></tfoot>
+      </table></div>
+      <div class="hint" id="amort-nota">Valores em reais de hoje, sem tarifas nem seguro.</div>
+    </details>
+  </section>
+
+  <section class="blk" id="taxas" aria-labelledby="t-taxas">
+    <div class="kicker">Taxas de hoje</div>
+    <h2 id="t-taxas">Taxa de financiamento por banco</h2>
+    <p class="lead">Taxa média efetivamente contratada, divulgada pelo Banco Central. O Banco Central não separa carro novo, usado e moto nesta modalidade.</p>
+    <p class="amsub">Na semana de 28/10 a 04/11/2026, a última divulgada pelo Banco Central, a taxa de financiamento de veículos nos bancos que acompanhamos vai de 1,01% ao mês (Caixa) a 3,37% (Omni Financeira).</p>
+    <div class="prose flat"><div class="tw"><table>
+      <caption>Taxa média efetivamente contratada, por banco</caption>
+      <thead><tr><th scope="col">Banco</th><th scope="col">Taxa ao mês</th><th scope="col">Taxa ao ano</th><th scope="col">Vale para</th></tr></thead>
+      <tbody><tr><td><a href="/hub-caixa-carro-novo">Caixa</a></td><td data-l="Taxa ao mês">1,01%</td><td data-l="Taxa ao ano">12,76%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-banco-do-brasil-carro-novo">Banco do Brasil</a></td><td data-l="Taxa ao mês">1,11%</td><td data-l="Taxa ao ano">14,18%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-banco-inter-carro-novo">Banco Inter</a></td><td data-l="Taxa ao mês">1,68%</td><td data-l="Taxa ao ano">22,11%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-bradesco-carro-novo">Bradesco</a></td><td data-l="Taxa ao mês">1,68%</td><td data-l="Taxa ao ano">22,17%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-santander-carro-novo">Santander</a></td><td data-l="Taxa ao mês">1,83%</td><td data-l="Taxa ao ano">24,36%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-c6-bank-carro-novo">C6 Bank</a></td><td data-l="Taxa ao mês">1,98%</td><td data-l="Taxa ao ano">26,59%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-itau-carro-novo">Itaú</a></td><td data-l="Taxa ao mês">2,06%</td><td data-l="Taxa ao ano">27,74%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-bv-financeira-carro-novo">BV Financeira</a></td><td data-l="Taxa ao mês">2,26%</td><td data-l="Taxa ao ano">30,82%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-banco-honda-moto">Banco Honda</a></td><td data-l="Taxa ao mês">2,40%</td><td data-l="Taxa ao ano">32,90%</td><td data-l="Vale para">Moto</td></tr><tr><td><a href="/hub-banco-yamaha-moto">Banco Yamaha</a></td><td data-l="Taxa ao mês">2,61%</td><td data-l="Taxa ao ano">36,26%</td><td data-l="Vale para">Moto</td></tr><tr><td><a href="/hub-banco-pan-carro-novo">Banco Pan</a></td><td data-l="Taxa ao mês">2,96%</td><td data-l="Taxa ao ano">41,85%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr><tr><td><a href="/hub-omni-financeira-carro-novo">Omni Financeira</a></td><td data-l="Taxa ao mês">3,37%</td><td data-l="Taxa ao ano">48,91%</td><td data-l="Vale para">Carro novo, usado e moto</td></tr></tbody></table></div></div>
+    <p class="hint"><a href="/comparador-carro-novo">Comparar CET e parcela de carro novo</a> · <a href="/comparador-carro-usado">Comparar CET e parcela de carro usado</a> · <a href="/comparador-moto">Comparar CET e parcela de moto</a></p>
+    <p class="hint">Taxa média efetivamente contratada, atualizada em 18/11/2026, com base no Banco Central do Brasil. Não é oferta de crédito: a sua taxa depende da análise do banco. Veja a <a href="/metodologia">metodologia</a>.</p>
+  </section>
+
+  <section class="blk" id="categorias" aria-labelledby="t-cat">
+    <h2 id="t-cat">Compare por tipo de veículo</h2>
+    <div class="cols3"><a class="card" href="/comparador-carro-novo"><h4>Carro Novo</h4><p>Compare 10 bancos pelo CET e pela parcela. Simulação com entrada de 20% (convenção de mercado) e prazo até 60 meses.</p><span class="go">Ver comparador →</span></a><a class="card" href="/comparador-carro-usado"><h4>Carro Usado</h4><p>Compare 10 bancos pelo CET e pela parcela. Simulação com entrada de 30% (convenção de mercado) e prazo até 60 meses.</p><span class="go">Ver comparador →</span></a><a class="card" href="/comparador-moto"><h4>Moto</h4><p>Compare 12 bancos pelo CET e pela parcela. Inclui as financeiras da Honda e da Yamaha (prazo até 48 meses).</p><span class="go">Ver comparador →</span></a></div>
+    <p class="hint">Prefere ver a parcela direto? Consulte a <a href="/financiamento-veiculos">tabela de financiamento de veículo por valor e prazo</a> ou veja <a href="/atualizacoes">o que mudou nas taxas esta semana</a>.</p>
+  </section>
+
+  <section class="blk" aria-labelledby="t-guias">
+    <h2 id="t-guias">Entenda antes de decidir</h2>
+    <div class="cols3"><a class="card" href="/aprenda-o-que-e-cet"><h4>O que é CET (Custo Efetivo Total) e por que ele importa mais que a taxa de juros</h4><p>O número que soma tudo — juros, IOF, tarifas e seguro — e por isso é o único jeito justo de comparar dois bancos.</p><span class="go">Ler o guia →</span></a><a class="card" href="/aprenda-tabela-price"><h4>Tabela Price: por que a parcela do financiamento de veículo é sempre fixa</h4><p>O sistema por trás da parcela fixa — e por que, no fim do contrato, você paga mais amortização e menos juros.</p><span class="go">Ler o guia →</span></a><a class="card" href="/aprenda-financiamento-x-consorcio-veiculo"><h4>Financiamento x Consórcio de veículo: qual a diferença</h4><p>Um te dá o carro agora com juros; o outro é mais barato, mas sem data certa. Veja qual combina com seu momento.</p><span class="go">Ler o guia →</span></a></div>
+  </section>
+
+  <section class="blk split faqs" aria-labelledby="t-faq">
+    <div class="split-t">
+      <div class="kicker">Dúvidas</div>
+      <h2 id="t-faq">Perguntas frequentes</h2>
+    </div>
+    <div class="faq"><details><summary>Como funciona o simulador de financiamento de veículos da Datalab?</summary><p>Você escolhe o tipo de veículo (carro novo, carro usado ou moto), o valor, a entrada e o prazo, e vê a parcela, o CET e o total pago com a taxa de um banco ou a média dos bancos. Os dados de taxa vêm do Banco Central e são atualizados semanalmente.</p></details><details><summary>As taxas mostradas são reais ou só uma estimativa de marketing?</summary><p>São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada pelo Banco Central (BACEN) — não é uma taxa promocional "a partir de". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito.</p></details><details><summary>O simulador cobra alguma coisa pra usar?</summary><p>Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe.</p></details></div>
+  </section>
+
+  <dialog id="dlg-confirma" aria-labelledby="dlg-titulo">
+    <h3 id="dlg-titulo">Antes de continuar</h3>
+    <p>Você vai preencher um formulário de um <b>parceiro de crédito</b>, que analisa o seu pedido de financiamento. A página dele mostra o nome da empresa.</p>
+    <ul>
+      <li>Dados do veículo e do valor que você quer financiar.</li>
+      <li>Dados pessoais e de renda, para a análise de crédito.</li>
+      <li>O parceiro pode consultar bureaus de crédito, conforme o aviso dele.</li>
+      <li>A taxa e o CET finais vêm da proposta do banco e podem ser diferentes desta estimativa.</li>
+      <li>Simular aqui não é aprovação e você não é obrigado a contratar.</li>
+    </ul>
+    <p class="dim">Veja a <a href="https://www.datalabglobal.com/privacidade/">política de privacidade</a> e <a href="/metodologia">como calculamos</a>.</p>
+    <div class="row"><a class="btn" id="a-parceiro" href="https://ftudo.com/rodolfo-financiamento-de-automoveis/" target="_blank" rel="noopener sponsored">Continuar para o parceiro →</a><button type="button" class="ghost" id="btn-voltar">Voltar e ajustar</button></div>
+  </dialog>
+
+</main>
+
+<footer class="rod">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="/" class="brand" aria-label="Datalab Global — Financiamento de veículos"><span class="tile"><svg viewBox="0 0 48 48" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.4 5.8h13.2" stroke-width="2.2"/><path d="M19.6 5.8V19.2L9.3 37.6c-1.3 2.3.4 4.9 3 4.9h23.4c2.6 0 4.3-2.6 3-4.9L28.4 19.2V5.8" stroke-width="2.2"/><path d="M13.4 30.6c3.1-2 5.9 1.4 10.6-.1s7.2-1.7 10.9.1l4 7c.9 1.6-.3 3.4-2.1 3.4H11.5c-1.8 0-3-1.8-2.1-3.4z" fill="currentColor" fill-opacity=".2" stroke="none"/><path d="M13.2 30.8c3.1-1.8 5.9 1.2 10.8-.2s7.2-1.6 10.9.2" stroke-width="1.5"/><g fill="currentColor" stroke="none"><rect x="15.6" y="35.2" width="3.2" height="4.4" rx="1"/><rect x="20.4" y="33.1" width="3.2" height="6.5" rx="1"/><rect x="25.2" y="34.2" width="3.2" height="5.4" rx="1"/><rect x="30" y="32" width="3.2" height="7.6" rx="1"/><circle cx="24" cy="14.6" r="1.3"/><circle cx="24.9" cy="10.6" r=".9"/><circle cx="23.3" cy="22.3" r="1.6"/><circle cx="34.6" cy="9.4" r="1.7"/><circle cx="40.2" cy="4.8" r="1.7"/></g><path d="M34.6 9.4l5.6-4.6" stroke-width="1.4"/></svg></span><span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
+        <p>Simulador de financiamento de carro novo, carro usado e moto: parcela, CET e custo total com as taxas do Banco Central, antes de qualquer pedido.</p>
+      </div>
+      <nav aria-label="Entenda"><h2>Entenda</h2><ul><li><a href="/aprenda">Aprenda</a></li><li><a href="/taxas-financiamento-veiculos">Taxas mês a mês</a></li><li><a href="/renda-para-financiar-veiculo">Renda para financiar</a></li><li><a href="/financiamento-veiculos">Parcela por valor e prazo</a></li><li><a href="/analise-do-mes">Análise do mês</a></li></ul></nav>
+      <nav aria-label="Transparência"><h2>Transparência</h2><ul><li><a href="/metodologia">Como calculamos</a></li><li><a href="/dados-abertos">Dados abertos</a></li><li><a href="/atualizacoes">O que mudou na semana</a></li><li><a href="/sobre">Sobre a Datalab Global</a></li><li><a href="/imprensa">Imprensa</a></li><li><a href="/incorporar">Simulador para o seu site</a></li></ul></nav>
+      <nav aria-label="Legal"><h2>Legal</h2><ul><li><a href="https://www.datalabglobal.com/privacidade/">Privacidade</a></li><li><a href="https://www.datalabglobal.com/termos/">Termos</a></li></ul></nav>
+      <nav aria-label="Outros simuladores da Datalab Global"><h2>Outros simuladores</h2><ul><li><a href="https://homeequity.datalabglobal.com/">Home Equity</a></li><li><a href="https://autoequity.datalabglobal.com/">Auto Equity</a></li><li><a href="https://condominio.datalabglobal.com/">Empréstimo para Condomínios</a></li><li><a href="https://simulador.datalabglobal.com/">Financiamento imobiliário</a></li><li><a href="https://emprestimo.datalabglobal.com/">Empréstimo com crédito do cartão</a></li><li><a href="https://dados.datalabglobal.com/">Lente B2B: dados de empresas</a></li><li><a href="https://www.datalabglobal.com/">Todos os produtos Datalab</a></li></ul></nav>
+    </div>
+    <div class="base">
+      <p>Taxas atualizadas em 18/11/2026 (Banco Central do Brasil, semana de 28/10 a 04/11/2026).</p>
+      <p>Datalab Global é marca de Satori Soluções Comerciais LTDA · CNPJ 63.998.502/0001-73. Contato: <a href="mailto:contato@datalabglobal.com">contato@datalabglobal.com</a>.</p>
+      <p>A simulação é uma estimativa educativa, não é oferta nem proposta de crédito. A taxa final depende da análise do banco, sem garantia de aprovação.</p>
+    </div>
+  </div>
+</footer>
+<script type="application/json" id="dados-sim">{"entradaMin":{"novo":0.2,"usado":0.3,"moto":0.3},"valores":{"novo":{"min":30000,"max":400000,"passo":5000,"padrao":80000},"usado":{"min":15000,"max":250000,"passo":5000,"padrao":50000},"moto":{"min":5000,"max":80000,"passo":1000,"padrao":18000}},"bancos":{"novo":[{"k":"Caixa","n":"Caixa","am":1.01,"aa":12.76,"pm":60},{"k":"Banco do Brasil","n":"Banco do Brasil","am":1.11,"aa":14.18,"pm":60},{"k":"Banco Inter","n":"Banco Inter","am":1.68,"aa":22.11,"pm":60},{"k":"Bradesco","n":"Bradesco","am":1.68,"aa":22.17,"pm":60},{"k":"Santander","n":"Santander","am":1.83,"aa":24.36,"pm":60},{"k":"C6 Bank","n":"C6 Bank","am":1.98,"aa":26.59,"pm":60},{"k":"Itau","n":"Itaú","am":2.06,"aa":27.74,"pm":60},{"k":"BV Financeira","n":"BV Financeira","am":2.26,"aa":30.82,"pm":60},{"k":"Banco Pan","n":"Banco Pan","am":2.96,"aa":41.85,"pm":60},{"k":"Omni Financeira","n":"Omni Financeira","am":3.37,"aa":48.91,"pm":60}],"usado":[{"k":"Caixa","n":"Caixa","am":1.01,"aa":12.76,"pm":60},{"k":"Banco do Brasil","n":"Banco do Brasil","am":1.11,"aa":14.18,"pm":60},{"k":"Banco Inter","n":"Banco Inter","am":1.68,"aa":22.11,"pm":60},{"k":"Bradesco","n":"Bradesco","am":1.68,"aa":22.17,"pm":60},{"k":"Santander","n":"Santander","am":1.83,"aa":24.36,"pm":60},{"k":"C6 Bank","n":"C6 Bank","am":1.98,"aa":26.59,"pm":60},{"k":"Itau","n":"Itaú","am":2.06,"aa":27.74,"pm":60},{"k":"BV Financeira","n":"BV Financeira","am":2.26,"aa":30.82,"pm":60},{"k":"Banco Pan","n":"Banco Pan","am":2.96,"aa":41.85,"pm":60},{"k":"Omni Financeira","n":"Omni Financeira","am":3.37,"aa":48.91,"pm":60}],"moto":[{"k":"Caixa","n":"Caixa","am":1.01,"aa":12.76,"pm":60},{"k":"Banco do Brasil","n":"Banco do Brasil","am":1.11,"aa":14.18,"pm":60},{"k":"Banco Inter","n":"Banco Inter","am":1.68,"aa":22.11,"pm":60},{"k":"Bradesco","n":"Bradesco","am":1.68,"aa":22.17,"pm":60},{"k":"Santander","n":"Santander","am":1.83,"aa":24.36,"pm":60},{"k":"C6 Bank","n":"C6 Bank","am":1.98,"aa":26.59,"pm":60},{"k":"Itau","n":"Itaú","am":2.06,"aa":27.74,"pm":60},{"k":"BV Financeira","n":"BV Financeira","am":2.26,"aa":30.82,"pm":60},{"k":"Banco Honda","n":"Banco Honda","am":2.4,"aa":32.9,"pm":48},{"k":"Banco Yamaha","n":"Banco Yamaha","am":2.61,"aa":36.26,"pm":48},{"k":"Banco Pan","n":"Banco Pan","am":2.96,"aa":41.85,"pm":60},{"k":"Omni Financeira","n":"Omni Financeira","am":3.37,"aa":48.91,"pm":60}]},"periodo":"28/10 a 04/11/2026"}</script>
+<script src="/calculo.js?v=20261121121412"></script>
+<script src="/home.js?v=839547aa08"></script>
+<script src="/menu.js?v=e50160bff6"></script>
 </body>
 </html>

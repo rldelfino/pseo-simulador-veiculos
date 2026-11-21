@@ -460,116 +460,6 @@ def obter_data_ultima_atualizacao():
         return date.today().isoformat()
 
 
-def gerar_logo_svg():
-    """Mesmo logo do projeto irmão (identidade visual única da família de
-    produtos Datalab Global) — genérico, sem texto específico de imóvel."""
-    return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="100%">
-    <defs>
-        <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34d399" /><stop offset="100%" stop-color="#047857" /></linearGradient>
-        <linearGradient id="emeraldDark" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#059669" /><stop offset="100%" stop-color="#022c22" /></linearGradient>
-        <filter id="glowMedium" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
-    </defs>
-    <g transform="translate(60, 50)">
-        <g opacity="0.8">
-            <ellipse cx="40" cy="40" rx="78" ry="44" fill="none" stroke="#34d399" stroke-width="1" stroke-dasharray="8 8" opacity="0.3"/>
-            <ellipse cx="40" cy="40" rx="64" ry="36" fill="none" stroke="#059669" stroke-width="1" opacity="0.4"/>
-            <ellipse cx="40" cy="40" rx="78" ry="44" fill="none" stroke="#fef08a" stroke-width="1.8" stroke-dasharray="35 300" stroke-dashoffset="15" stroke-linecap="round" filter="url(#glowMedium)" opacity="0.8"/>
-            <circle cx="118" cy="40" r="2.5" fill="#fef08a" filter="url(#glowMedium)"/><circle cx="118" cy="40" r="1" fill="#ffffff"/><circle cx="-38" cy="40" r="2.5" fill="#34d399" filter="url(#glowMedium)"/><circle cx="70" cy="-2" r="1.5" fill="#ffffff" opacity="0.6"/>
-        </g>
-        <path d="M 40 80 L 40 40 L 5 20 L 5 60 Z" fill="url(#emeraldDark)" opacity="0.85"/><path d="M 40 80 L 40 40 L 75 20 L 75 60 Z" fill="#064e3b" opacity="0.9"/><path d="M 40 40 L 75 20 L 40 0 L 5 20 Z" fill="url(#emeraldGrad)"/>
-        <line x1="40" y1="40" x2="40" y2="80" stroke="#022c22" stroke-width="1.5" /><line x1="40" y1="40" x2="5" y2="20" stroke="#34d399" stroke-width="1" opacity="0.5" /><line x1="40" y1="40" x2="75" y2="20" stroke="#34d399" stroke-width="1" opacity="0.5" />
-        <line x1="40" y1="0" x2="5" y2="20" stroke="#fef08a" stroke-width="2" filter="url(#glowMedium)"/><line x1="40" y1="0" x2="75" y2="20" stroke="#fef08a" stroke-width="2" filter="url(#glowMedium)"/><line x1="40" y1="0" x2="40" y2="40" stroke="#fef08a" stroke-width="2.5" filter="url(#glowMedium)"/><line x1="5" y1="20" x2="40" y2="40" stroke="#10b981" stroke-width="1.5" /><line x1="75" y1="20" x2="40" y2="40" stroke="#10b981" stroke-width="1.5" />
-        <circle cx="40" cy="0" r="4.5" fill="#fef08a" filter="url(#glowMedium)"/><circle cx="40" cy="0" r="2" fill="#ffffff"/><circle cx="5" cy="20" r="3.5" fill="#34d399" filter="url(#glowMedium)"/><circle cx="75" cy="20" r="3.5" fill="#34d399" filter="url(#glowMedium)"/><circle cx="40" cy="40" r="4.5" fill="#fef08a" filter="url(#glowMedium)"/><circle cx="40" cy="40" r="2" fill="#ffffff"/><circle cx="40" cy="80" r="3" fill="#059669"/>
-    </g>
-    <text x="185" y="105" font-family="'Playfair Display', Georgia, serif" font-size="64" font-weight="700" fill="#ffffff">Datalab</text>
-    <text x="190" y="145" font-family="'Inter', system-ui, sans-serif" font-size="20" font-weight="600" fill="#10b981" letter-spacing="14">GLOBAL</text>
-    <circle cx="375" cy="139" r="2.5" fill="#fef08a" filter="url(#glowMedium)"/>
-</svg>"""
-
-
-def gerar_favicon_svg(pasta_saida):
-    """Ícone quadrado (só o cubo, sem o texto "Datalab"+"GLOBAL" de
-    logo.svg) pra usar como favicon — copiado do projeto irmão
-    (pseo_simulador/gerador.py:gerar_favicon_svg) sem alteração: é o
-    MESMO ícone de marca (cores emerald sólidas, sem gradiente/glow — ver
-    docstring original sobre a limitação do svglib com fill="url(...)"),
-    de propósito idêntico ao do imobiliário. Achado real (06/set/2026,
-    aplicado primeiro no projeto irmão): sem favicon nenhum, o Google
-    mostra o domínio cru com ícone genérico em vez do nome da marca; a
-    correção foi replicada aqui pra manter os dois produtos "irmãos" no
-    mesmo padrão de indexação, mesmo o veicular ainda não estando no ar.
-
-    O favicon fica verde (cor do logo.svg deste mesmo projeto, que também
-    é verde) por decisão explícita: o logo é identidade CORPORATIVA
-    compartilhada entre os produtos Datalab Global, enquanto o azul é a
-    cor de PRODUTO (só do veicular) — ver decisão documentada em
-    ilustracao_categoria() sobre a mesma distinção."""
-    svg_favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 100 100" width="100%" height="100%">
-    <rect x="-10" y="-10" width="100" height="100" fill="#022c22"/>
-    <path d="M 40 80 L 40 40 L 5 20 L 5 60 Z" fill="#065f46" opacity="0.85"/><path d="M 40 80 L 40 40 L 75 20 L 75 60 Z" fill="#064e3b" opacity="0.9"/><path d="M 40 40 L 75 20 L 40 0 L 5 20 Z" fill="#34d399"/>
-    <line x1="40" y1="40" x2="40" y2="80" stroke="#022c22" stroke-width="1.5" /><line x1="40" y1="40" x2="5" y2="20" stroke="#34d399" stroke-width="1" opacity="0.5" /><line x1="40" y1="40" x2="75" y2="20" stroke="#34d399" stroke-width="1" opacity="0.5" />
-    <line x1="40" y1="0" x2="5" y2="20" stroke="#fef08a" stroke-width="2"/><line x1="40" y1="0" x2="75" y2="20" stroke="#fef08a" stroke-width="2"/><line x1="40" y1="0" x2="40" y2="40" stroke="#fef08a" stroke-width="2.5"/><line x1="5" y1="20" x2="40" y2="40" stroke="#10b981" stroke-width="1.5" /><line x1="75" y1="20" x2="40" y2="40" stroke="#10b981" stroke-width="1.5" />
-    <circle cx="40" cy="0" r="4.5" fill="#fef08a"/><circle cx="40" cy="0" r="2" fill="#ffffff"/><circle cx="5" cy="20" r="3.5" fill="#34d399"/><circle cx="75" cy="20" r="3.5" fill="#34d399"/><circle cx="40" cy="40" r="4.5" fill="#fef08a"/><circle cx="40" cy="40" r="2" fill="#ffffff"/><circle cx="40" cy="80" r="3" fill="#059669"/>
-</svg>"""
-    with open(os.path.join(pasta_saida, 'favicon.svg'), "w", encoding="utf-8") as f:
-        f.write(svg_favicon)
-    return svg_favicon
-
-
-def rasterizar_favicon_png(pasta_saida):
-    """Converte favicon.svg em PNG/ICO — fallback pra navegadores/crawlers
-    antigos, mesma função do projeto irmão (ver gerador.py:
-    rasterizar_favicon_png pro raciocínio completo de cada detalhe, ex.
-    por que recarrega o SVG do zero por tamanho). Gera favicon.ico,
-    apple-touch-icon.png (180x180) e logo-schema.png (512x512, usado como
-    "logo" no schema.org Organization). Não roda automaticamente em
-    gerar_site() pelo mesmo motivo do irmão: depende de svglib/reportlab,
-    que não são dependência do site em si — rodar à mão só quando o
-    desenho do ícone mudar, e comitar os 3 arquivos gerados como estático."""
-    try:
-        from svglib.svglib import svg2rlg
-        from reportlab.graphics import renderPM
-    except ImportError:
-        print("⚠️  svglib/reportlab não instalados — pulando favicon.ico/apple-touch-icon.png. Rode: pip install svglib reportlab")
-        return
-
-    caminho_svg = os.path.join(pasta_saida, 'favicon.svg')
-
-    def _renderizar_png(tamanho_px, caminho_saida):
-        desenho = svg2rlg(caminho_svg)
-        fator = tamanho_px / desenho.width
-        desenho.width = desenho.height = tamanho_px
-        desenho.scale(fator, fator)
-        renderPM.drawToFile(desenho, caminho_saida, fmt="PNG", bg=0x022c22)
-
-    caminho_180 = os.path.join(pasta_saida, 'apple-touch-icon.png')
-    caminho_512 = os.path.join(pasta_saida, 'logo-schema.png')
-    _renderizar_png(180, caminho_180)
-    _renderizar_png(512, caminho_512)
-
-    from PIL import Image
-    tamanhos_ico = [16, 32, 48]
-    caminhos_tmp = []
-    for tamanho in tamanhos_ico:
-        caminho_tmp = os.path.join(pasta_saida, f'_favicon_tmp_{tamanho}.png')
-        _renderizar_png(tamanho, caminho_tmp)
-        caminhos_tmp.append(caminho_tmp)
-    imagens = []
-    for c in caminhos_tmp:
-        img = Image.open(c)
-        img.load()
-        imagens.append(img)
-    imagens[0].save(
-        os.path.join(pasta_saida, 'favicon.ico'),
-        format='ICO',
-        sizes=[(t, t) for t in tamanhos_ico],
-        append_images=imagens[1:],
-    )
-    for c in caminhos_tmp:
-        os.remove(c)
-    print("✅ favicon.ico, apple-touch-icon.png e logo-schema.png gerados a partir de favicon.svg.")
-
-
 def gerar_calculo_js():
     """Motor de cálculo em JavaScript — espelha EXATAMENTE calcular_pmt_price,
     calcular_iof_veiculo, calcular_cet_veiculo e gerar_tabela_amortizacao
@@ -940,10 +830,10 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos, robots=N
     <meta name="description" content="{meta_description}">
     <link rel="canonical" href="{url_canonica}" />
     {f'<meta name="robots" content="{robots}">' if robots else ''}
-    <link rel="icon" href="favicon.ico?v=20261012" sizes="any">
-    <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
-    <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">{_medicao_head}
+    <link rel="icon" href="favicon.ico?v=20261120" sizes="any">
+    <link rel="icon" href="favicon-32.png?v=20261120" type="image/png" sizes="32x32">
+    <link rel="icon" href="favicon-192.png?v=20261120" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261120">{_medicao_head}
     <link rel="alternate" type="application/atom+xml" title="Taxas de financiamento de veículos" href="/feed.xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1124,7 +1014,7 @@ def render_footer():
             <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
-                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
+                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Empréstimo com crédito do cartão</a>
                 <a href="https://simulador.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Financiamento imobiliário</a>
                 <a href="https://homeequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Home Equity</a>
                 <a href="https://autoequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Auto Equity</a>
@@ -3730,8 +3620,8 @@ _TEMPLATE_EMBED = """<!DOCTYPE html>
 <meta name="description" content="Simulador de financiamento de veículos incorporável: parcela com a taxa média de cada banco.">
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="__DOMINIO__/incorporar">
-<link rel="icon" href="/favicon.ico?v=20261012" sizes="any">
-<link rel="icon" href="/favicon-32.png?v=20261012" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon.ico?v=20261120" sizes="any">
+<link rel="icon" href="/favicon-32.png?v=20261120" type="image/png" sizes="32x32">
 <style>
 *{box-sizing:border-box}body{margin:0;padding:14px;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e2e8f0}
 h1{font-size:16px;margin:0 0 10px;font-weight:700}label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin:10px 0 4px}
@@ -4052,95 +3942,198 @@ def gerar_analise_do_mes(pasta_saida, data_atualizacao):
     return [url]
 
 
-def html_taxas_hoje_home(data_atualizacao):
-    """Tabelas 'taxa de hoje por banco' para a home. Categorias com exatamente os mesmos bancos e taxas (carro novo e
-    usado, que o Banco Central não separa) dividem uma tabela, para não repetir conteúdo na página.
-    Achado real (04/11/2026, Bing > AI Performance): a home foi citada 41 vezes pelo Copilot para 'taxa
-    financiamento carro novo', mas tinha 360 palavras e nenhuma taxa. Mesmos números dos hubs de banco."""
-    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
-    pct = lambda v: f"{v:.2f}".replace('.', ',') + "%"
-    nome = lambda b: obter_regra(b)["nome_exibicao"] or b
-    grupos = {}
+# ---------------------------------------------------------------------------
+# Home nova (20/11/2026): mesmo template do Home Equity (006), Auto Equity (007) e Condomínio (008), em azul de veículos.
+# HTML em layout_home.py, estilo em src/home.css, lógica em src/home.js. Sem style nem script inline (CSP própria da home).
+# ---------------------------------------------------------------------------
+
+VALORES_SIMULADOR = {
+    "novo": {"min": 30_000, "max": 400_000, "passo": 5_000, "padrao": 80_000},
+    "usado": {"min": 15_000, "max": 250_000, "passo": 5_000, "padrao": 50_000},
+    "moto": {"min": 5_000, "max": 80_000, "passo": 1_000, "padrao": 18_000},
+}
+PRAZO_PADRAO_SIMULADOR = 48
+ASSETS_HOME = (("home.css", "home.css"), ("home.js", "home.js"), ("menu.js", "menu.js"))
+
+
+def _hash_arquivo(caminho):
+    import hashlib
+    with open(caminho, "rb") as f:
+        return hashlib.sha1(f.read()).hexdigest()[:10]
+
+
+def copiar_assets_home(pasta_saida):
+    """Copia src/home.css, src/home.js e src/menu.js para a pasta de saída e devolve {nome: hash} (cache imutável com ?v=)."""
+    import shutil
+    aqui = os.path.dirname(os.path.abspath(__file__))
+    versoes = {}
+    for origem, destino in ASSETS_HOME:
+        caminho = os.path.join(aqui, "src", origem)
+        shutil.copyfile(caminho, os.path.join(pasta_saida, destino))
+        versoes[destino] = _hash_arquivo(caminho)
+    return versoes
+
+
+def dados_simulador_home():
+    """Bloco JSON lido por src/home.js: taxas por banco (ordenadas), entrada mínima e limites de valor por categoria."""
+    bancos = {}
     for categoria in CATEGORIAS:
-        bancos = sorted(bancos_para_categoria(categoria), key=lambda b: (obter_regra(b)["taxa_am"], b))
-        assinatura = tuple((b, obter_regra(b)["taxa_am"], obter_regra(b)["taxa_aa"]) for b in bancos)
-        grupos.setdefault(assinatura, []).append(categoria)
-    blocos = []
-    for assinatura, categorias in grupos.items():
-        rotulo = " e ".join(CATEGORIA_LABEL[c].lower() for c in categorias)
-        bancos = [x[0] for x in assinatura]
-        linhas = "".join(
-            f'<tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white whitespace-nowrap">'
-            f'<a href="{slug_hub(categorias[0], b)}" class="hover:text-sky-400">{nome(b)}</a></th>'
-            f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(am)}</td>'
-            f'<td class="px-3 py-2 text-right whitespace-nowrap">{pct(aa)}</td></tr>'
-            for b, am, aa in assinatura)
-        periodo_home = periodo_taxa_bacen()
-        quando = f"Na semana de {periodo_home}, a última divulgada pelo Banco Central" if periodo_home else f"Na última semana divulgada pelo Banco Central (página atualizada em {data_br})"
-        resumo = (f"{quando}, a taxa de financiamento de {rotulo} nos bancos que acompanhamos vai de "
-                  f"{pct(assinatura[0][1])} ao mês ({nome(bancos[0])}) a {pct(assinatura[-1][1])} ({nome(bancos[-1])}).")
-        links = " · ".join(f'<a href="{slug_comparador(c)}" class="underline hover:text-sky-400">Comparar CET e parcela de {CATEGORIA_LABEL[c].lower()}</a>' for c in categorias)
-        blocos.append(f'''<section class="mt-8">
-            <h2 class="font-serif text-xl font-bold mb-1">Taxa de financiamento de {rotulo}, por banco</h2>
-            <p class="text-slate-300 text-sm font-light leading-relaxed mb-3">{resumo}</p>
-            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
-                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-3 py-2 text-left font-medium">Banco</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao mês</th><th scope="col" class="px-3 py-2 text-right font-medium">Taxa ao ano</th></tr></thead>
-                <tbody>{linhas}</tbody></table></div>
-            <p class="text-slate-500 text-[11px] mt-2">{links}</p>
-        </section>''')
-    nota = (f'<p class="text-slate-500 text-[11px] mt-6">Taxa média efetivamente contratada, atualizada em {data_br}, com base no Banco Central do Brasil. '
-            f'Não é oferta de crédito: a sua taxa depende da análise do banco. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>')
-    return "\n".join(blocos) + nota
+        ordenados = sorted(bancos_para_categoria(categoria).items(), key=lambda kv: (kv[1]["taxa_am"], kv[0]))
+        bancos[categoria] = [{"k": k, "n": obter_regra(k)["nome_exibicao"] or k, "am": v["taxa_am"], "aa": v["taxa_aa"], "pm": v["prazo_max"]}
+                             for k, v in ordenados]
+    return {"entradaMin": {c: entrada_minima(c) for c in CATEGORIAS}, "valores": VALORES_SIMULADOR, "bancos": bancos,
+            "periodo": periodo_taxa_bacen() or ""}
 
 
-def gerar_index(data_atualizacao):
+def padrao_simulador_home():
+    """Cenário padrão da home (carro novo, R$ 80 mil, entrada mínima, 48 meses, média dos bancos): mesma conta do home.js."""
+    c = "novo"
+    taxas = [v["taxa_am"] for v in bancos_para_categoria(c).values()]
+    tx = sum(taxas) / len(taxas)
+    valor = VALORES_SIMULADOR[c]["padrao"]
+    entrada = valor * entrada_minima(c)
+    fin = valor - entrada
+    prazo = PRAZO_PADRAO_SIMULADOR
+    pmt = calcular_pmt_price(fin, prazo, tx)
+    total = pmt * prazo
+    return {"valor": valor, "entrada": entrada, "fin": fin, "prazo": prazo, "taxa": tx, "parcela": pmt, "total": total,
+            "juros": total - fin, "cet": calcular_cet_veiculo(fin, prazo, tx), "taxas": taxas}
+
+
+def _num_br(v, casas=0):
+    return f"{v:,.{casas}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def _linhas_amort_anual(fin, prazo, tx):
+    i = tx / 100
+    pmt = calcular_pmt_price(fin, prazo, tx)
+    saldo, linhas, ano, j, a = fin, [], 0, 0.0, 0.0
+    for m in range(1, prazo + 1):
+        juros = saldo * i
+        am = pmt - juros
+        saldo = max(0.0, saldo - am)
+        j += juros
+        a += am
+        if m % 12 == 0 or m == prazo:
+            ano += 1
+            linhas.append((ano, j, a, 0.0 if saldo < 0.005 else saldo))
+            j = a = 0.0
+    return linhas
+
+
+def html_tabelas_taxas_home():
+    """Tabela única 'taxa de hoje por banco' da home. O Banco Central não separa carro novo, usado e moto nesta modalidade e
+    os bancos têm a mesma taxa nas três: uma tabela só (com a coluna 'vale para'), sem repetir o mesmo conteúdo três vezes.
+    Achado real (04/11/2026, Bing > AI Performance): a home foi citada 41 vezes pelo Copilot para 'taxa financiamento carro novo'
+    quando não tinha taxa nenhuma; os números são os mesmos dos hubs."""
+    pct = lambda v: f"{v:.2f}".replace('.', ',') + "%"
+    todos = {}
+    for categoria in CATEGORIAS:
+        for banco in bancos_para_categoria(categoria):
+            todos.setdefault(banco, []).append(categoria)
+    bancos = sorted(todos, key=lambda b: (obter_regra(b)["taxa_am"], b))
+    linhas = []
+    for b in bancos:
+        r = obter_regra(b)
+        cats = todos[b]
+        vale = "Carro novo, usado e moto" if len(cats) == len(CATEGORIAS) else " e ".join(CATEGORIA_LABEL[c] for c in cats)
+        linhas.append(f'<tr><td><a href="/{slug_hub(cats[0], b)}">{r["nome_exibicao"] or b}</a></td>'
+                      f'<td data-l="Taxa ao mês">{pct(r["taxa_am"])}</td><td data-l="Taxa ao ano">{pct(r["taxa_aa"])}</td>'
+                      f'<td data-l="Vale para">{vale}</td></tr>')
+    nome = lambda b: obter_regra(b)["nome_exibicao"] or b
+    periodo = periodo_taxa_bacen()
+    quando = f"Na semana de {periodo}, a última divulgada pelo Banco Central" if periodo else "Na última semana divulgada pelo Banco Central"
+    resumo = (f"{quando}, a taxa de financiamento de veículos nos bancos que acompanhamos vai de {pct(obter_regra(bancos[0])['taxa_am'])} ao mês "
+              f"({nome(bancos[0])}) a {pct(obter_regra(bancos[-1])['taxa_am'])} ({nome(bancos[-1])}).")
+    links = " · ".join(f'<a href="/{slug_comparador(c)}">Comparar CET e parcela de {CATEGORIA_LABEL[c].lower()}</a>' for c in CATEGORIAS)
+    return f'''<p class="amsub">{resumo}</p>
+    <div class="prose flat"><div class="tw"><table>
+      <caption>Taxa média efetivamente contratada, por banco</caption>
+      <thead><tr><th scope="col">Banco</th><th scope="col">Taxa ao mês</th><th scope="col">Taxa ao ano</th><th scope="col">Vale para</th></tr></thead>
+      <tbody>{"".join(linhas)}</tbody></table></div></div>
+    <p class="hint">{links}</p>'''
+
+
+def _cartoes_categoria_home():
+    cartoes = []
+    # entrada e prazo são convenção de mercado, não regra confirmada banco a banco (ver ITENS_A_VALIDAR em bancos_veiculos.py)
+    descr = {"novo": "Simulação com entrada de 20% (convenção de mercado) e prazo até 60 meses.",
+             "usado": "Simulação com entrada de 30% (convenção de mercado) e prazo até 60 meses.",
+             "moto": "Inclui as financeiras da Honda e da Yamaha (prazo até 48 meses)."}
+    for c in CATEGORIAS:
+        n = len(bancos_para_categoria(c))
+        cartoes.append(f'<a class="card" href="/{slug_comparador(c)}"><h4>{CATEGORIA_LABEL[c]}</h4>'
+                       f'<p>Compare {n} bancos pelo CET e pela parcela. {descr[c]}</p><span class="go">Ver comparador →</span></a>')
+    return "".join(cartoes)
+
+
+def _cartoes_guias_home():
+    escolhidos = ["aprenda-o-que-e-cet", "aprenda-tabela-price", "aprenda-financiamento-x-consorcio-veiculo"]
+    por_slug = {a["slug"]: a for a in ARTIGOS_APRENDA}
+    cartoes = []
+    for sl in escolhidos:
+        a = por_slug.get(sl)
+        if a:
+            cartoes.append(f'<a class="card" href="/{sl}"><h4>{a["titulo_h1"]}</h4><p>{a["resumo_card"]}</p><span class="go">Ler o guia →</span></a>')
+    return "".join(cartoes)
+
+
+def _faq_home(perguntas):
+    itens = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in perguntas)
+    schema = {
+        "@context": "https://schema.org", "@type": "FAQPage",
+        "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in perguntas],
+    }
+    return itens, schema
+
+
+def _rodape_home():
+    li = lambda href, rotulo: f'<li><a href="{href}">{rotulo}</a></li>'
+    entenda = "".join([li("/aprenda", "Aprenda"), li("/taxas-financiamento-veiculos", "Taxas mês a mês"), li("/renda-para-financiar-veiculo", "Renda para financiar"),
+                       li("/financiamento-veiculos", "Parcela por valor e prazo"), li("/analise-do-mes", "Análise do mês")])
+    transp = "".join([li("/metodologia", "Como calculamos"), li("/dados-abertos", "Dados abertos"), li("/atualizacoes", "O que mudou na semana"),
+                      li("/sobre", "Sobre a Datalab Global"), li("/imprensa", "Imprensa"), li("/incorporar", "Simulador para o seu site")])
+    legal = "".join([li("https://www.datalabglobal.com/privacidade/", "Privacidade"), li("https://www.datalabglobal.com/termos/", "Termos")])
+    outros = "".join([li("https://homeequity.datalabglobal.com/", "Home Equity"), li("https://autoequity.datalabglobal.com/", "Auto Equity"),
+                      li("https://condominio.datalabglobal.com/", "Empréstimo para Condomínios"), li("https://simulador.datalabglobal.com/", "Financiamento imobiliário"),
+                      li("https://emprestimo.datalabglobal.com/", "Empréstimo com crédito do cartão"), li("https://dados.datalabglobal.com/", "Lente B2B: dados de empresas"),
+                      li("https://www.datalabglobal.com/", "Todos os produtos Datalab")])
+    return entenda, transp, legal, outros
+
+
+def gerar_index(data_atualizacao, versoes_assets=None):
+    versoes = versoes_assets or {n: "0" for _, n in ASSETS_HOME}
     url_home = f"{DOMINIO}/"
-    titulo_pagina = "Simulador de Financiamento de Veículos: Carro e Moto | Datalab"
+    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
+    titulo_pagina = "Simulador de Financiamento de Veículos: Carro e Moto"  # ≤ 60 caracteres (sem o sufixo de marca)
     meta_description = (
         "Compare taxas reais de financiamento de carro novo, usado e moto entre os principais bancos "
         "do Brasil, com dados do Banco Central. Simule parcela e CET."
     )
-
-    cards = []
-    for categoria in CATEGORIAS:
-        label = CATEGORIA_LABEL[categoria]
-        n_bancos = len(bancos_para_categoria(categoria))
-        cards.append(f'''<a href="{slug_comparador(categoria)}" class="glass-panel-sky rounded-2xl p-6 hover:border-sky-500/40 transition-all group">
-            <div class="mb-3 flex justify-center">{ilustracao_categoria(categoria, f'il-grad-{categoria}')}</div>
-            <h2 class="font-serif text-xl font-bold mb-1">{label}</h2>
-            <p class="text-sm text-slate-400 mb-4">Compare {n_bancos} bancos e simule sua parcela.</p>
-            <span class="inline-flex items-center gap-1.5 text-xs text-sky-400 group-hover:gap-2.5 transition-all">Ver comparador {icone('arrow-right')}</span>
-        </a>''')
-    cards_html = "\n".join(cards)
+    d = padrao_simulador_home()
+    periodo = periodo_taxa_bacen() or data_br
+    c = "novo"
+    ordenados = sorted(bancos_para_categoria(c).items(), key=lambda kv: (kv[1]["taxa_am"], kv[0]))
+    nome_b = lambda b: obter_regra(b)["nome_exibicao"] or b
+    menor, maior = ordenados[0], ordenados[-1]
+    todos = {b for cat in CATEGORIAS for b in bancos_para_categoria(cat)}
 
     schema_breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": url_home}],
     }
-
-    # Schema WebSite + Organization — só na home, mesmo padrão do projeto
-    # irmão (ver gerador.py). "logo" aponta pro logo-schema.png (raster
-    # 512x512, gerado por rasterizar_favicon_png), não pro favicon.svg:
-    # o Google recomenda uma imagem raster real de pelo menos 112x112px
-    # pra aparecer no card de marca da busca (developers.google.com/
-    # search/docs/appearance/structured-data/logo). Achado real
-    # (06/set/2026, aplicado primeiro no imobiliário): sem isso o Google
-    # mostra o domínio cru + ícone genérico em vez do nome "Datalab
-    # Global" — replicado aqui pra manter os dois produtos irmãos no
-    # mesmo padrão de indexação desde já, mesmo o veicular ainda não
-    # estando no ar (não custa nada ter pronto pro dia do deploy).
     schema_website = {
         "@context": "https://schema.org", "@type": "WebSite",
         "name": "Datalab Global", "url": url_home, "dateModified": data_atualizacao,
         "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global", "url": "https://www.datalabglobal.com/"},
     }
-    # Achado real (12/set/2026, pesquisa sobre E-E-A-T/YMYL pedida pelo
-    # usuário — conteúdo financeiro é avaliado pelo Google com padrão mais
-    # alto de confiança do que conteúdo comum): "founder"/"contactPoint"
-    # são sinais legíveis por máquina de que existe gente real, com
-    # contato real, por trás do site. Mesmo dado aplicado no imobiliário
-    # (ver gerador.py) — Rodolfo Delfino é o fundador real, e-mail é o
-    # contato real do domínio (Google Workspace).
+    schema_app = {
+        "@context": "https://schema.org", "@type": "WebApplication", "name": "Simulador de Financiamento de Veículos",
+        "url": url_home, "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "inLanguage": "pt-BR",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BRL"},
+        "publisher": {"@type": "Organization", "@id": "https://www.datalabglobal.com/#organization", "name": "Datalab Global"},
+    }
+    # "founder"/"contactPoint": sinais legíveis por máquina de que há gente real e contato real por trás do site (E-E-A-T/YMYL, 12/set/2026).
     schema_organization = {
         "@context": "https://schema.org", "@type": "Organization", "@id": "https://www.datalabglobal.com/#organization",
         "name": "Datalab Global", "url": "https://www.datalabglobal.com/", "logo": f"{DOMINIO}/logo-schema.png",
@@ -4148,50 +4141,107 @@ def gerar_index(data_atualizacao):
         "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino", "https://www.kaggle.com/rodolfodelfino", "https://www.linkedin.com/in/rodolfo-leal-delfino"]},
         "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
     }
+    perguntas = [
+        ("Como funciona o simulador de financiamento de veículos da Datalab?",
+         "Você escolhe o tipo de veículo (carro novo, carro usado ou moto), o valor, a entrada e o prazo, e vê a parcela, o CET e o total pago "
+         "com a taxa de um banco ou a média dos bancos. Os dados de taxa vêm do Banco Central e são atualizados semanalmente."),
+        ("As taxas mostradas são reais ou só uma estimativa de marketing?",
+         "São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada pelo Banco Central (BACEN) — não é uma taxa "
+         "promocional \"a partir de\". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito."),
+        ("O simulador cobra alguma coisa pra usar?",
+         "Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede "
+         "uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe."),
+    ]
+    faq_html, schema_faq = _faq_home(perguntas)
+    json_ld = render_json_ld(schema_breadcrumb, schema_website, schema_app, schema_organization, schema_faq,
+                             schema_webpage(url_home, titulo_pagina, meta_description, data_atualizacao))
+    medicao = ''.join('\n' + t for t in tags_medicao())
 
-    faq_html, schema_faq = render_faq_visual([
-        (
-            "Como funciona o simulador de financiamento de veículos da Datalab?",
-            "Você escolhe a categoria do veículo (carro novo, carro usado ou moto), compara a taxa real de cada "
-            "banco e simula a parcela pro valor e prazo que quiser. Os dados de taxa vêm direto do Banco Central "
-            "e são atualizados semanalmente.",
-        ),
-        (
-            "As taxas mostradas são reais ou só uma estimativa de marketing?",
-            "São a taxa média efetivamente contratada por cada banco nessa modalidade, apurada mensalmente pelo "
-            "Banco Central (BACEN) — não é uma taxa promocional \"a partir de\". Sua taxa final depende do seu "
-            "relacionamento com o banco e da análise de crédito.",
-        ),
-        (
-            "O simulador cobra alguma coisa pra usar?",
-            "Não, simular é 100% gratuito. A Datalab é remunerada pelo correspondente bancário quando você pede "
-            "uma análise por aqui — isso não muda o valor da sua parcela nem qual banco você escolhe.",
-        ),
-    ])
+    from layout_home import HOME_MAIN, LAYOUT, LOGO
+    linhas_am = _linhas_amort_anual(d["fin"], d["prazo"], d["taxa"])
+    j1, a1 = linhas_am[0][1], linhas_am[0][2]
+    pj = d["juros"] / d["total"]
+    hoje = date.today()
+    fim_m = hoje.month - 1 + d["prazo"]
+    k_quita = f"{MESES_PT_ABREV[fim_m % 12]}/{hoje.year + fim_m // 12}"
+    itens = []
+    for b, v in ordenados:
+        p = min(d["prazo"], v["prazo_max"])
+        itens.append((b, calcular_pmt_price(d["fin"], p, v["taxa_am"]) * p - d["fin"]))
+    j_menor = min(itens, key=lambda x: x[1])
+    j_maior = max(itens, key=lambda x: x[1])
 
-    head = render_head(titulo_pagina, meta_description, url_home, [schema_breadcrumb, schema_website, schema_organization, schema_faq,
-                                                                    schema_webpage(url_home, titulo_pagina, meta_description, data_atualizacao)])
-    corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
-        <h1 class="font-serif text-3xl font-bold mb-2">Simulador de Financiamento de Veículos</h1>
-        <p class="text-slate-400 text-sm mb-8">Escolha a categoria do seu veículo para comparar taxas reais e simular parcelas.</p>
-        <div class="grid sm:grid-cols-3 gap-4">{cards_html}</div>
-        {html_taxas_hoje_home(data_atualizacao)}
-        <p class="mt-6 text-sm text-slate-300">Prefere ver direto a parcela do seu valor e prazo? Consulte a <a href="financiamento-veiculos" class="text-sky-400 underline">tabela de financiamento de veículo por valor e prazo</a>. Quer saber o que mudou? Veja as <a href="atualizacoes" class="text-sky-400 underline">taxas desta semana</a>.</p>
-        {faq_html}
-    </main>'''
-
-    return f'''<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    {head}
-</head>
-<body class="antialiased flex flex-col min-h-screen">
-    {render_nav()}
-    {corpo}
-    {render_footer()}
-    {SCRIPT_AJUSTA_TOOLTIPS}
-</body>
-</html>'''
+    entenda, transp, legal, outros = _rodape_home()
+    nav = ('<a href="#simulador">Simular</a><a href="#comparar">Comparar bancos</a><a href="#taxas">Taxas de hoje</a>'
+           '<a href="/aprenda">Aprenda</a><a href="/metodologia">Como calculamos</a>')
+    subs = {
+        "@@PERIODO@@": periodo,
+        "@@D_HINT_BANCO@@": f"Média simples das taxas dos {len(ordenados)} bancos que acompanhamos (Banco Central). Escolha um banco para usar a taxa dele.",
+        "@@D_PARCELA@@": "R$ " + _num_br(d["parcela"], 2),
+        "@@D_SUB@@": f"em {d['prazo']} meses · taxa {_num_br(d['taxa'], 2)}% a.m.",
+        "@@D_TOTAL@@": "R$ " + _num_br(d["total"]),
+        "@@D_CET@@": _num_br(d["cet"], 2) + "% a.a.",
+        "@@D_RESUMO@@": f"Você financia R$ {_num_br(d['fin'])} e paga R$ {_num_br(d['total'])} no total: R$ {_num_br(d['juros'])} a mais em juros.",
+        "@@D_PCT_JUROS@@": str(round(pj * 100)),
+        "@@D_ROSCA_P@@": f"{(1 - pj) * 289.0265:.1f}",
+        "@@D_L_CRED@@": "R$ " + _num_br(d["fin"]),
+        "@@D_L_JUROS@@": "R$ " + _num_br(d["juros"]),
+        "@@D_VALOR@@": "R$ " + _num_br(d["valor"]),
+        "@@D_BARRA@@": f"{(1 - entrada_minima(c)) * 100:.1f}",
+        "@@D_FINANCIADO@@": "R$ " + _num_br(d["fin"]),
+        "@@D_ENTRADA@@": "R$ " + _num_br(d["entrada"]),
+        "@@D_K_QUITA@@": k_quita,
+        "@@D_K_QUITA_S@@": f"{d['prazo']} parcelas, se contratar este mês",
+        "@@D_K_JURO1@@": "R$ " + _num_br(d["juros"] / d["fin"], 2),
+        "@@D_K_AA@@": _num_br(((1 + d["taxa"] / 100) ** 12 - 1) * 100, 2) + "%",
+        "@@FATO_BANCOS@@": str(len(todos)),
+        "@@FATO_MIN@@": _num_br(menor[1]["taxa_am"], 2) + "%",
+        "@@FATO_MIN_NOME@@": nome_b(menor[0]),
+        "@@FATO_MAX@@": _num_br(maior[1]["taxa_am"], 2) + "%",
+        "@@FATO_MAX_NOME@@": nome_b(maior[0]),
+        "@@D_CM_LEAD@@": f"Quanto o mesmo carro novo de R$ {_num_br(d['valor'])} custa em cada banco, com a mesma entrada e o mesmo prazo, ordenado do menor para o maior CET.",
+        "@@D_CM_GAPV@@": "R$ " + _num_br(j_maior[1] - j_menor[1]),
+        "@@D_CM_GAP@@": f"É a diferença nos juros pagos entre {nome_b(j_maior[0])} e {nome_b(j_menor[0])} neste cenário. Vale pedir mais de uma proposta.",
+        "@@LINK_COMPARADOR@@": f"/{slug_comparador(c)}",
+        "@@CAT_COMPARADOR@@": CATEGORIA_LABEL[c].lower(),
+        "@@D_RAIO@@": f"Com a estimativa de R$ {_num_br(d['parcela'], 2)} por mês, veja o que muda com a mesma taxa:",
+        "@@D_RENDA@@": (f"Com a referência de até cerca de 30% da renda, a parcela estimada de R$ {_num_br(d['parcela'], 2)} pede uma renda mensal "
+                        f"comprovada de cerca de R$ {_num_br(d['parcela'] / 0.3)} (conta nossa, não é análise de crédito)."),
+        "@@D_AMORT_PCT@@": str(round(j1 / (j1 + a1) * 100)),
+        "@@D_AMORT_RESUMO@@": (f"No primeiro ano, de R$ {_num_br(j1 + a1)} pagos em parcelas, R$ {_num_br(j1)} são juros e só R$ {_num_br(a1)} "
+                               "abatem a dívida. Por isso pagar a mais cedo faz diferença."),
+        "@@D_AM_TAXA@@": _num_br(((1 + d["taxa"] / 100) ** 12 - 1) * 100, 2) + "%",
+        "@@D_AMORT_LINHAS@@": "".join(
+            f'<tr><th scope="row">Ano {a}</th><td>R$ {_num_br(j)}</td><td>R$ {_num_br(am)}</td><td>R$ {_num_br(s)}</td></tr>' for a, j, am, s in linhas_am),
+        "@@D_AMORT_TOTAL@@": (f'<tr><th scope="row">Total</th><td>R$ {_num_br(sum(x[1] for x in linhas_am))}</td>'
+                              f'<td>R$ {_num_br(sum(x[2] for x in linhas_am))}</td><td>—</td></tr>'),
+        "@@TABELAS_TAXAS@@": html_tabelas_taxas_home() + (
+            f'\n    <p class="hint">Taxa média efetivamente contratada, atualizada em {data_br}, com base no Banco Central do Brasil. '
+            f'Não é oferta de crédito: a sua taxa depende da análise do banco. Veja a <a href="/metodologia">metodologia</a>.</p>'),
+        "@@CARTOES_CATEGORIA@@": _cartoes_categoria_home(),
+        "@@CARTOES_GUIAS@@": _cartoes_guias_home(),
+        "@@FAQ@@": faq_html,
+        "@@PARCEIRO@@": LINK_FINANCIA_TUDO,
+    }
+    main = HOME_MAIN
+    for k, v in subs.items():
+        main = main.replace(k, v)
+    dados_json = json.dumps(dados_simulador_home(), ensure_ascii=False, separators=(",", ":"))
+    scripts = (f'<script type="application/json" id="dados-sim">{dados_json}</script>\n'
+               f'<script src="/calculo.js?v={VERSAO_BUILD}"></script>\n'
+               f'<script src="/home.js?v={versoes["home.js"]}"></script>\n'
+               f'<script src="/menu.js?v={versoes["menu.js"]}"></script>\n')
+    pagina = LAYOUT
+    trocas = {
+        "@@TITLE@@": html.escape(titulo_pagina), "@@DESC@@": html.escape(meta_description), "@@CANONICAL@@": url_home,
+        "@@ICONV@@": "20261120", "@@DOMINIO@@": DOMINIO, "@@CSSV@@": versoes["home.css"], "@@JSONLD@@": json_ld + "\n",
+        "@@MEDICAO@@": medicao, "@@LOGO@@": LOGO, "@@NAV@@": nav, "@@NAVMOBILE@@": nav + '<a href="/sobre">Sobre</a>',
+        "@@FOOT_ENTENDA@@": entenda, "@@FOOT_TRANSP@@": transp, "@@FOOT_LEGAL@@": legal, "@@FOOT_OUTROS@@": outros,
+        "@@ATUALIZADO@@": data_br, "@@PERIODO@@": periodo, "@@RAZAO@@": EMPRESA_RODAPE, "@@SCRIPTS@@": scripts, "@@MAIN@@": main,
+    }
+    for k, v in trocas.items():
+        pagina = pagina.replace(k, v)
+    return pagina
 
 
 _EXEMPLOS_GUIAS = None
@@ -4683,10 +4733,10 @@ def gerar_404():
     <title>Página não encontrada | Datalab Global</title>
     <meta name="description" content="Essa página não existe mais ou nunca existiu. Veja os comparadores de financiamento de veículo ou volte pra home do simulador.">
     <meta name="robots" content="noindex">
-    <link rel="icon" href="favicon.ico?v=20261012" sizes="any">
-    <link rel="icon" href="favicon-32.png?v=20261012" type="image/png" sizes="32x32">
-    <link rel="icon" href="favicon-192.png?v=20261012" type="image/png" sizes="192x192">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261012">
+    <link rel="icon" href="favicon.ico?v=20261120" sizes="any">
+    <link rel="icon" href="favicon-32.png?v=20261120" type="image/png" sizes="32x32">
+    <link rel="icon" href="favicon-192.png?v=20261120" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261120">
     <link rel="stylesheet" href="styles.css">
     {GOOGLE_FONTS_LINK_ASSINCRONO}
 </head>
@@ -4743,6 +4793,22 @@ Taxa de juros e prazo máximo são específicos de cada instituição e categori
 """
 
 
+# Verificação do Yandex Webmaster (20/11/2026): o mesmo arquivo serve a todos os subdomínios da Datalab. Conteúdo exato pedido pelo Yandex.
+YANDEX_VERIFICACAO = "90c15c3be650b0ed"
+
+
+def gerar_verificacao_yandex(pasta_saida):
+    conteudo = ('<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n</head>\n'
+                f'<body>Verification: {YANDEX_VERIFICACAO}</body>\n</html>')
+    with open(os.path.join(pasta_saida, f"yandex_{YANDEX_VERIFICACAO}.html"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(conteudo)
+
+
+CSP_HOME = ("default-src 'self'; script-src 'self' https://cloud.umami.is; style-src 'self'; img-src 'self' data:; font-src 'self'; "
+            "connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://gateway.umami.is; frame-ancestors 'none'; "
+            "base-uri 'self'; form-action 'self'; object-src 'none'")
+
+
 def gerar_headers():
     """_headers (formato Cloudflare Pages) — mesma política de segurança
     do projeto irmão, auditada contra o que esta página de fato carrega
@@ -4760,7 +4826,19 @@ def gerar_headers():
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; "
         "img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'\n\n"
+        "# A home (/) usa CSP sem 'unsafe-inline' (sem style nem script inline). O '!' remove a CSP herdada de /* antes de definir a própria.\n"
+        "/\n"
+        "  ! Content-Security-Policy\n"
+        f"  Content-Security-Policy: {CSP_HOME}\n\n"
         "/styles.css\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/home.css\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/home.js\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/menu.js\n"
+        "  Cache-Control: public, max-age=31536000, immutable\n\n"
+        "/fonts/*\n"
         "  Cache-Control: public, max-age=31536000, immutable\n\n"
         "/logo-header.webp\n"
         "  Cache-Control: public, max-age=86400, must-revalidate\n\n"
@@ -4836,8 +4914,10 @@ def gerar_site(pasta_saida='paginas_seo'):
     gerar_llms_full_txt(pasta_saida, data_atualizacao, historico_cache())
     gerar_medicao_js(pasta_saida)
 
+    versoes_home = copiar_assets_home(pasta_saida)
     with open(os.path.join(pasta_saida, "index.html"), "w", encoding="utf-8") as f:
-        f.write(gerar_index(data_atualizacao))
+        f.write(gerar_index(data_atualizacao, versoes_home))
+    gerar_verificacao_yandex(pasta_saida)
 
     with open(os.path.join(pasta_saida, "sobre.html"), "w", encoding="utf-8") as f:
         f.write(gerar_pagina_sobre())
@@ -4853,14 +4933,8 @@ def gerar_site(pasta_saida='paginas_seo'):
         f.write(html_aprenda)
     urls_sitemap.append(f"{DOMINIO}/{slug_aprenda}")
 
-    # Logo oficial (21/set/2026): logo-full.png, favicon*.png/.ico, apple-touch-icon.png, logo-schema.png e og-image.png sao
-    # arquivos ESTATICOS comitados em paginas_seo/ (ver projeto datalab-global-hub/make_logo_assets.py); logo.svg/favicon.svg aposentados.
-    # rasterizar_favicon_png() NÃO roda aqui: mesmo motivo do projeto
-    # irmão (ver comentário em gerador.py) — favicon.ico/apple-touch-
-    # icon.png/logo-schema.png dependem de svglib/reportlab (não é
-    # dependência do site em si) e não mudam a cada build, só quando o
-    # desenho do ícone muda. Rodar rasterizar_favicon_png(pasta_saida) à
-    # mão e comitar os 3 arquivos como estático, igual ao irmão.
+    # Logo, favicons, apple-touch-icon, logo-schema, logo-header e og-image: arquivos ESTÁTICOS versionados em paginas_seo/, gerados por
+    # gerar_icones.py (desenho em SVG em layout_home.py; precisa de Playwright e Pillow, por isso não roda aqui nem no CI).
 
     with open(os.path.join(pasta_saida, "calculo.js"), "w", encoding="utf-8") as f:
         f.write(gerar_calculo_js())

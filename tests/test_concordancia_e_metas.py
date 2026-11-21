@@ -53,7 +53,7 @@ def test_paginas_sem_artigo_masculino_diante_de_banco_feminino():
 def test_descriptions_e_titles_cabem_sem_corte():
     longos = []
     for nome in os.listdir(PASTA_SAIDA):
-        if not nome.endswith(".html") or nome == "404.html":
+        if not nome.endswith(".html") or nome == "404.html" or nome.startswith("yandex_"):
             continue
         texto = open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8").read()
         d = re.search(r'name="description" content="([^"]*)"', texto)
@@ -73,7 +73,7 @@ def test_rodape_mostra_identidade_da_empresa():
     # precisa dizer quem está por trás.
     faltando = []
     for nome in os.listdir(PASTA_SAIDA):
-        if not nome.endswith(".html") or nome == "404.html":
+        if not nome.endswith(".html") or nome == "404.html" or nome.startswith("yandex_"):
             continue
         texto = open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8").read()
         if "<footer" in texto and "CNPJ 63.998.502/0001-73" not in texto:
@@ -86,7 +86,7 @@ def test_rodape_linka_privacidade_e_termos():
     # site de dinheiro (YMYL): política de privacidade e termos acessíveis em toda página de conteúdo
     faltando = []
     for nome in os.listdir(PASTA_SAIDA):
-        if not nome.endswith(".html") or nome in ("404.html", "embed.html"):
+        if not nome.endswith(".html") or nome in ("404.html", "embed.html") or nome.startswith("yandex_"):
             continue
         texto = open(os.path.join(PASTA_SAIDA, nome), encoding="utf-8").read()
         if "datalabglobal.com/privacidade/" not in texto or "datalabglobal.com/termos/" not in texto:
