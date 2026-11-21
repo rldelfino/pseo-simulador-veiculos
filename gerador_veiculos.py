@@ -4056,8 +4056,10 @@ def html_tabelas_taxas_home():
 
 def _cartoes_categoria_home():
     cartoes = []
-    descr = {"novo": "Entrada a partir de 20% e prazo até 60 meses.", "usado": "Entrada a partir de 30% e prazo até 60 meses.",
-             "moto": "Bancos e as financeiras das fabricantes, prazo até 60 meses."}
+    # entrada e prazo são convenção de mercado, não regra confirmada banco a banco (ver ITENS_A_VALIDAR em bancos_veiculos.py)
+    descr = {"novo": "Simulação com entrada de 20% (convenção de mercado) e prazo até 60 meses.",
+             "usado": "Simulação com entrada de 30% (convenção de mercado) e prazo até 60 meses.",
+             "moto": "Inclui as financeiras da Honda e da Yamaha (prazo até 48 meses)."}
     for c in CATEGORIAS:
         n = len(bancos_para_categoria(c))
         cartoes.append(f'<a class="card" href="/{slug_comparador(c)}"><h4>{CATEGORIA_LABEL[c]}</h4>'

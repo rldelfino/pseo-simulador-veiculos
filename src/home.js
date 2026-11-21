@@ -79,6 +79,8 @@
     var L = limiteValor();
     estado.valor = clamp(estado.valor, L.min, L.max);
     estado.pct = clamp(estado.pct, entradaMin(), ENTRADA_MAX);
+    // a entrada mostrada é em reais inteiros: a conta usa exatamente esse valor (senão a parcela difere em centavos do que a tela mostra)
+    estado.pct = Math.round(estado.valor * estado.pct) / estado.valor;
   }
 
   // Conta de referência de um cenário: o mesmo motor do calculo.js.

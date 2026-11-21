@@ -61,8 +61,12 @@ def rodar(nav, nome_nav, base, largura):
     pg.add_init_script("window.umami={track:function(n,d){window.__ev=(window.__ev||[]);window.__ev.push([n,d]);}}")
     tag = nome_nav + "/" + str(largura) + ": "
 
-    pg.goto(base + "/")
+    resp = pg.goto(base + "/")
     pg.wait_for_selector("#alts .alt")
+    cab = {k.lower(): v for k, v in resp.headers.items()}
+    csp = cab.get("content-security-policy", "")
+    confere(tag + "CSP da home sem unsafe-inline", bool(csp) and "unsafe-inline" not in csp and "object-src 'none'" in csp, csp[:80])
+    confere(tag + "cabeçalhos de segurança", cab.get("x-frame-options") == "DENY" and cab.get("x-content-type-options") == "nosniff" and "max-age=31536000" in cab.get("strict-transport-security", ""))
 
     # cenário inicial: carro novo, R$ 80 mil, 20% de entrada, 48 meses, média dos bancos
     tx = taxa_media("novo")

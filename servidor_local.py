@@ -7,7 +7,38 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 PASTA = os.path.join(AQUI, "paginas_seo")
 
 
+def _regras_de_cabecalho():
+    """Lê paginas_seo/_headers (formato Cloudflare Pages) e devolve {caminho: {cabecalho: valor}}; '! Nome' remove o herdado de /*."""
+    regras, atual = {}, None
+    try:
+        with open(os.path.join(PASTA, "_headers"), encoding="utf-8") as f:
+            for linha in f:
+                if not linha.strip() or linha.lstrip().startswith("#"):
+                    continue
+                if not linha.startswith(" "):
+                    atual = linha.strip()
+                    regras[atual] = {}
+                elif ":" in linha and not linha.strip().startswith("!"):
+                    nome, valor = linha.strip().split(":", 1)
+                    regras[atual][nome.strip()] = valor.strip()
+    except OSError:
+        pass
+    return regras
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
+    """Também aplica os cabeçalhos de paginas_seo/_headers (inclusive a CSP própria da home), para o teste pegar violação de CSP."""
+    REGRAS = _regras_de_cabecalho()
+
+    def end_headers(self):
+        caminho = self.path.split("?")[0]
+        aplicar = dict(self.REGRAS.get("/*", {}))
+        if caminho in ("/", "/index.html") and "/" in self.REGRAS:
+            aplicar.update(self.REGRAS["/"])
+        for nome, valor in aplicar.items():
+            self.send_header(nome, valor)
+        super().end_headers()
+
     def __init__(self, *a, **k):
         super().__init__(*a, directory=PASTA, **k)
 
