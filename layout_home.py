@@ -3,25 +3,25 @@
 Sem atributo style nem script inline: a CSP desta página não permite. Barras são SVG com atributos; a lógica fica em src/home.js.
 """
 
-# Logo desenhado à mão (48x48): frasco de laboratório com proporção de verdade (gargalo, ombros, base arredondada), líquido com onda,
-# três barras de dados dentro, bolhas subindo pelo gargalo e uma tendência de pontos acima. Traço e preenchimento usam currentColor
-# (a cor vem do CSS: azul de veículos no cabeçalho, claro no ícone). Mesmo desenho em logo.svg e favicon.svg (gerados por gerar_icones.py).
-LOGO_PATHS = (
-    '<path d="M17.4 5.8h13.2" stroke-width="2.2"/>'
-    '<path d="M19.6 5.8V19.2L9.3 37.6c-1.3 2.3.4 4.9 3 4.9h23.4c2.6 0 4.3-2.6 3-4.9L28.4 19.2V5.8" stroke-width="2.2"/>'
-    '<path d="M13.4 30.6c3.1-2 5.9 1.4 10.6-.1s7.2-1.7 10.9.1l4 7c.9 1.6-.3 3.4-2.1 3.4H11.5c-1.8 0-3-1.8-2.1-3.4z" fill="currentColor" fill-opacity=".2" stroke="none"/>'
-    '<path d="M13.2 30.8c3.1-1.8 5.9 1.2 10.8-.2s7.2-1.6 10.9.2" stroke-width="1.5"/>'
-    '<g fill="currentColor" stroke="none"><rect x="15.6" y="35.2" width="3.2" height="4.4" rx="1"/><rect x="20.4" y="33.1" width="3.2" height="6.5" rx="1"/>'
-    '<rect x="25.2" y="34.2" width="3.2" height="5.4" rx="1"/><rect x="30" y="32" width="3.2" height="7.6" rx="1"/>'
-    '<circle cx="24" cy="14.6" r="1.3"/><circle cx="24.9" cy="10.6" r=".9"/><circle cx="23.3" cy="22.3" r="1.6"/>'
-    '<circle cx="34.6" cy="9.4" r="1.7"/><circle cx="40.2" cy="4.8" r="1.7"/></g>'
-    '<path d="M34.6 9.4l5.6-4.6" stroke-width="1.4"/>'
-)
+# Marca padronizada da família (a mesma do 006 Home Equity, 007 e 008): frasco de laboratório com órbita e barras de dados dentro do .tile.
+# Traço e preenchimento usam currentColor (a cor vem do CSS: --ac, o azul de veículos, no cabeçalho; clara no ícone).
+LOGO_INNER = '<ellipse cx="22" cy="29" rx="19" ry="6.2" transform="rotate(-22 22 29)" stroke-width="1.3" opacity=".6"/><path d="M17.5 11.5h9M18.8 11.5V22L9.7 37.6a2.3 2.3 0 0 0 2 3.4h20.6a2.3 2.3 0 0 0 2-3.4L25.2 22V11.5" stroke-width="2"/><g fill="currentColor" stroke="none"><rect x="16" y="34" width="2.2" height="4.6" rx=".6"/><rect x="19.6" y="31" width="2.2" height="7.6" rx=".6"/><rect x="23.2" y="33" width="2.2" height="5.6" rx=".6"/><rect x="26.8" y="29.5" width="2.2" height="9.1" rx=".6"/><rect x="19.4" y="6.6" width="1.7" height="3.4" rx=".5"/><rect x="22.4" y="5" width="1.7" height="5" rx=".5"/><rect x="25.4" y="3.6" width="1.7" height="6.4" rx=".5"/><circle cx="31" cy="9.5" r="1.3"/><circle cx="35.5" cy="5.6" r="1.3"/></g><path d="M31 9.5l4.5-3.9" stroke-width="1.3"/>'
 
-LOGO_SVG = ('<svg viewBox="0 0 48 48" width="@@W@@" height="@@W@@" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
-            + LOGO_PATHS + '</svg>')
+LOGO_SVG = ('<svg viewBox="0 0 44 44" width="@@W@@" height="@@W@@" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+            + LOGO_INNER + '</svg>')
 
 LOGO = '<span class="tile">' + LOGO_SVG.replace("@@W@@", "32") + '</span>'
+
+SITE_PRINCIPAL = "https://www.datalabglobal.com/"
+
+
+def marca(rotulo_home="Veículos"):
+    """Logo + wordmark (levam ao site principal da Datalab Global) e o rótulo do produto (leva à home do simulador). Dois links, lado a lado."""
+    return ('<div class="brandbar">'
+            f'<a href="{SITE_PRINCIPAL}" class="brand" aria-label="Datalab Global, site principal">{LOGO}<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>'
+            f'<a href="/" class="prod" aria-label="Simulador de financiamento de veículos, página inicial">{rotulo_home}</a>'
+            '</div>')
+
 
 LAYOUT = """<!doctype html>
 <html lang="pt-BR">
@@ -56,7 +56,7 @@ LAYOUT = """<!doctype html>
 <a href="#conteudo" class="skip">Ir para o conteúdo</a>
 <header class="top">
   <div class="wrap">
-    <a href="/" class="brand" aria-label="Datalab Global — Financiamento de veículos, página inicial">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span><span class="prod">Veículos</span></a>
+    @@MARCA@@
     <nav class="m" aria-label="Principal">@@NAV@@</nav>
     <div class="free"><span class="dot"></span>Simulação gratuita</div>
     <details class="menu">
@@ -74,7 +74,7 @@ LAYOUT = """<!doctype html>
   <div class="wrap">
     <div class="cols">
       <div>
-        <a href="/" class="brand" aria-label="Datalab Global — Financiamento de veículos">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
+        @@MARCA@@
         <p>Simulador de financiamento de carro novo, carro usado e moto: parcela, CET e custo total com as taxas do Banco Central, antes de qualquer pedido.</p>
       </div>
       <nav aria-label="Entenda"><h2>Entenda</h2><ul>@@FOOT_ENTENDA@@</ul></nav>

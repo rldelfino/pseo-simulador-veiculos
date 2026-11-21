@@ -136,3 +136,18 @@ details > summary::-webkit-details-marker { display: none; }
 details[open] > summary span.faq-toggle-icon { transform: rotate(45deg); }
 details[open] { border-color: rgba(14, 165, 233, 0.3) !important; }
 
+
+
+/* Marca da família no cabeçalho de todas as páginas (a mesma do 006): logo + wordmark levam ao site principal, "Veículos" leva à home do simulador.
+   Mesmas regras de src/home.css (a home usa aquele arquivo); as variáveis abaixo são as dela. */
+:root{--ac:#0ea5e9;--acsoft:rgba(14,165,233,.10);--acline:rgba(14,165,233,.35);--tx:#f8fafc;--tx2:#a3b1c6;--ln:rgba(255,255,255,.09)}
+.brandbar{display:flex;align-items:center;min-width:0}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--tx);min-height:44px}
+.tile{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ac);background:linear-gradient(145deg,var(--acsoft),rgba(15,23,42,.6));border:1px solid var(--acline);box-shadow:0 0 18px -4px var(--acline);flex:none}
+.tile svg{filter:drop-shadow(0 0 4px var(--acline))}
+.wm{display:flex;flex-direction:column;line-height:1;font-family:'Inter',system-ui,sans-serif}
+.wm b{font-size:18px;font-weight:700;letter-spacing:-.02em}
+.wm i{font-style:normal;font-size:8.5px;letter-spacing:.42em;color:var(--ac);margin-top:4px;font-weight:600}
+.prod{color:var(--tx2);font-size:14px;padding-left:12px;margin-left:12px;border-left:1px solid var(--ln);text-decoration:none;display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;font-family:'Inter',system-ui,sans-serif}
+.prod:hover{color:var(--tx)}
+@media (max-width:640px){.prod{padding-left:10px;margin-left:10px;font-size:13px}}

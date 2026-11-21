@@ -83,10 +83,10 @@ def main():
     wm.resize((round(wm.width * 128 / wm.height), 128), Image.LANCZOS).save(os.path.join(SAIDA, "logo-header.webp"), "WEBP", quality=92, method=6)
     wm.resize((round(wm.width * 160 / wm.height), 160), Image.LANCZOS).save(os.path.join(SAIDA, "logo-full.png"))
 
-    cru = _svg(48).replace('width="48" height="48"', 'width="100%" height="100%"').replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
+    cru = _svg(44).replace('width="44" height="44"', 'width="100%" height="100%"').replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
     with open(os.path.join(SAIDA, "logo.svg"), "w", encoding="utf-8") as f:
         f.write(cru.replace('stroke="currentColor"', 'stroke="%s" color="%s"' % (AC, AC), 1))
-    interno = cru.replace('viewBox="0 0 48 48"', 'viewBox="0 0 48 48" x="6" y="6" width="48" height="48"', 1).replace('width="100%" height="100%"', "", 1)
+    interno = cru.replace('viewBox="0 0 44 44"', 'viewBox="0 0 44 44" x="8" y="8" width="44" height="44"', 1).replace('width="100%" height="100%"', "", 1)
     with open(os.path.join(SAIDA, "favicon.svg"), "w", encoding="utf-8") as f:
         f.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="100%" height="100%"><rect width="60" height="60" rx="15" fill="#06101c" stroke="#0e75a8" stroke-width="1.5"/>'
                 + interno.replace('stroke="currentColor"', 'stroke="%s" color="%s"' % (AC, AC), 1) + "</svg>")

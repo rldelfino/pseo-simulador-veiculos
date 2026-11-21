@@ -848,14 +848,20 @@ def render_head(titulo, meta_description, url_canonica, json_ld_blocos, robots=N
     {render_json_ld(*json_ld_blocos)}'''
 
 
+def marca_cabecalho():
+    """Logo da família (mesma do 006) + wordmark -> site principal; rótulo 'Veículos' -> home do simulador (layout_home.marca)."""
+    from layout_home import marca
+    return marca()
+
+
 def render_nav():
     return f'''<nav class="border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <a href="/" class="flex items-center"><img src="logo-header.webp" alt="Datalab Global" width="168" height="54" class="w-auto" style="height:54px;max-width:45vw"></a>
+            {marca_cabecalho()}
             <div class="flex items-center gap-2">
-                <a href="/" aria-label="Início" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
+                <a href="/" aria-label="Início do simulador" class="hidden sm:inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('home')} <span class="hidden sm:inline">Início</span></a>
                 <a href="/aprenda" aria-label="Aprenda" class="inline-flex items-center gap-1.5 -my-2.5 p-2.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">{icone('book-open')} <span class="hidden sm:inline">Aprenda</span></a>
-                <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-3 sm:px-4 py-2 rounded-full font-bold transition-all text-xs flex items-center whitespace-nowrap shadow-[0_0_15px_rgba(14,165,233,0.3)]">
                     Análise Grátis {icone('arrow-right', 'ml-1.5 text-xs')}
                 </a>
             </div>
@@ -3507,7 +3513,7 @@ def gerar_index(data_atualizacao, versoes_assets=None):
                              schema_webpage(url_home, titulo_pagina, meta_description, data_atualizacao))
     medicao = ''.join('\n' + t for t in tags_medicao())
 
-    from layout_home import HOME_MAIN, LAYOUT, LOGO
+    from layout_home import HOME_MAIN, LAYOUT, marca
     linhas_am = _linhas_amort_anual(d["fin"], d["prazo"], d["taxa"])
     j1, a1 = linhas_am[0][1], linhas_am[0][2]
     pj = d["juros"] / d["total"]
@@ -3585,7 +3591,7 @@ def gerar_index(data_atualizacao, versoes_assets=None):
     trocas = {
         "@@TITLE@@": html.escape(titulo_pagina), "@@DESC@@": html.escape(meta_description), "@@CANONICAL@@": url_home,
         "@@ICONV@@": "20261120", "@@DOMINIO@@": DOMINIO, "@@CSSV@@": versoes["home.css"], "@@JSONLD@@": json_ld + "\n",
-        "@@MEDICAO@@": medicao, "@@LOGO@@": LOGO, "@@NAV@@": nav, "@@NAVMOBILE@@": nav + '<a href="/sobre">Sobre</a>',
+        "@@MEDICAO@@": medicao, "@@MARCA@@": marca(), "@@NAV@@": nav, "@@NAVMOBILE@@": '<a href="/">Início do simulador</a>' + nav + '<a href="/sobre">Sobre</a>',
         "@@FOOT_ENTENDA@@": entenda, "@@FOOT_TRANSP@@": transp, "@@FOOT_LEGAL@@": legal, "@@FOOT_OUTROS@@": outros,
         "@@ATUALIZADO@@": data_br, "@@PERIODO@@": periodo, "@@RAZAO@@": EMPRESA_RODAPE, "@@SCRIPTS@@": scripts, "@@MAIN@@": main,
     }
@@ -4094,7 +4100,7 @@ def gerar_404():
     {GOOGLE_FONTS_LINK_ASSINCRONO}
 </head>
 <body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
-    <a href="/" class="mb-10"><img src="logo-header.webp" alt="Datalab Global" width="168" height="54" class="w-auto mx-auto" style="height:54px;max-width:70vw"></a>
+    <div class="mb-10 flex justify-center">{marca_cabecalho()}</div>
     <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
     <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
     <div class="flex flex-wrap gap-3 justify-center">
