@@ -206,7 +206,8 @@ def test_slug_pagina_segue_o_padrao_combinado():
 
 def test_slug_hub_e_comparador_diferenciam_categoria():
     assert slug_hub("novo", "Itau") == "hub-itau-carro-novo"
-    assert slug_hub("usado", "Itau") == "hub-itau-carro-usado"
+    # 21/11/2026: carro usado usa o hub de carro novo (mesma taxa por banco no Banco Central)
+    assert slug_hub("usado", "Itau") == "hub-itau-carro-novo"
     assert slug_comparador("moto") == "comparador-moto"
 
 

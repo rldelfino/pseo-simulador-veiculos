@@ -31,7 +31,7 @@ def test_sitemap_tem_lastmod_iso_com_hora_e_sem_changefreq_priority():
         xml = f.read()
     assert "<changefreq>" not in xml and "<priority>" not in xml  # o Bing ignora; o Google também
     lms = re.findall(r"<lastmod>([^<]+)</lastmod>", xml)
-    assert len(lms) == xml.count("<loc>") > 100
+    assert len(lms) == xml.count("<loc>") > 40
     assert all(re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+00:00", x) for x in lms)
     assert len(set(lms)) > 1, "todas as URLs com a mesma data = lastmod falso"
 
@@ -88,7 +88,7 @@ def test_amortizacao_extra_da_menos_juros_ao_encurtar_o_prazo():
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_hubs_oferecem_link_para_copiar_e_compartilhar():
     hubs = [n for n in os.listdir(PASTA) if n.startswith("hub-") and n.endswith(".html")]
-    assert len(hubs) >= 30
+    assert len(hubs) >= 22
     for n in hubs:
         with open(os.path.join(PASTA, n), encoding="utf-8") as f:
             h = f.read()
@@ -130,7 +130,7 @@ def test_hubs_trazem_analise_propria_com_numeros_do_calculo_e_sem_recomendar():
     import gerador_veiculos as g
     from bancos_veiculos import bancos_para_categoria, obter_regra
     hubs = [n for n in os.listdir(PASTA) if n.startswith("hub-") and n.endswith(".html")]
-    assert len(hubs) >= 30
+    assert len(hubs) >= 22
     for n in hubs:
         categoria = "novo" if n.endswith("-carro-novo.html") else "usado" if n.endswith("-carro-usado.html") else "moto"
         media = sum(obter_regra(b)["taxa_am"] for b in bancos_para_categoria(categoria)) / len(bancos_para_categoria(categoria))

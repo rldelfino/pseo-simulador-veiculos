@@ -158,6 +158,20 @@ def rodar(nav, nome_nav, base, largura):
     confere(tag + "link reproduz a simulação", pg2.inner_text("#r-parcela") == pg.inner_text("#r-parcela"), pg2.inner_text("#r-parcela"))
     pg2.close()
 
+    # hub do banco: cada parcela da grade leva ao simulador da home com o mesmo cenário (mesma parcela)
+    pg4 = ctx.new_page()
+    pg4.route("**/*umami*", lambda r_: r_.abort())
+    pg4.goto(base + "/hub-banco-do-brasil-carro-novo")
+    link = pg4.locator('a[href^="/?tipo=novo"]').nth(7)
+    texto_link = link.inner_text()
+    esperado_parcela = centavos(re.search(r"R\$ [\d.]+,\d{2}", texto_link).group(0))
+    prazo_link = int(re.search(r"(\d+) meses", texto_link).group(1))
+    link.click()
+    pg4.wait_for_selector("#alts .alt")
+    confere(tag + "hub -> simulador: mesma parcela", centavos(pg4.inner_text("#r-parcela")) == esperado_parcela, (" ".join(texto_link.split()), pg4.inner_text("#r-parcela")))
+    confere(tag + "hub -> simulador: banco e prazo", pg4.input_value("#campo-banco") == "Banco do Brasil" and pg4.input_value("#campo-prazo") == str(prazo_link))
+    pg4.close()
+
     # botão do parceiro: abre a tela de confirmação, que leva ao link certo
     confere(tag + "diálogo começa fechado", not pg.is_visible("#dlg-confirma"))
     pg.click("#btn-cta")

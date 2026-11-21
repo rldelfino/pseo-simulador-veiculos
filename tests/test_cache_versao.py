@@ -21,7 +21,7 @@ def test_geradores_apontam_css_e_js_com_carimbo_de_versao(monkeypatch):
     assert re.fullmatch(r"\d{14}", g.VERSAO_BUILD)
     fonte = open(os.path.join(RAIZ, "gerador_veiculos.py"), encoding="utf-8").read()
     assert 'href="styles.css?v={VERSAO_BUILD}"' in fonte
-    assert 'src="calculo.js?v={VERSAO_BUILD}"' in fonte and 'src="calculo.js"' not in fonte
+    assert 'src="/calculo.js?v={VERSAO_BUILD}"' in fonte and 'src="calculo.js"' not in fonte
     monkeypatch.setattr(g, "UMAMI_WEBSITE_ID", "abc-123")
     assert "/medicao.js?v=" + g.VERSAO_BUILD + '"' in "".join(g.tags_medicao())
 

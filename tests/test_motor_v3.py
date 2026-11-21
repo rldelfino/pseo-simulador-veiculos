@@ -48,32 +48,27 @@ def test_serie_do_banco_tem_no_maximo_12_meses_em_ordem():
 
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
-def test_paginas_individuais_tem_blocos_proprios_mas_ficam_fora_do_indice():
-    nome = "financiamento-carro-novo-banco-do-brasil-60-mil-48-meses.html"
-    html = _ler(nome)
-    assert "Como a dívida evolui ao longo do contrato" in html
-    assert "Taxa do Banco do Brasil nos últimos meses" in html
-    assert "Valores vizinhos no Banco do Brasil" in html
-    assert "posição entre" in html
-    # 13/nov/2026: a grade banco x valor x prazo saiu do índice (ver
-    # PAGINAS_VALOR_INDEXAVEIS): continua no ar, com noindex,follow e fora do sitemap.
-    assert 'name="robots" content="noindex,follow"' in html
-    assert f"/{nome[:-5]}</loc>" not in _ler("sitemap.xml")
-    tab = lambda h: re.search(r"<tbody>(.*?)</tbody>", h[h.index("Como a dívida evolui"):], re.S).group(1)
-    assert tab(html) != tab(_ler("financiamento-carro-novo-banco-do-brasil-80-mil-48-meses.html"))
+def test_paginas_banco_valor_prazo_saíram_e_o_hub_leva_ao_simulador():
+    """Enxugamento (21/11/2026): as 840 páginas banco x valor x prazo viraram 301 para o hub do banco; o hub lista as parcelas e leva à home."""
+    assert not os.path.exists(os.path.join(PASTA, "financiamento-carro-novo-banco-do-brasil-60-mil-48-meses.html"))
+    hub = _ler("hub-banco-do-brasil-carro-novo.html")
+    assert 'href="/?tipo=novo&amp;valor=60000&amp;entrada=12000&amp;prazo=48&amp;banco=Banco%20do%20Brasil#simulador"' in hub
+    assert "Carro Novo e Usado" in hub
 
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_paginas_mensais_existem_com_indexacao_certa():
+    """Só os MESES_INDEXAVEIS_MENSAL mais recentes têm página (indexável, no sitemap); os antigos viram 301 para o índice."""
     meses = sorted({r["mes_referencia"] for r in carregar_historico()})
     assert len(meses) >= 12
     sitemap = _ler("sitemap.xml")
     for mes in meses:
-        html = _ler(slug_mes(mes) + ".html")
         recente = mes in meses[-MESES_INDEXAVEIS_MENSAL:]
-        assert ('name="robots" content="noindex,follow"' not in html) == recente, mes
+        assert os.path.exists(os.path.join(PASTA, slug_mes(mes) + ".html")) == recente, mes
         assert (f"/{slug_mes(mes)}</loc>" in sitemap) == recente, mes
-        assert "<table" in html
+        if recente:
+            html = _ler(slug_mes(mes) + ".html")
+            assert 'name="robots" content="noindex,follow"' not in html and "<table" in html
     assert f"/{SLUG_INDICE_MENSAL}</loc>" in sitemap
 
 
@@ -92,8 +87,8 @@ def test_metodologia_hub_footer_e_llms():
     assert "401101" in met and "TIR" in met and "contato@datalabglobal.com" in met and "0,0082%" in met
     assert "/metodologia</loc>" in _ler("sitemap.xml")
     hub = _ler("hub-banco-do-brasil-carro-novo.html")
-    assert re.search(r"Taxa do Banco do Brasil para carro novo: \d+,\d{2}% ao mês", hub)
-    assert 'content="Taxa do Banco do Brasil para carro novo' in hub
+    assert re.search(r"Taxa do Banco do Brasil para carro novo e usado: \d+,\d{2}% ao mês", hub)
+    assert 'content="Taxa do Banco do Brasil para carro novo e usado' in hub
     assert re.search(r'content="[^"]*média de \d{2}/\d{2} a \d{2}/\d{2}/\d{4} \(Banco Central\)', hub)
     assert " hoje" not in re.search(r'<p class="text-white text-lg[^>]*>(.*?)</p>', hub).group(1)
     assert 'href="/metodologia"' in _ler("index.html")
@@ -119,21 +114,21 @@ def test_entradas_respeitam_o_minimo_da_categoria():
 
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
-def test_paginas_de_renda_no_sitemap_com_faq_igual_ao_json_ld():
+def test_pagina_de_renda_unica_com_tabelas_e_faq_igual_ao_json_ld():
+    """As 17 páginas de renda por valor viraram 301 para /renda-para-financiar-veiculo, que traz as tabelas delas."""
     sitemap = _ler("sitemap.xml")
-    total = 0
     for cat in gv.CATEGORIAS:
         for v in gv.VALORES_POR_CATEGORIA[cat]:
-            slug = gv.slug_renda(cat, v)
-            html = _ler(slug + ".html")
-            assert f"/{slug}</loc>" in sitemap and 'content="noindex' not in html
-            blocos = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
-            faq = next(json.loads(b) for b in blocos if '"FAQPage"' in b)
-            for q in faq["mainEntity"]:
-                assert q["name"] in html and q["acceptedAnswer"]["text"] in html
-            total += 1
-    assert total == 16 and f"/{gv.SLUG_INDICE_RENDA}</loc>" in sitemap
-    moto = _ler(gv.slug_renda("moto", 18_000) + ".html")
+            assert not os.path.exists(os.path.join(PASTA, gv.slug_renda(cat, v) + ".html"))
+            assert f"/{gv.slug_renda(cat, v)}</loc>" not in sitemap
+    html = _ler(gv.SLUG_INDICE_RENDA + ".html")
+    assert f"/{gv.SLUG_INDICE_RENDA}</loc>" in sitemap and 'content="noindex' not in html
+    assert html.count("<table") == 2 * len(gv.CATEGORIAS) and len(re.sub(r"<[^>]+>", " ", html).split()) > 500
+    blocos = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+    faq = next(json.loads(b) for b in blocos if '"FAQPage"' in b)
+    for q in faq["mainEntity"]:
+        assert q["name"] in html and q["acceptedAnswer"]["text"] in html
+    moto = html[html.index("Renda para financiar moto"):]
     assert "20% de entrada" not in moto  # moto só aceita a partir de 30%
 
 
@@ -141,9 +136,6 @@ def test_paginas_de_renda_no_sitemap_com_faq_igual_ao_json_ld():
 def test_llms_full_itemlist_dataset_e_medicao_desligada():
     full = _ler("llms-full.txt")
     assert "Taxas usadas nas simulações (média do Banco Central" in full and "% ao mês" in full and "401101" in full
-    comp = _ler(gv.slug_comparacao("novo", 100_000, 48) + ".html")
-    lista = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', comp, re.S) if '"ItemList"' in b]
-    assert lista and all("url" not in it for it in lista[0]["itemListElement"])
     mensal = _ler(slug_mes(sorted({r["mes_referencia"] for r in carregar_historico()})[-1]) + ".html")
     assert '"Dataset"' in mensal and "temporalCoverage" in mensal
     assert gv.UMAMI_WEBSITE_ID
@@ -250,14 +242,14 @@ def test_hubs_tem_bloco_mais_sobre_com_links_que_existem():
     import glob as _glob, os as _os, re as _re
     pasta = _pasta_gerada()
     hubs = _glob.glob(_os.path.join(pasta, "hub-*.html"))
-    assert len(hubs) >= 30
+    assert len(hubs) >= 22
     for f in hubs:
         html = open(f, encoding="utf-8").read()
         assert "Mais sobre " in html, f
         bloco = html[html.index("Mais sobre "):]
         bloco = bloco[:bloco.index("</section>")]
         hrefs = _re.findall(r'href="([^"]+)"', bloco)
-        assert len(hrefs) >= 7, f
+        assert len(hrefs) >= 6, f
         for h in hrefs:
             assert _os.path.exists(_os.path.join(pasta, h + ".html")), (f, h)
 
@@ -266,7 +258,7 @@ def test_webpage_json_ld_em_hubs_comparadores_e_home_sem_duplicar():
     import glob as _glob, os as _os
     pasta = _pasta_gerada()
     paginas = _glob.glob(_os.path.join(pasta, "hub-*.html")) + _glob.glob(_os.path.join(pasta, "comparador-*.html")) + [_os.path.join(pasta, "index.html")]
-    assert len(paginas) >= 34
+    assert len(paginas) >= 26
     for f in paginas:
         blocos = _json_ld(open(f, encoding="utf-8").read())
         webpages = [b for b in blocos if b.get("@type") == "WebPage"]
@@ -371,7 +363,7 @@ def test_site_gerado_tem_feed_atualizacoes_e_como_citar():
         assert 'type="application/atom+xml"' in _ler(pagina), pagina
     assert 'atom+xml' not in _ler("embed.html")
     hubs = glob.glob(os.path.join(PASTA, "hub-*.html"))
-    assert len(hubs) == 32
+    assert len(hubs) == 22
     for f in hubs:
         h = open(f, encoding="utf-8").read()
         assert "Como citar este dado" in h and "<textarea readonly" in h and "CC BY 4.0" in h, f
@@ -385,27 +377,21 @@ def test_workflow_versiona_o_historico_semanal():
     assert "historico_semanal.csv" in wf
 
 
-def test_regra_de_indexacao_da_grade_valor_prazo():
-    from gerador_veiculos import PAGINAS_VALOR_INDEXAVEIS, pagina_valor_indexavel
-    assert PAGINAS_VALOR_INDEXAVEIS == frozenset()
-    assert not pagina_valor_indexavel("novo", 100_000, 48)
-
-
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_sitemap_so_tem_paginas_de_valor_proprio():
-    """Hubs, comparadores, guias, renda e meses ficam; a grade de simulações sai."""
+    """Enxugamento (21/11/2026): 49 URLs. Nenhuma URL do sitemap pode ser origem de redirecionamento."""
     urls = re.findall(r"<loc>([^<]+)</loc>", _ler("sitemap.xml"))
-    assert 120 <= len(urls) <= 220
-    assert sum("/hub-" in u for u in urls) == 32
+    assert 40 <= len(urls) <= 60
+    assert sum("/hub-" in u for u in urls) == 22
     assert sum("/comparador-" in u for u in urls) == 3
-    # nenhuma página com banco no nome da simulação (as de comparação sem marca ficam)
-    assert not any(re.search(r"/financiamento-(carro-novo|carro-usado|moto)-(?!\d)", u) for u in urls)
+    assert not any(re.search(r"/financiamento-(carro-novo|carro-usado|moto)-", u) for u in urls)
+    assert not any(re.search(r"/renda-para-financiar-(carro|moto)", u) or u.endswith("-carro-usado") and "/hub-" in u for u in urls)
     # toda página indexável fora do sitemap seria erro de consistência: sem noindex nas do sitemap
-    for u in urls[:40]:
+    for u in urls:
         nome = u.rsplit("/", 1)[-1] or "index"
         arq = os.path.join(PASTA, nome + ".html")
-        if os.path.exists(arq):
-            assert 'name="robots" content="noindex' not in open(arq, encoding="utf-8").read(), u
+        assert os.path.exists(arq), u
+        assert 'name="robots" content="noindex' not in open(arq, encoding="utf-8").read(), u
 
 
 def test_bloco_requisitos_de_aprovacao_e_honesto():
@@ -419,5 +405,5 @@ def test_bloco_requisitos_de_aprovacao_e_honesto():
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
 def test_hubs_e_comparadores_trazem_o_bloco_de_requisitos():
-    for nome in ("hub-itau-carro-usado.html", "hub-banco-inter-moto.html", "comparador-carro-novo.html", "comparador-moto.html"):
+    for nome in ("hub-itau-carro-novo.html", "hub-banco-inter-moto.html", "comparador-carro-novo.html", "comparador-moto.html"):
         assert "Antes de pedir a proposta" in _ler(nome), nome

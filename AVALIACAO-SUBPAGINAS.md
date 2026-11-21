@@ -1,5 +1,7 @@
 # AVALIAÇÃO DAS SUBPÁGINAS — veiculos.datalabglobal.com (21/11/2026)
 
+> **Status:** recomendação B (enxugar) APROVADA em 21/11/2026 e aplicada no PR de enxugamento. O que mudou no código: ver a seção 6; o `_redirects` é gerado por `gerar_redirects()` em `gerador_veiculos.py`.
+
 Pedido do dono: as ~165 URLs do sitemap (e ~1.020 arquivos) valem a pena? **Nada foi apagado nem redirecionado.** Este arquivo é só a análise e a proposta, para a sessão principal aprovar.
 
 ## 1. Resposta curta

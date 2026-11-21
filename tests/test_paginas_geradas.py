@@ -107,15 +107,12 @@ def test_todo_link_interno_resolve_para_arquivo_existente():
     assert not faltando, f"{len(faltando)} link(s)/asset(s) interno(s) quebrado(s): {faltando[:20]}"
 
 
-def test_calculo_js_existe_e_e_referenciado_pelas_paginas_individuais():
+def test_calculo_js_existe_e_e_referenciado_pela_home():
+    """As páginas individuais saíram (enxugamento de 21/11/2026); quem usa o motor de cálculo é a home."""
     assert os.path.isfile(os.path.join(PASTA_SAIDA, "calculo.js")), "calculo.js não foi gerado"
-    paginas_individuais = _paginas_individuais_de_banco()
-    assert paginas_individuais, "nenhuma página individual encontrada pra checar"
-    sem_calculo_js = [
-        n for n in paginas_individuais
-        if 'src="calculo.js' not in open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read()
-    ]
-    assert not sem_calculo_js, f"páginas individuais sem calculo.js: {sem_calculo_js[:10]}"
+    assert not _paginas_individuais_de_banco(), "as páginas banco x valor x prazo deveriam ter virado 301"
+    with open(os.path.join(PASTA_SAIDA, "index.html"), encoding="utf-8") as f:
+        assert 'src="/calculo.js?v=' in f.read()
 
 
 def test_toda_pagina_tem_o_cta_de_afiliado():
