@@ -51,3 +51,12 @@ def test_home_tem_marca_no_cabecalho_e_no_rodape_e_um_caminho_de_volta_no_menu_d
     assert 'href="/">Início do simulador</a>' in menu
     css = open(os.path.join(SAIDA, "home.css"), encoding="utf-8").read()
     assert ".prod{display:none}" not in css  # o rótulo (link para a home do simulador) fica visível no celular
+
+
+@pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
+def test_links_do_rodape_das_paginas_internas_quebram_linha_no_celular():
+    # Achado real (21/11/2026): 9 links numa linha sem flex-wrap deixavam as páginas internas com 680 px de largura a 360 px (rolagem lateral).
+    with open(os.path.join(SAIDA, "aprenda.html"), encoding="utf-8") as f:
+        h = f.read()
+    linha = h[h.index("Outros produtos Datalab") - 400:h.index("Outros produtos Datalab")]
+    assert "flex-wrap" in linha
