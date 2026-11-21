@@ -22,6 +22,6 @@ jobs:
         run: >
           python verifica_saude.py
           --dominio https://veiculos.datalabglobal.com
-          --min-urls 700 --max-urls 1500
+          --min-urls 35 --max-urls 80
           --chave-indexnow 1c5d2ac5ea7443060014bbe43cedbcf6
           --paginas /,/comparador-carro-novo,/metodologia,/dados-abertos,/incorporar,/imprensa,/taxas-financiamento-veiculos,/financiamento-veiculos,/renda-para-financiar-veiculo

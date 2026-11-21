@@ -74,6 +74,7 @@ de busca diferente):
 
 import html
 import json
+import urllib.parse
 import bancos_veiculos as _bancos_veiculos
 import math
 import os
@@ -203,23 +204,9 @@ VALORES_POR_CATEGORIA = {
 }
 PRAZOS_MESES = [12, 24, 36, 48, 60]
 
-# Páginas "banco x valor x prazo" INDEXÁVEIS (categoria, valor, prazo). Vazio
-# de propósito. Achado real (13/nov/2026, API de Inspeção de URL do Search
-# Console nas 1.004 URLs do sitemap): só 7 estavam indexadas (<1%), 763
-# "rastreadas, mas não indexadas" e 234 nunca descobertas; o Google rastreou
-# a grade inteira em setembro e a recusou. 92% do sitemap era essa grade
-# (920 de 1.004) e as consultas reais (Bing e Google) caem nos hubs de banco
-# e nos comparadores, não nas simulações por valor. Essas páginas continuam no
-# ar (links internos, slider, quem chega por busca ou compartilhamento), mas
-# levam <meta robots="noindex,follow"> e saem do sitemap, para o Google
-# avaliar o site pelas ~85 páginas de valor próprio. Reversível: inclua
-# tuplas aqui e regere.
-PAGINAS_VALOR_INDEXAVEIS = frozenset()
-
-
-def pagina_valor_indexavel(categoria, valor, prazo):
-    return (categoria, int(round(valor)), prazo) in PAGINAS_VALOR_INDEXAVEIS
-
+# As páginas "banco x valor x prazo" (840) e a comparação sem marca (80) saíram em 21/11/2026 (ver AVALIACAO-SUBPAGINAS.md): em 13/11 só 7 de
+# 1.004 URLs do sitemap estavam indexadas e as consultas reais caem nos hubs de banco e nos comparadores. A grade abaixo só alimenta os hubs
+# (parcelas por valor e prazo, com link para o simulador da home) e o mapa de redirecionamentos (o slug antigo de cada página removida).
 
 # ---------------------------------------------------------------------------
 # Motor de cálculo
@@ -396,8 +383,17 @@ def gerar_slug_pagina(categoria, banco, valor, prazo):
     return f"financiamento-{CATEGORIA_SLUG[categoria]}-{slugificar_banco(banco)}-{valor_k}-mil-{prazo}-meses"
 
 
+# Enxugamento (21/11/2026): o Banco Central não separa carro novo de usado, então o hub de carro usado era o do carro novo com outro nome.
+# Há um hub por banco para "carro novo e usado" (hub-<banco>-carro-novo) e outro para moto; o endereço antigo de carro usado redireciona.
+HUB_ROTULO = {"novo": "Carro Novo e Usado", "usado": "Carro Novo e Usado", "moto": "Moto"}
+
+
+def categoria_do_hub(categoria):
+    return "novo" if categoria == "usado" else categoria
+
+
 def slug_hub(categoria, banco):
-    return f"hub-{slugificar_banco(banco)}-{CATEGORIA_SLUG[categoria]}"
+    return f"hub-{slugificar_banco(banco)}-{CATEGORIA_SLUG[categoria_do_hub(categoria)]}"
 
 
 def slug_comparador(categoria):
@@ -1162,457 +1158,9 @@ def render_breadcrumb(itens):
     return f'<nav class="text-xs text-slate-400 mb-6 flex flex-wrap items-center gap-1.5" aria-label="breadcrumb">{separador.join(partes)}</nav>'
 
 
-def linha_tabela_amortizacao_html(l):
-    return (f'<tr class="border-b border-white/5"><td class="py-2 px-3">{l["mes"]}</td>'
-            f'<td class="py-2 px-3 text-right">{formatar_reais(l["parcela"])}</td>'
-            f'<td class="py-2 px-3 text-right text-amber-400">{formatar_reais(l["juros"])}</td>'
-            f'<td class="py-2 px-3 text-right text-sky-400">{formatar_reais(l["amortizacao"])}</td>'
-            f'<td class="py-2 px-3 text-right">{formatar_reais(l["saldo"])}</td></tr>')
-
-
 # ---------------------------------------------------------------------------
 # Página individual: financiamento-{categoria}-{banco}-{valor}-mil-{prazo}-meses.html
 # ---------------------------------------------------------------------------
-
-def gerar_pagina_individual(p, todas_paginas, lookup, data_atualizacao):
-    categoria, banco, banco_exib = p["categoria"], p["banco"], p["nome_exibicao"]
-    valor, prazo = p["valor_veiculo"], p["prazo"]
-    entrada, financiado = p["entrada"], p["valor_financiado"]
-    taxa_am, taxa_aa, parcela, cet = p["taxa_am"], p["taxa_aa"], p["parcela"], p["cet"]
-    # Achado real (08/set/2026, auditoria pedida pelo usuário): formatar
-    # aqui, uma vez, e reusar — achado no mesmo levantamento que vários
-    # pontos da página (meta description, resultado da simulação,
-    # respostas do FAQ) usavam {cet:.2f}%/{taxa_aa:.2f}% direto, sem o
-    # .replace('.', ',') que o padrão brasileiro (e o resto do arquivo,
-    # ex. cet_banco_fmt em renderizar_faixa_mercado) usa — saía "12.83%"
-    # com PONTO em vez de "12,83%", visível no card de resultado e no
-    # snippet do Google.
-    cet_fmt = f"{cet:.2f}".replace('.', ',')
-    taxa_aa_fmt = f"{taxa_aa:.2f}".replace('.', ',')
-
-    valor_curto = formatar_valor_curto(valor)
-    total_pago = parcela * prazo
-    total_juros = total_pago - financiado
-    renda_sugerida = calcular_renda_sugerida(parcela)
-    label_categoria = CATEGORIA_LABEL[categoria]
-    # Achado real (10/set/2026, checagem final de SEO pedida pelo
-    # usuário): canonical/hrefs internos apontavam pra URL COM ".html",
-    # mas o Cloudflare Pages redireciona (308) automaticamente a versão
-    # com ".html" pra sem extensão (confirmado ao vivo em produção) — ou
-    # seja, o canonical apontava pra uma URL que a própria plataforma
-    # redireciona, exatamente o padrão que o Google desaconselha. O
-    # projeto irmão (imobiliário) já usa URL sem extensão em tudo (canonical,
-    # sitemap, links internos) e não tem esse problema — replicado aqui.
-    # O arquivo em disco continua se chamando "slug.html" (é como o
-    # Cloudflare Pages localiza o arquivo estático); só as REFERÊNCIAS
-    # (href, canonical, sitemap) deixam de citar a extensão.
-    url_canonica = f"{DOMINIO}/{p['slug']}"
-    href_hub = f"{slug_hub(categoria, banco)}"
-    href_comparador = f"{slug_comparador(categoria)}"
-
-    titulo_pagina = f"Financiamento {label_categoria} {banco_exib}: {valor_curto} em {prazo}x | Simulador Datalab"
-    # Achado real (auditoria de SEO, 29/out/2026): 848 das 884 descriptions
-    # passavam de 160 caracteres e o corte ("...com base na taxa média real
-    # do Banc...") caía no meio da frase. Tenta a versão completa e, se não
-    # couber, a curta — as duas terminam em frase inteira, sem reticências.
-    meta_description_completa = (
-        f"Simule o financiamento de {CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} pelo {banco_exib} "
-        f"em {prazo}x: parcela de {formatar_reais(parcela)} e CET de {cet_fmt}% a.a., "
-        f"com a taxa média real do Banco Central."
-    )
-    meta_description_curta = (
-        f"Simule o financiamento de {CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} pelo {banco_exib} "
-        f"em {prazo}x: parcela de {formatar_reais(parcela)} e CET de {cet_fmt}% a.a."
-    )
-    meta_description = (
-        meta_description_completa if len(corrigir_concordancia(meta_description_completa)) <= 160
-        else meta_description_curta
-    )
-
-    faq_q1 = f"O que é o CET no financiamento {label_categoria.lower()} do {banco_exib}?"
-    faq_a1 = (f"CET (Custo Efetivo Total) é o custo real do financiamento — inclui a taxa de juros, o IOF "
-              f"(imposto sobre a operação de crédito) e tarifas, não só a taxa anunciada. Neste cenário, o CET "
-              f"estimado é {cet_fmt}% ao ano, acima da taxa nominal de {taxa_aa_fmt}% ao ano.")
-    faq_q3 = "A taxa exibida é exatamente o que eu vou pagar?"
-    faq_a3 = (f"Não necessariamente — é a taxa média real praticada pelo {banco_exib} nessa modalidade, segundo "
-              f"o Banco Central, não uma proposta. A taxa final de cada cliente varia com relacionamento "
-              f"bancário, histórico de crédito, entrada e seguradora escolhida.")
-
-    schema_breadcrumb = {
-        "@context": "https://schema.org", "@type": "BreadcrumbList",
-        "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
-            {"@type": "ListItem", "position": 2, "name": label_categoria, "item": f"{DOMINIO}/{href_comparador}"},
-            {"@type": "ListItem", "position": 3, "name": banco_exib, "item": f"{DOMINIO}/{href_hub}"},
-            {"@type": "ListItem", "position": 4, "name": f"{valor_curto} em {prazo} meses", "item": url_canonica},
-        ],
-    }
-    schema_software = {
-        "@context": "https://schema.org", "@type": "SoftwareApplication",
-        "name": f"Simulador de Financiamento {label_categoria} {banco_exib}",
-        "applicationCategory": "FinanceApplication", "operatingSystem": "Web",
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BRL"},
-        "url": url_canonica, "dateModified": data_atualizacao,
-    }
-
-    ranking = comparar_bancos_categoria(categoria, valor, prazo, lookup)
-    faixa_html = renderizar_faixa_mercado(banco, banco_exib, cet, ranking)
-
-    bancos_categoria_js = json.dumps([
-        {"chave": b, "nome": d["nome_exibicao"], "taxaAm": d["taxa_am"], "prazoMax": d["prazo_max"]}
-        for b, d in bancos_para_categoria(categoria).items()
-    ], ensure_ascii=False)
-
-    valores_categoria = VALORES_POR_CATEGORIA[categoria]
-    valor_min_slider, valor_max_slider = valores_categoria[0], valores_categoria[-1] * 2
-    passo_slider = {"novo": 5_000, "usado": 2_000, "moto": 500}[categoria]
-
-    outros_prazos = sorted(
-        (q for q in todas_paginas if q["categoria"] == categoria and q["banco"] == banco
-         and q["valor_veiculo"] == valor and q["slug"] != p["slug"]),
-        key=lambda q: q["prazo"],
-    )
-    outros_prazos_html = "\n".join(
-        f'<a href="{q["slug"]}" class="px-3 py-2 rounded-lg border border-white/10 hover:border-sky-500/50 text-xs transition-all whitespace-nowrap">{q["prazo"]}x de {formatar_reais(q["parcela"])}</a>'
-        for q in outros_prazos
-    )
-    # Achado real (12/set/2026, erro real do GitHub Actions em produção —
-    # "SyntaxError: f-string: unmatched '['", Python 3.10): o bloco
-    # "Outros prazos" era montado como uma f-string ANINHADA (delimitada
-    # por ''', igual à f-string gigante da página inteira) dentro de uma
-    # expressão condicional, dentro de uma lista de 1 item só passada pra
-    # "".join([...]) — complexidade sem propósito (.join numa lista de 1
-    # elemento só devolve o próprio elemento) que quebrava a análise de
-    # colchetes/aspas do parser em versões antigas do Python. Calculado
-    # aqui como variável simples, fora da f-string grande da página — a
-    # referência lá embaixo vira só {bloco_outros_prazos}, uma
-    # substituição de variável comum, sem nenhum aninhamento.
-    link_comparacao_html = ""
-    if pagina_comparacao_existe(p["categoria"], p["valor_veiculo"], p["prazo"]):
-        link_comparacao_html = (
-            f'<a href="{slug_comparacao(p["categoria"], p["valor_veiculo"], p["prazo"])}" class="inline-flex items-center gap-1.5 mt-3 mr-4 text-xs text-sky-400 hover:text-sky-300 underline transition-colors">'
-            f'Comparar {formatar_valor_curto(p["valor_veiculo"])} em {p["prazo"]} meses em todos os bancos</a>'
-        )
-    bloco_outros_prazos = (
-        f'<div class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Outros prazos no {banco_exib}</h2>'
-        f'<div class="flex flex-wrap gap-2">{outros_prazos_html}</div></div>'
-    ) if outros_prazos_html else ""
-
-    # Aporte padrão da Zona "Valor a Amortizar": 5% do valor financiado
-    # desta página (piso de R$ 500, arredondado pra R$ 100 mais próximo —
-    # escala menor que o financiamento imobiliário porque o valor típico
-    # de um veículo é bem menor que o de um imóvel). Mesma lógica do
-    # projeto irmão, só a escala de arredondamento ajustada.
-    aporte_padrao = max(500, round((financiado * 0.05) / 100) * 100)
-    aporte_padrao = min(aporte_padrao, int(financiado)) if financiado > 0 else 500
-    aporte_padrao_fmt = formatar_reais(aporte_padrao)[3:]
-    slider_amortizar_max = max(int(financiado), aporte_padrao)
-    periodicidade_padrao = 6  # a cada 6 meses (13º/bônus), mesmo padrão do irmão
-
-    dominio_favicon_atual = p["dominio_favicon"]
-    url_logo_atual = f"https://www.google.com/s2/favicons?domain={dominio_favicon_atual}&sz=128"
-
-    # Achado real (27/set/2026, Search Console + medicao de texto): duas paginas individuais quaisquer eram 96% identicas
-    # (so os numeros do resultado mudavam) e parte delas ficava em "Rastreada, mas nao indexada" — o Google as tratava
-    # como copias. Cada pagina ganha conteudo que so ela tem, calculado com os dados reais dela (nunca texto reescrito):
-    # uma analise do cenario, o ranking dos bancos para o MESMO caso e perguntas frequentes com os numeros da pagina.
-    prazo_max_banco = max(q["prazo"] for q in todas_paginas if q["banco"] == banco and q["categoria"] == categoria)
-    prazo_alt = prazo + 12 if prazo + 12 <= prazo_max_banco else (prazo - 12 if prazo - 12 >= 12 else None)
-    frase_prazo = ""
-    if prazo_alt:
-        parcela_alt = calcular_pmt_price(financiado, prazo_alt, taxa_am)
-        juros_alt = parcela_alt * prazo_alt - financiado
-        if prazo_alt > prazo:
-            frase_prazo = (f"Esticar para {prazo_alt} meses baixa a parcela em {formatar_reais(parcela - parcela_alt)}, "
-                           f"mas soma {formatar_reais(juros_alt - total_juros)} de juros ao contrato.")
-        else:
-            frase_prazo = (f"Encurtar para {prazo_alt} meses sobe a parcela em {formatar_reais(parcela_alt - parcela)} "
-                           f"e economiza {formatar_reais(total_juros - juros_alt)} de juros.")
-    entrada_pct_min = entrada / valor if valor else 0
-    entrada_mais = valor * (entrada_pct_min + 0.10)
-    financiado_mais = valor - entrada_mais
-    parcela_mais = calcular_pmt_price(financiado_mais, prazo, taxa_am)
-    juros_mais = parcela_mais * prazo - financiado_mais
-    frase_entrada = (f"Com {round((entrada_pct_min + 0.10) * 100)}% de entrada ({formatar_reais(entrada_mais)}) em vez de "
-                     f"{round(entrada_pct_min * 100)}%, a parcela cai para {formatar_reais(parcela_mais)} e você paga "
-                     f"{formatar_reais(total_juros - juros_mais)} a menos de juros.")
-    # 27/set/2026, decisão do usuário: nada de ranking nomeado nem de "o mais barato é X" — um ranking pode influenciar
-    # o cliente a escolher um banco, e não é esse o papel do simulador (mesma decisão já registrada no imobiliário). A
-    # comparação com o mercado fica só na faixa sem nomes (renderizar_faixa_mercado).
-    analise_html = (
-        '<section class="mt-8"><h2 class="font-serif text-lg font-semibold mb-3">Análise desta simulação</h2>'
-        '<div class="glass-panel rounded-2xl p-6 md:p-8">'
-        f'<p class="text-slate-300 text-sm leading-relaxed font-light">Financiando {formatar_reais(financiado)} de '
-        f'{CATEGORIA_ARTIGO[categoria]} de {formatar_reais(valor)} em {prazo}x no {banco_exib}, você paga {prazo} parcelas de '
-        f'<strong class="text-white font-medium">{formatar_reais(parcela)}</strong> e {formatar_reais(total_juros)} de juros no total. '
-        f'{frase_prazo}</p>'
-        f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_entrada} Para essa parcela caber na regra de 30% '
-        f'de comprometimento, a renda familiar precisa ser de pelo menos {formatar_reais(renda_sugerida)} por mês.</p>'
-        + '</div></section>'
-    )
-    frase_posicao = posicao_no_mercado(ranking, cet)
-    if frase_posicao:
-        analise_html = analise_html[:-len('</div></section>')] + (
-            f'<p class="text-slate-300 text-sm leading-relaxed font-light mt-3">{frase_posicao}</p></div></section>')
-    extras_html = (html_projecao_price(financiado, prazo, taxa_am, banco_exib)
-                   + html_serie_banco(historico_cache(), banco, banco_exib, taxa_am)
-                   + html_vizinhas(p, todas_paginas))
-    faq_html, schema_faq = render_faq_visual([
-        (f"Qual a parcela de {valor_curto} em {prazo}x no {banco_exib}?",
-         f"Com a entrada mínima de {round(entrada_pct_min * 100)}% ({formatar_reais(entrada)}), o valor financiado é "
-         f"{formatar_reais(financiado)} e a parcela fica em {formatar_reais(parcela)} por mês, fixa pela Tabela Price, "
-         f"com a taxa média de {taxa_aa_fmt}% ao ano do {banco_exib} apurada pelo Banco Central."),
-        (f"Quanto pago de juros financiando {valor_curto} em {prazo} meses?",
-         f"O total pago é {formatar_reais(total_pago)}, sendo {formatar_reais(total_juros)} de juros. Somando IOF, "
-         f"tarifa de registro e seguro prestamista típico, o custo efetivo total estimado é {cet_fmt}% ao ano."),
-        (f"Qual renda preciso para financiar {valor_curto} no {banco_exib}?",
-         f"Os bancos costumam limitar a parcela a 30% da renda bruta: para {formatar_reais(parcela)} por mês, a renda "
-         f"familiar precisa ser de pelo menos {formatar_reais(renda_sugerida)}. Dá para somar a renda do cônjuge ou companheiro(a)."),
-        (faq_q1, faq_a1),
-        (faq_q3, faq_a3),
-    ])
-
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_faq, schema_breadcrumb, schema_software],
-                       robots=(None if pagina_valor_indexavel(categoria, valor, prazo) else "noindex,follow"))
-    breadcrumb = render_breadcrumb([
-        ("Datalab Global", "/"),
-        (label_categoria, href_comparador),
-        (banco_exib, href_hub),
-        (f"{valor_curto} em {prazo}x", None),
-    ])
-
-    corpo = f'''<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-8 flex-grow w-full">
-        {breadcrumb}
-        <header class="py-4 md:py-6 relative z-10 text-center">
-            <a href="{href_hub}" class="inline-flex items-center gap-2.5 bg-white/5 border border-white/10 hover:border-sky-500/40 hover:bg-white/10 rounded-full pl-2 pr-4 py-1.5 mb-6 transition-colors group">
-                {favicon_com_fallback(url_logo_atual, banco_exib, "w-6 h-6")}
-                <span class="text-xs font-bold text-slate-200 group-hover:text-sky-400 tracking-wide transition-colors">{banco_exib}</span>
-                <span class="text-[10px] text-slate-400 uppercase tracking-widest border-l border-white/10 pl-2">CDC {label_categoria}</span>
-                <span class="text-[10px] text-sky-500/70 group-hover:text-sky-400 uppercase tracking-widest border-l border-white/10 pl-2 transition-colors">Ver taxas e condições →</span>
-            </a>
-            <h1 class="font-serif text-3xl md:text-4xl font-bold mb-3 leading-tight px-4">Financiamento {label_categoria} {banco_exib}: {formatar_reais(valor)} em {prazo}x</h1>
-            <p class="text-slate-400 text-sm md:text-base font-light mb-2 max-w-3xl mx-auto px-4">Simulação com a taxa média real do {banco_exib} para {CATEGORIA_ARTIGO[categoria]}, apurada pelo Banco Central. Ajuste os valores abaixo pro seu caso.</p>
-            <p class="text-slate-600 text-[10px] uppercase tracking-widest">Taxas atualizadas em {date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')} · Fonte: Banco Central do Brasil (BACEN)</p>
-        </header>
-
-        <!-- ZONA A: A SIMULAÇÃO -->
-        <div class="glass-panel p-6 md:p-10 rounded-3xl border-t border-slate-700/50 relative overflow-hidden">
-            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-widest mb-1 flex items-center relative z-10">
-                {icone('invoice', 'mr-3')} 1. Estratégia
-            </h2>
-            <p class="text-slate-400 text-[11px] mb-8 pb-4 border-b border-white/10 relative z-10">Defina os parâmetros do seu financiamento {banco_exib.lower()}.</p>
-            <div class="flex flex-col lg:flex-row lg:items-start gap-10 relative z-10">
-                <div class="w-full lg:w-1/2 space-y-4">
-                    <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 hover:border-sky-500/30 transition-colors">
-                        <div class="flex justify-between items-end mb-2">
-                            <label class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest flex items-center">
-                                {icone('car' if categoria != 'moto' else 'motorcycle', 'mr-1.5 text-slate-400')} Valor do Veículo
-                                {tooltip('A partir dele calculamos a entrada mínima e o valor financiado, usando a regra de entrada da categoria (' + f'{int(entrada_minima(categoria)*100)}' + '%).')}
-                            </label>
-                            <input type="text" id="input_valor" aria-label="Valor do veículo em reais" class="currency-input w-40 text-right bg-transparent font-medium text-white text-2xl outline-none border-b border-transparent focus:border-sky-500 transition-colors" value="{formatar_reais(valor)[3:]}">
-                        </div>
-                        <input type="range" id="slider_valor" aria-label="Valor do veículo" min="{valor_min_slider}" max="{valor_max_slider}" step="{passo_slider}" value="{valor}" class="w-full mt-2">
-                    </div>
-                    <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 hover:border-sky-500/30 transition-colors">
-                        <div class="flex justify-between items-end mb-2">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center">
-                                {icone('calendar', 'mr-1.5 text-slate-400')} Prazo
-                                {tooltip(f'Quantidade de parcelas mensais. O {banco_exib} permite no máximo {p["prazo_max_banco"]} meses nessa modalidade.')}
-                            </label>
-                            <span id="label_prazo" class="font-medium text-white text-lg">{prazo} meses</span>
-                        </div>
-                        <input type="range" id="slider_prazo" aria-label="Prazo em meses" min="12" max="{p['prazo_max_banco']}" step="1" value="{prazo}" class="w-full mt-2">
-                    </div>
-                    <p class="text-[10px] text-slate-400 pl-2">Entrada mínima da categoria: {int(entrada_minima(categoria)*100)}% do valor do veículo.</p>
-                    <div class="bg-slate-800/60 p-5 rounded-2xl border border-white/10 shadow-md shadow-black/20 flex flex-wrap items-start justify-between gap-6">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center">
-                                CET Real (a.a.)
-                                {tooltip('Custo Efetivo Total: a taxa de juros somada ao IOF, à tarifa de registro de contrato e ao seguro prestamista típico de mercado. É o número mais honesto pra comparar o custo entre bancos diferentes.')}
-                            </p>
-                            <p class="text-white font-medium text-lg" id="res_cet">{cet_fmt}% a.a.</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center">
-                                Renda Sugerida
-                                {tooltip('Os bancos costumam exigir que a parcela não ultrapasse 30% da renda bruta mensal. Você pode somar a sua renda com a do cônjuge ou companheiro(a) para compor esse valor.')}
-                            </p>
-                            <p class="text-white font-medium text-lg currency-input" id="res_renda">{formatar_reais(renda_sugerida)}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full lg:w-1/2 bg-slate-950 rounded-2xl border border-sky-500/20 shadow-inner flex flex-col relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-500 rounded-full blur-[60px] opacity-10"></div>
-                    <div class="px-8 pt-6 pb-4 border-b border-white/5 relative z-10 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]"></span>
-                        <p class="text-sky-400 text-[10px] font-bold uppercase tracking-widest">Resultado da Simulação</p>
-                    </div>
-                    <div class="p-8 flex-1 flex flex-col justify-center space-y-6 relative z-10">
-                        <div>
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2">Parcela Mensal (Tabela Price){tooltip('Sistema de amortização usado em financiamento de veículo no Brasil: a parcela é fixa do primeiro ao último mês.')}</p>
-                            <p class="text-white text-3xl font-light tracking-tight currency-input break-words" id="res_parcela">{formatar_reais(parcela)}</p>
-                        </div>
-                        <div class="pt-6 border-t border-white/5 grid grid-cols-2 gap-6">
-                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Valor Financiado</p><p class="text-white font-medium text-lg currency-input" id="res_financiado">{formatar_reais(financiado)}</p></div>
-                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Entrada</p><p class="text-white font-medium text-lg currency-input" id="res_entrada">{formatar_reais(entrada)}</p></div>
-                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total Pago</p><p class="text-white font-medium text-lg currency-input" id="res_total_pago">{formatar_reais(total_pago)}</p></div>
-                            <div><p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1.5">Total de Juros</p><p class="text-white font-medium text-lg currency-input" id="res_total_juros">{formatar_reais(total_juros)}</p></div>
-                        </div>
-                        <div class="pt-6 border-t border-white/5">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">Composição do custo total</p>
-                            {svg_donut_capital_juros(financiado, total_juros)}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-8 relative z-10 text-center">
-                <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="inline-flex items-center justify-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-8 py-3.5 rounded-2xl transition-all text-sm w-full sm:w-auto shadow-[0_0_15px_rgba(14,165,233,0.3)]">
-                    Peça uma análise gratuita com essa simulação {icone('arrow-right', 'ml-2')}
-                </a>
-            </div>
-        </div>
-
-        {bloco_outros_prazos}
-
-        <!-- ZONA B: A AMORTIZAÇÃO -->
-        <div class="mt-8 glass-panel-sky rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-[0_10px_40px_rgba(14,165,233,0.1)] border-t border-sky-500/30" id="card_amortizacao">
-            <h2 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-8 border-b border-sky-500/20 pb-4 relative z-10 flex items-center">
-                {icone('bolt', 'mr-3')} 2. Valor a Amortizar (A Solução)
-            </h2>
-            <div class="flex flex-col lg:flex-row gap-10 relative z-10">
-                <div class="w-full lg:w-1/2 flex flex-col justify-center">
-                    <label class="text-[10px] font-bold text-slate-300 uppercase tracking-widest block mb-4 flex items-center">
-                        Amortização Extra (Recorrente)
-                        {tooltip('A maioria das pessoas não faz um único pagamento extra: faz vários, ao longo do tempo (ex: com o 13º ou bônus). Aqui você simula esse padrão — quanto, e a cada quantos meses.')}
-                    </label>
-                    <div class="relative mb-6">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-light text-sky-500/50 text-3xl">R$</span>
-                        <input type="text" id="input_amortizar" aria-label="Valor da amortização extra em reais" class="currency-input w-full bg-black/50 border border-sky-500/30 rounded-2xl pl-16 pr-4 py-5 focus:border-sky-400 font-medium text-sky-400 text-4xl outline-none transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" value="{aporte_padrao_fmt}">
-                    </div>
-                    <input type="range" id="slider_amortizar" aria-label="Valor da amortização extra" min="0" max="{slider_amortizar_max}" step="100" value="{aporte_padrao}" class="w-full mb-6">
-                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-white/10">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center">
-                            {icone('repeat', 'mr-1.5 text-slate-400')} A Cada Quantos Meses?
-                        </label>
-                        <div class="flex items-center gap-3">
-                            <input type="range" id="slider_periodicidade" aria-label="A cada quantos meses" min="1" max="24" step="1" value="{periodicidade_padrao}" class="w-full">
-                            <span class="text-white font-medium text-sm whitespace-nowrap w-24 text-right" id="label_periodicidade">a cada {periodicidade_padrao} meses</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full lg:w-1/2 bg-black/40 border border-sky-500/30 rounded-2xl p-8 backdrop-blur-sm text-center flex flex-col justify-center shadow-inner">
-                    <div class="mb-8">
-                        <p class="text-sky-500/80 text-[10px] font-bold uppercase tracking-widest mb-3">Economia Total de Juros</p>
-                        <p class="text-5xl md:text-6xl font-serif text-sky-400 currency-input break-words" id="res_economia">R$ 0,00</p>
-                    </div>
-                    <div>
-                        <p class="text-sky-500 text-[10px] font-bold uppercase tracking-widest mb-2">Tempo Reduzido Em</p>
-                        <p class="text-3xl md:text-4xl font-light text-white tracking-tight" id="res_impacto">0 Meses</p>
-                        <div class="mt-5 w-full h-2 bg-slate-800 rounded-full relative overflow-hidden">
-                            <div class="absolute left-0 top-0 h-full bg-slate-600 w-full"></div>
-                            <div id="bar_novo_prazo" class="absolute left-0 top-0 h-full bg-sky-500 transition-all duration-700" style="width: 100%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BANNER DE CONVERSÃO FINANCIA TUDO -->
-        <div class="mt-16 bg-gradient-to-r from-sky-600 to-sky-900 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_20px_50px_rgba(14,165,233,0.3)] border border-sky-400/50">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[80px]"></div>
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-                <div class="md:w-2/3 text-left">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="bg-yellow-400 text-yellow-950 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Parceria Oficial</span>
-                        <span class="flex items-center text-sky-200 text-xs font-medium">{icone('shield-check', 'mr-1')} 100% Seguro</span>
-                    </div>
-                    <h3 class="text-3xl font-serif text-white mb-3">Aprove o seu crédito no {banco_exib} sem sair de casa.</h3>
-                    <p class="text-sky-100 text-sm md:text-base font-light leading-relaxed">
-                        Como parceiros credenciados, conectamos você diretamente à mesa de crédito para buscar as <strong>melhores taxas e condições de aprovação</strong>. Análise gratuita, rápida e sem compromisso.
-                    </p>
-                </div>
-                <div class="md:w-1/3 w-full flex justify-center md:justify-end">
-                    <a href="{LINK_FINANCIA_TUDO}" target="_blank" rel="noopener sponsored" class="group relative inline-flex items-center justify-center bg-white text-sky-900 hover:bg-slate-100 font-black px-8 py-5 rounded-2xl transition-all shadow-2xl text-sm tracking-widest uppercase w-full text-center overflow-hidden">
-                        <span class="relative z-10 flex items-center">Fazer Análise Grátis {icone('external-link', 'ml-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform')}</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <section class="mt-8">
-            <h2 class="font-serif text-lg font-semibold mb-3">Compare com o mercado</h2>
-            {faixa_html}
-            {link_comparacao_html}
-            <a href="{href_comparador}" class="inline-flex items-center gap-1.5 mt-3 text-xs text-slate-400 hover:text-sky-400 transition-colors">Ver ranking completo de {label_categoria.lower()} {icone('arrow-right')}</a>
-        </section>
-
-        {analise_html}
-        {extras_html}
-
-        <!-- ZONA E: GLOSSÁRIO / HUB DE AJUDA -->
-        <div class="mt-16">
-            <div class="flex items-center gap-3 mb-2 justify-center">
-                {icone('book-open', 'text-sky-500 text-xl')}
-                <h3 class="text-2xl font-serif text-white text-center">Entenda os Termos Antes de Decidir</h3>
-            </div>
-            <p class="text-slate-400 text-sm text-center max-w-2xl mx-auto mb-8">
-                Mais do que uma calculadora: reunimos aqui o que cada termo do seu financiamento {banco_exib.lower()} significa na prática.
-            </p>
-            <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-x-12 divide-y divide-white/10 md:divide-y-0">
-                <div class="py-5 md:pt-0 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('invoice', 'mr-2')} CET (Custo Efetivo Total)</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">É o custo real do financiamento por ano, incluindo a taxa de juros, o IOF, a tarifa de registro de contrato e o seguro prestamista típico de mercado — sempre maior que a taxa de juros anunciada. É o número certo pra comparar propostas de bancos diferentes.</p>
-                </div>
-                <div class="py-5 md:pt-0 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('percent', 'mr-2')} IOF</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">Imposto sobre Operações Financeiras: incide sobre todo financiamento (0,38% fixo + uma taxa diária, limitada a 365 dias). É cobrado uma única vez, descontado do valor liberado — já está embutido no CET calculado aqui.</p>
-                </div>
-                <div class="py-5 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('calendar', 'mr-2')} Tabela Price</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">Sistema de amortização usado em CDC de veículo: a parcela é fixa do primeiro ao último mês, mudando só a proporção entre juros e amortização a cada mês — diferente do SAC do financiamento imobiliário, onde a parcela começa mais alta e cai com o tempo.</p>
-                </div>
-                <div class="py-5 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('bolt', 'mr-2')} Amortização Extra</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">Pagamento fora do cronograma que abate diretamente o saldo devedor (não é uma parcela adiantada). Reduz os juros futuros e encurta o prazo, mantendo a parcela mensal do jeito que já estava combinada.</p>
-                </div>
-                <div class="py-5 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('home', 'mr-2')} De Onde Vem essa Taxa</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">A taxa de {taxa_aa_fmt}% a.a. mostrada aqui é a taxa média efetivamente contratada pelo {banco_exib} nessa modalidade, apurada mensalmente pelo Banco Central (BACEN) — não é uma taxa promocional "a partir de". Sua taxa final depende do seu relacionamento com o banco e da análise de crédito.</p>
-                </div>
-                <div class="py-5 pb-0 md:pb-0 md:border-b md:border-white/10">
-                    <p class="text-sky-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center">{icone('percent', 'mr-2')} Renda Mínima Necessária</p>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">Os bancos não aprovam um financiamento cuja parcela ultrapasse 30% da sua renda familiar bruta mensal. Boa notícia: você pode somar a sua renda com a do cônjuge ou companheiro(a) para atingir esse limite.</p>
-                </div>
-            </div>
-        </div>
-
-        {faq_html}
-    </main>'''
-
-    dados_pagina_js = json.dumps({
-        "bancoChave": banco, "bancoNome": banco_exib, "taxaAm": taxa_am,
-        "prazoMaxBanco": p["prazo_max_banco"], "entradaPct": entrada_minima(categoria),
-        "valorMin": valor_min_slider, "valorMax": valor_max_slider,
-        "bancosCategoria": json.loads(bancos_categoria_js),
-        "linkAfiliado": LINK_FINANCIA_TUDO,
-    }, ensure_ascii=False)
-
-    html = f'''<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    {head}
-</head>
-<body class="antialiased flex flex-col min-h-screen">
-    {render_nav()}
-    {corpo}
-    {render_footer()}
-    <script src="calculo.js?v={VERSAO_BUILD}"></script>
-    <script>iniciarSimulador({dados_pagina_js});</script>
-    {SCRIPT_AJUSTA_TOOLTIPS}
-</body>
-</html>'''
-    return html
-
 
 # ---------------------------------------------------------------------------
 # Hub por banco+categoria: hub-{banco}-{categoria}.html
@@ -1639,8 +1187,6 @@ def html_mais_sobre_banco(categoria, banco_exib):
         itens.append((slug_mes(meses[-1]), f"Taxas de financiamento de veículos em {nome_mes(meses[-1])}"))
     itens.append((SLUG_INDICE_MENSAL, "Taxas de financiamento de veículos mês a mês"))
     itens.append((SLUG_ATUALIZACOES, "O que mudou nas taxas esta semana"))
-    valor_renda = VALORES_POR_CATEGORIA[categoria][len(VALORES_POR_CATEGORIA[categoria]) // 2]
-    itens.append((slug_renda(categoria, valor_renda), f"Renda necessária para financiar {label} de {formatar_valor_curto(valor_renda)}"))
     itens.append((SLUG_INDICE_RENDA, "Renda para financiar veículo, por valor"))
     itens.append((slug_comparador(categoria), f"Comparar bancos para financiar {label}"))
     itens.append(("aprenda-o-que-e-cet", "O que é CET e por que olhar além da taxa"))
@@ -1694,8 +1240,16 @@ def periodo_taxa_bacen(banco=None):
     return f"{ini} a {fim}"
 
 
+def link_simulador(categoria, valor, entrada, prazo, banco=None):
+    """Endereço da home com a simulação preenchida (tipo, valor, entrada, prazo e banco), lido por src/home.js."""
+    params = f"tipo={categoria}&amp;valor={int(round(valor))}&amp;entrada={int(round(entrada))}&amp;prazo={prazo}"
+    if banco:
+        params += "&amp;banco=" + urllib.parse.quote(banco)
+    return f"/?{params}#simulador"
+
+
 def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
-    label_categoria = CATEGORIA_LABEL[categoria]
+    label_categoria = HUB_ROTULO[categoria]
     slug_pagina = slug_hub(categoria, banco)
     url_canonica = f"{DOMINIO}/{slug_pagina}"
     href_comparador = f"{slug_comparador(categoria)}"
@@ -1715,6 +1269,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
         f"Taxa de financiamento {label_categoria} {banco_exib} {ano_hub}",
         f"Taxa financiamento {label_categoria} {banco_exib} {ano_hub}",
         f"Financiamento {label_categoria} {banco_exib}: simulações | Datalab",
+        f"Financiamento {label_categoria} {banco_exib}",
     )
     titulo_pagina = next((t for t in candidatos_titulo if len(t) <= 60), candidatos_titulo[-1])
     periodo_txt = periodo_taxa_bacen(banco)
@@ -1732,7 +1287,7 @@ def gerar_hub(categoria, banco, banco_exib, paginas_banco, data_atualizacao):
     blocos_valor = []
     for valor, paginas in paginas_por_valor.items():
         links = "\n".join(
-            f'<a href="{p["slug"]}" class="flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">'
+            f'<a href="{link_simulador(categoria, p["valor_veiculo"], p["entrada"], p["prazo"], banco)}" class="flex items-center justify-between p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">'
             f'<span class="text-sm">{p["prazo"]} meses</span><span class="text-sm font-semibold text-sky-400">{formatar_reais(p["parcela"])}/mês</span></a>'
             for p in paginas
         )
@@ -1939,7 +1494,7 @@ def texto_variacao(resumo):
 # ---------------------------------------------------------------------------
 MESES_NA_SERIE_BANCO = 12
 SLUG_INDICE_MENSAL = "taxas-financiamento-veiculos"
-MESES_INDEXAVEIS_MENSAL = 12  # meses mais antigos continuam no ar, mas noindex
+MESES_INDEXAVEIS_MENSAL = 2  # só os 2 meses mais recentes têm página; os mais antigos redirecionam (301) para o índice, que lista todos
 _SEM_ACENTO = str.maketrans("ç", "c")
 
 
@@ -2046,10 +1601,12 @@ def html_serie_banco(historico, banco, banco_exib, taxa_simulada):
     (m0, t0), (m1, t1) = pontos[0], pontos[-1]
     maior = max(pontos, key=lambda p: p[1])
     menor = min(pontos, key=lambda p: p[1])
+    recentes = {r["mes_referencia"] for r in historico}
+    recentes = set(sorted(recentes)[-MESES_INDEXAVEIS_MENSAL:])  # só os meses mais recentes têm página (os outros redirecionam ao índice)
     celulas = "".join(
         f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-1.5 text-left font-medium text-white whitespace-nowrap">'
-        f'<a href="{slug_mes(m)}" class="hover:text-sky-400">{_rotulo_mes(m)}</a></th>'
-        f'<td class="px-2 py-1.5 text-right">{_pct2(t)}%</td></tr>' for m, t in reversed(pontos))
+        + (f'<a href="{slug_mes(m)}" class="hover:text-sky-400">{_rotulo_mes(m)}</a>' if m in recentes else _rotulo_mes(m))
+        + f'</th><td class="px-2 py-1.5 text-right">{_pct2(t)}%</td></tr>' for m, t in reversed(pontos))
     sentido = "caiu" if t1 < t0 else "subiu" if t1 > t0 else "ficou estável"
     frase = (f"Segundo o Banco Central, a taxa média contratada no {banco_exib} {sentido} de {_pct2(t0)}% ao mês em {_rotulo_mes(m0)} "
              f"para {_pct2(t1)}% em {_rotulo_mes(m1)} ({_sinal_pp(t1 - t0)} p.p.). Nos últimos {len(pontos)} meses, a máxima foi de "
@@ -2107,31 +1664,6 @@ def html_comparacao_mercado(categoria, banco, banco_exib, dados_banco, historico
         </div></section>'''
 
 
-def html_vizinhas(p, todas_paginas):
-    """Links para o valor anterior e o seguinte (mesmo banco, categoria e prazo) e
-    para os índices de taxas e a metodologia. Os outros prazos do mesmo valor já
-    têm bloco próprio na página."""
-    mesmo = sorted((q for q in todas_paginas if q["categoria"] == p["categoria"] and q["banco"] == p["banco"]
-                    and q["prazo"] == p["prazo"]), key=lambda q: q["valor_veiculo"])
-    idx = next((k for k, q in enumerate(mesmo) if q["slug"] == p["slug"]), None)
-    itens = []
-    if idx is not None:
-        if idx > 0:
-            itens.append(mesmo[idx - 1])
-        if idx + 1 < len(mesmo):
-            itens.append(mesmo[idx + 1])
-    links = "".join(
-        f'<a href="{q["slug"]}" class="block p-3 rounded-lg border border-white/10 hover:border-sky-500/50 text-sm text-slate-300 transition-all">'
-        f'{p["nome_exibicao"]}: {formatar_valor_curto(q["valor_veiculo"])} em {q["prazo"]}x, parcela de {formatar_reais(q["parcela"])}</a>' for q in itens)
-    bloco = (f'<h2 class="font-serif text-lg font-semibold mb-3">Valores vizinhos no {p["nome_exibicao"]}</h2>'
-             f'<div class="grid sm:grid-cols-2 gap-3">{links}</div>') if links else ""
-    return (f'<section class="mt-8">{bloco}<p class="text-slate-500 text-xs mt-3">'
-            f'<a href="{SLUG_INDICE_MENSAL}" class="underline hover:text-sky-400">Taxas de financiamento de veículos mês a mês</a> · '
-            f'<a href="financiamento-veiculos" class="underline hover:text-sky-400">Parcela por valor e prazo</a> · '
-            f'<a href="{slug_renda(p["categoria"], p["valor_veiculo"]) if p["valor_veiculo"] in VALORES_POR_CATEGORIA[p["categoria"]] else SLUG_INDICE_RENDA}" class="underline hover:text-sky-400">Renda necessária para financiar</a> · '
-            f'<a href="metodologia" class="underline hover:text-sky-400">Como calculamos</a></p></section>')
-
-
 def _mediana(valores):
     v = sorted(valores)
     n = len(v)
@@ -2159,6 +1691,8 @@ def gerar_paginas_mensais(pasta_saida, data_atualizacao, historico):
     data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
     urls = []
     for k, mes in enumerate(meses):
+        if mes not in recentes:
+            continue
         taxas = por_mes[mes]
         anterior = por_mes[meses[k - 1]] if k > 0 else {}
         ano_antes = f"{int(mes[:4]) - 1}{mes[4:]}"
@@ -2215,9 +1749,9 @@ def gerar_paginas_mensais(pasta_saida, data_atualizacao, historico):
             {"@type": "ListItem", "position": 2, "name": "Taxas mês a mês", "item": f"{DOMINIO}/{SLUG_INDICE_MENSAL}"},
             {"@type": "ListItem", "position": 3, "name": mes_ano, "item": url}]}
         vizinhos = ""
-        if k > 0:
+        if k > 0 and meses[k - 1] in recentes:
             vizinhos += f'<a href="{slug_mes(meses[k - 1])}" class="underline hover:text-sky-400">← {nome_mes(meses[k - 1])}</a>'
-        if k + 1 < len(meses):
+        if k + 1 < len(meses) and meses[k + 1] in recentes:
             vizinhos += f' &nbsp;·&nbsp; <a href="{slug_mes(meses[k + 1])}" class="underline hover:text-sky-400">{nome_mes(meses[k + 1])} →</a>'
         cobertura = [(r["inicio_periodo"], r["fim_periodo"]) for r in historico if r["mes_referencia"] == mes]
         schema_dados = {
@@ -2267,8 +1801,9 @@ def gerar_paginas_mensais(pasta_saida, data_atualizacao, historico):
             urls.append(url)
 
     itens = "".join(
-        f'<li><a href="{slug_mes(m)}" class="text-sky-400 underline hover:text-sky-300">Taxa de financiamento de veículos em {nome_mes(m)}</a>'
-        f' <span class="text-slate-500 text-xs">(média {_pct2(sum(por_mes[m].values()) / len(por_mes[m]))}% a.m.)</span></li>'
+        (f'<li><a href="{slug_mes(m)}" class="text-sky-400 underline hover:text-sky-300">Taxa de financiamento de veículos em {nome_mes(m)}</a>' if m in recentes
+         else f'<li><span class="text-slate-200">Taxa de financiamento de veículos em {nome_mes(m)}</span>')
+        + f' <span class="text-slate-500 text-xs">(média {_pct2(sum(por_mes[m].values()) / len(por_mes[m]))}% a.m.)</span></li>'
         for m in reversed(meses))
     url_ind = f"{DOMINIO}/{SLUG_INDICE_MENSAL}"
     titulo_ind = "Taxas de financiamento de veículos mês a mês | Datalab Global"
@@ -2385,127 +1920,62 @@ def renda_minima(categoria, valor, entrada_perc, prazo):
 
 
 def gerar_paginas_renda(pasta_saida, data_atualizacao):
-    """/renda-para-financiar-{carro-novo|carro-usado|moto}-{valor}-mil: quanto de
-    renda os bancos costumam exigir, por prazo e entrada. Números próprios por
-    categoria e valor. Retorna as URLs (sitemap)."""
-    urls = []
+    """/renda-para-financiar-veiculo: quanto de renda os bancos costumam exigir, por valor, entrada e prazo, para carro novo, usado e moto.
+    Enxugamento (21/11/2026): as 17 páginas por valor foram para 301 para esta, que agora traz as tabelas delas. Retorna as URLs (sitemap)."""
     data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
-    prazos = list(PRAZOS_MESES)
-    for categoria in CATEGORIAS:
-        valores = VALORES_POR_CATEGORIA[categoria]
-        entradas = _entradas_da_categoria(categoria)
-        nome_cat = CATEGORIA_ARTIGO[categoria].split(" ", 1)[1]  # "carro novo", "carro usado", "moto"
-        for k, valor in enumerate(valores):
-            vc, vf = formatar_valor_curto(valor), formatar_reais(valor)
-            tab = {(p, e): renda_minima(categoria, valor, e, p) for p in prazos for e in entradas}
-            validos = [(p, e) for (p, e), v in tab.items() if v]
-            if not validos:
-                continue
-            e_base = entradas[0]
-            p_base = 48 if tab.get((48, e_base)) else max(p for p, e in validos if e == e_base)
-            base = tab[(p_base, e_base)]
-            e_alta = entradas[-1]
-            p_longo = max(p for p, e in validos if e == e_base)
-            alta = tab.get((p_base, e_alta)) or base
-            longo = tab[(p_longo, e_base)]
-
-            cab = "".join(f'<th scope="col" class="px-2 py-2 text-right font-medium">{round(e * 100)}% de entrada<br>'
-                          f'<span class="normal-case text-slate-500">({formatar_reais(valor * e)})</span></th>' for e in entradas)
-            linhas_tab = ""
-            for p in prazos:
-                cels = ""
-                for e in entradas:
-                    v = tab[(p, e)]
-                    cels += (f'<td class="px-2 py-2 text-right whitespace-nowrap"><strong class="text-white">{formatar_reais(v["renda"])}</strong>'
-                             f'<br><span class="text-slate-500">parcela {formatar_reais(v["parcela"])}</span></td>') if v \
-                        else '<td class="px-2 py-2 text-right text-slate-500">–</td>'
-                linhas_tab += f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">{p} meses</th>{cels}</tr>'
-            tabela = (f'<div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">'
-                      f'<thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Prazo</th>{cab}</tr></thead>'
-                      f'<tbody>{linhas_tab}</tbody></table></div>')
-
-            resumo = (f"Para financiar {nome_cat} de {vf} com {round(e_base * 100)}% de entrada ({formatar_reais(valor * e_base)}) em {p_base} meses, "
-                      f"na taxa mediana dos bancos ({_pct2(base['taxa_am'])}% ao mês), a parcela pela Tabela Price é de {formatar_reais(base['parcela'])} "
-                      f"e a renda familiar mínima, considerando o limite de 30% da renda, é de {formatar_reais(base['renda'])} por mês.")
-            dica = ""
-            if e_alta != e_base and tab.get((p_base, e_alta)):
-                dica += (f"Com {round(e_alta * 100)}% de entrada ({formatar_reais(valor * e_alta)}), a renda mínima cai para "
-                         f"{formatar_reais(alta['renda'])} em {p_base} meses. ")
-            if p_longo != p_base:
-                dica += (f"Esticar para {p_longo} meses baixa a renda mínima ({round(e_base * 100)}% de entrada) para "
-                         f"{formatar_reais(longo['renda'])}, mas aumenta o total de juros.")
-            perguntas = [
-                (f"Qual a renda mínima para financiar {nome_cat} de {vc}?",
-                 f"Com {round(e_base * 100)}% de entrada, em {p_base} meses e na taxa mediana dos bancos ({_pct2(base['taxa_am'])}% ao mês), "
-                 f"a renda familiar mínima é de cerca de {formatar_reais(base['renda'])} por mês."),
-                (f"Como diminuir a renda exigida para financiar {nome_cat} de {vc}?",
-                 "Aumentar a entrada e alongar o prazo reduzem a parcela e, com ela, a renda exigida."
-                 + (f" Com {round(e_alta * 100)}% de entrada, a renda mínima cai para {formatar_reais(alta['renda'])} em {p_base} meses."
-                    if e_alta != e_base and tab.get((p_base, e_alta)) else "")),
-                ("Por que a renda mínima é calculada com 30%?",
-                 "Os bancos costumam limitar a parcela a 30% da renda bruta. É uma regra de mercado, não uma lei: cada banco faz a própria análise de crédito."),
-            ]
-            faq_html, schema_faq = render_faq_visual(perguntas)
-            slug = slug_renda(categoria, valor)
-            url = f"{DOMINIO}/{slug}"
-            titulo = _escolher_que_cabe(60, f"Renda para financiar {nome_cat} de {vc}: quanto precisa ganhar | Datalab Global",
-                                        f"Renda para financiar {nome_cat} de {vc}: quanto precisa ganhar", f"Renda para financiar {nome_cat} de {vc}")
-            desc = _escolher_que_cabe(
-                160, f"Renda mínima para financiar {nome_cat} de {vc}: {formatar_reais(base['renda'])} por mês com {round(e_base * 100)}% de entrada em {p_base} meses. Veja por prazo e entrada.",
-                f"Renda mínima para financiar {nome_cat} de {vc}: {formatar_reais(base['renda'])} por mês com {round(e_base * 100)}% de entrada em {p_base} meses.")
-            schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
-                {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
-                {"@type": "ListItem", "position": 2, "name": "Renda para financiar", "item": f"{DOMINIO}/{SLUG_INDICE_RENDA}"},
-                {"@type": "ListItem", "position": 3, "name": f"{CATEGORIA_LABEL[categoria]} {vc}", "item": url}]}
-            viz = []
-            if k > 0:
-                viz.append(f'<a href="{slug_renda(categoria, valores[k - 1])}" class="underline hover:text-sky-400">← Renda para {formatar_valor_curto(valores[k - 1])}</a>')
-            if k + 1 < len(valores):
-                viz.append(f'<a href="{slug_renda(categoria, valores[k + 1])}" class="underline hover:text-sky-400">Renda para {formatar_valor_curto(valores[k + 1])} →</a>')
-            comp = ""
-            if pagina_comparacao_existe(categoria, valor, p_base):
-                comp = f'<a href="{slug_comparacao(categoria, valor, p_base)}" class="text-sky-400 underline">Compare {vc} em {p_base} meses em todos os bancos</a> · '
-            head = render_head(titulo, desc, url, [schema_bc, schema_faq])
-            html_pag = f'''<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    {head}
-</head>
-<body class="antialiased flex flex-col min-h-screen">
-    {render_nav()}
-    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
-        {render_breadcrumb([("Datalab Global", "/"), ("Renda para financiar", SLUG_INDICE_RENDA), (f"{CATEGORIA_LABEL[categoria]} {vc}", None)])}
-        <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-4">Renda necessária para financiar {nome_cat} de {vc}</h1>
-        <p class="text-slate-300 text-base font-light leading-relaxed mb-4">{resumo}</p>
-        <p class="text-slate-300 text-sm font-light leading-relaxed mb-8">{dica}</p>
-        <h2 class="font-serif text-xl font-bold mb-3">Renda mínima por prazo e entrada</h2>
-        {tabela}
-        <p class="text-slate-500 text-[11px] mt-3">Cálculo: parcela pela Tabela Price dividida por 30%, na taxa mediana dos bancos da categoria que oferecem o prazo (taxas médias contratadas, Banco Central, atualizadas em {data_br}), sem IOF, tarifas e seguro. A entrada mínima desta categoria é {round(entrada_minima(categoria) * 100)}%. A sua análise de crédito pode exigir mais ou menos. Veja a <a href="metodologia" class="underline">metodologia</a>.</p>
-        <p class="text-slate-400 text-sm mt-6">{" &nbsp;·&nbsp; ".join(viz)}</p>
-        {faq_html}
-        <p class="text-slate-400 text-sm mt-10">{comp}<a href="{SLUG_INDICE_RENDA}" class="text-sky-400 underline">Renda por valor do veículo</a> · <a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Comparador de bancos</a></p>
-        {_cta_comparacao("Quer saber se a sua renda aprova?")}
-    </main>
-    {render_footer()}
-</body>
-</html>'''
-            with open(os.path.join(pasta_saida, f"{slug}.html"), "w", encoding="utf-8") as f:
-                f.write(corrigir_concordancia(html_pag))
-            urls.append(url)
-
+    url_ind = f"{DOMINIO}/{SLUG_INDICE_RENDA}"
     secoes = ""
     for categoria in CATEGORIAS:
-        itens = "".join(
-            f'<li><a href="{slug_renda(categoria, v)}" class="text-sky-400 underline hover:text-sky-300">Renda para financiar {formatar_valor_curto(v)}</a></li>'
-            for v in VALORES_POR_CATEGORIA[categoria])
-        secoes += (f'<h2 class="font-serif text-xl font-bold mt-8 mb-3">{CATEGORIA_LABEL[categoria]}</h2><ul class="space-y-2 text-sm">{itens}</ul>')
-    url_ind = f"{DOMINIO}/{SLUG_INDICE_RENDA}"
+        nome_cat = CATEGORIA_ARTIGO[categoria].split(" ", 1)[1]
+        entradas = _entradas_da_categoria(categoria)
+        valores = VALORES_POR_CATEGORIA[categoria]
+        e_min = entradas[0]
+        cab_e = "".join(f'<th scope="col" class="px-2 py-2 text-right font-medium">{round(e * 100)}% de entrada</th>' for e in entradas)
+        cab_p = "".join(f'<th scope="col" class="px-2 py-2 text-right font-medium">{p} meses</th>' for p in PRAZOS_MESES)
+        linhas_e, linhas_p = "", ""
+        for valor in valores:
+            cels = ""
+            for e in entradas:
+                v = renda_minima(categoria, valor, e, 48)
+                cels += (f'<td class="px-2 py-2 text-right whitespace-nowrap"><strong class="text-white">{formatar_reais(v["renda"])}</strong>'
+                         f'<br><span class="text-slate-500">parcela {formatar_reais(v["parcela"])}</span></td>') if v else '<td class="px-2 py-2 text-right text-slate-500">–</td>'
+            linhas_e += (f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">{formatar_valor_curto(valor)}</th>{cels}</tr>')
+            cels = ""
+            for p in PRAZOS_MESES:
+                v = renda_minima(categoria, valor, e_min, p)
+                cels += f'<td class="px-2 py-2 text-right whitespace-nowrap">{formatar_reais(v["renda"])}</td>' if v else '<td class="px-2 py-2 text-right text-slate-500">–</td>'
+            linhas_p += (f'<tr class="border-t border-white/5"><th scope="row" class="px-2 py-2 text-left font-medium text-white whitespace-nowrap">{formatar_valor_curto(valor)}</th>{cels}</tr>')
+        meio = valores[len(valores) // 2]
+        base = renda_minima(categoria, meio, e_min, 48)
+        secoes += f'''<section class="mt-10">
+            <h2 class="font-serif text-xl font-bold mb-2">Renda para financiar {nome_cat}</h2>
+            <p class="text-slate-300 text-sm font-light leading-relaxed mb-4">Para financiar {nome_cat} de {formatar_valor_curto(meio)} com {round(e_min * 100)}% de entrada em 48 meses, na taxa mediana dos bancos
+            ({_pct2(base["taxa_am"])}% ao mês), a parcela pela Tabela Price é de {formatar_reais(base["parcela"])} e a renda familiar mínima, com o limite de 30%, é de {formatar_reais(base["renda"])} por mês.
+            <a href="{link_simulador(categoria, meio, meio * e_min, 48)}" class="text-sky-400 underline">Simular este valor</a>.</p>
+            <h3 class="font-serif text-base font-semibold mb-2">Renda mínima por valor e entrada (48 meses)</h3>
+            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
+                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Valor do veículo</th>{cab_e}</tr></thead>
+                <tbody>{linhas_e}</tbody></table></div>
+            <h3 class="font-serif text-base font-semibold mt-6 mb-2">Renda mínima por valor e prazo ({round(e_min * 100)}% de entrada)</h3>
+            <div class="overflow-x-auto rounded-xl border border-white/10"><table class="w-full text-xs text-slate-300">
+                <thead class="text-[10px] uppercase tracking-widest text-slate-400"><tr><th scope="col" class="px-2 py-2 text-left font-medium">Valor do veículo</th>{cab_p}</tr></thead>
+                <tbody>{linhas_p}</tbody></table></div>
+        </section>'''
+    perguntas = [
+        ("Qual a renda mínima para financiar um carro?",
+         "Depende do valor, da entrada e do prazo. Em geral, os bancos limitam a parcela a cerca de 30% da renda mensal. Divida a parcela por 0,30 para estimar a renda necessária: as tabelas acima já fazem essa conta."),
+        ("Como diminuir a renda exigida para financiar?",
+         "Aumentar a entrada e alongar o prazo reduzem a parcela e, com ela, a renda exigida. Alongar o prazo, porém, aumenta o total de juros pago."),
+        ("Por que a renda mínima é calculada com 30%?",
+         "Os bancos costumam limitar a parcela a 30% da renda bruta. É uma regra de mercado, não uma lei: cada banco faz a própria análise de crédito."),
+    ]
+    faq_html, schema_faq = render_faq_visual(perguntas)
     schema_bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
         {"@type": "ListItem", "position": 2, "name": "Renda para financiar", "item": url_ind}]}
-    head = render_head("Renda para financiar veículo: quanto precisa ganhar | Datalab Global",
-                       "Renda mínima para financiar carro novo, carro usado e moto, por valor, prazo e entrada, com a taxa mediana dos bancos.",
-                       url_ind, [schema_bc])
+    head = render_head("Renda para financiar veículo: quanto precisa ganhar",
+                       "Renda mínima para financiar carro novo, carro usado e moto, por valor, prazo e entrada, com a taxa mediana dos bancos e o limite de 30% da renda.",
+                       url_ind, [schema_bc, schema_faq, schema_webpage(url_ind, "Renda para financiar veículo", "Renda mínima para financiar carro novo, carro usado e moto.", data_atualizacao)])
     html_ind = f'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -2513,19 +1983,22 @@ def gerar_paginas_renda(pasta_saida, data_atualizacao):
 </head>
 <body class="antialiased flex flex-col min-h-screen">
     {render_nav()}
-    <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
+        {render_breadcrumb([("Datalab Global", "/"), ("Renda para financiar", None)])}
         <h1 class="font-serif text-2xl sm:text-4xl font-bold mb-4">Renda para financiar um veículo</h1>
-        <p class="text-slate-300 text-base font-light leading-relaxed mb-4">Escolha a categoria e o valor do veículo e veja a renda familiar mínima por prazo e entrada, calculada com o limite de 30% da renda e a taxa mediana do mercado.</p>
+        <p class="text-slate-300 text-base font-light leading-relaxed mb-4">Veja a renda familiar mínima para financiar carro novo, carro usado ou moto, por valor do veículo, entrada e prazo, calculada com o limite de 30% da renda e a taxa mediana dos bancos que acompanhamos.</p>
+        <p class="text-slate-500 text-[11px]">Cálculo: parcela pela Tabela Price dividida por 30%, na taxa mediana dos bancos da categoria que oferecem o prazo (taxas médias contratadas, Banco Central, atualizadas em {data_br}). É uma conta nossa, não é análise de crédito.</p>
         {secoes}
+        {faq_html}
         <p class="text-slate-400 text-sm mt-10"><a href="financiamento-veiculos" class="text-sky-400 underline">Parcela por valor e prazo</a> · <a href="metodologia" class="text-sky-400 underline">Metodologia</a></p>
+        {_cta_comparacao("Quer saber se a sua renda aprova?")}
     </main>
     {render_footer()}
 </body>
 </html>'''
     with open(os.path.join(pasta_saida, f"{SLUG_INDICE_RENDA}.html"), "w", encoding="utf-8") as f:
         f.write(corrigir_concordancia(html_ind))
-    urls.append(url_ind)
-    return urls
+    return [url_ind]
 
 
 # ---------------------------------------------------------------------------
@@ -2731,7 +2204,7 @@ def gerar_feed_atom(pasta_saida, data_atualizacao, historico_mensal, historico_s
     for r in historico_mensal:
         por_mes.setdefault(r["mes_referencia"], {})[r["banco"]] = r["taxa_am"]
         fim_mes[r["mes_referencia"]] = r["fim_periodo"]
-    for mes in sorted(por_mes)[-ENTRADAS_MENSAIS_NO_FEED:]:
+    for mes in sorted(por_mes)[-MESES_INDEXAVEIS_MENSAL:]:
         taxas = por_mes[mes]
         menor, maior = min(taxas, key=taxas.get), max(taxas, key=taxas.get)
         nome = lambda b: BANCOS_VEICULOS[b]["nome_exibicao"] if b in BANCOS_VEICULOS else b
@@ -3398,140 +2871,16 @@ def _cta_comparacao(titulo):
         </section>'''
 
 
-def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup):
-    """Gera as páginas categoria x valor x prazo sem marca + o índice
-    (financiamento-veiculos.html). Retorna as URLs (pro sitemap)."""
-    urls = []
-    data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
-    url_indice = f"{DOMINIO}/financiamento-veiculos"
-
-    for categoria in CATEGORIAS:
-        label = CATEGORIA_LABEL[categoria]
-        nome_cat = label.lower()
-        valores = VALORES_POR_CATEGORIA[categoria]
-        for valor in valores:
-            for prazo in PRAZOS_MESES:
-                if not pagina_comparacao_existe(categoria, valor, prazo):
-                    continue
-                linhas = linhas_comparacao(categoria, valor, prazo)
-                n = len(linhas)
-                vc = formatar_valor_curto(valor)
-                vf = formatar_reais(valor)
-                slug = slug_comparacao(categoria, valor, prazo)
-                url_canonica = f"{DOMINIO}/{slug}"
-                menor_cet, maior_cet = linhas[0], linhas[-1]
-                por_parcela = sorted(linhas, key=lambda x: x["parcela"])
-                menor_p, maior_p = por_parcela[0], por_parcela[-1]
-                entrada_pct = round(entrada_minima(categoria) * 100)
-
-                titulo = f"Financiar {nome_cat} de {vc} em {prazo}x: parcela nos bancos | Datalab"
-                meta = _escolher_que_cabe(
-                    160,
-                    f"Financiamento de {nome_cat} de {vc} em {prazo}x: parcela de {_reais_inteiros(menor_p['parcela'])} a {_reais_inteiros(maior_p['parcela'])} e CET de {_pct(menor_cet['cet'])}% a {_pct(maior_cet['cet'])}% a.a. em {n} bancos.",
-                    f"Financiamento de {nome_cat} de {vc} em {prazo}x: parcela de {_reais_inteiros(menor_p['parcela'])} a {_reais_inteiros(maior_p['parcela'])} em {n} bancos.",
-                )
-
-                linhas_html = []
-                for x in linhas:
-                    slug_b = lookup.get((categoria, x["banco"], valor, prazo))
-                    favicon = favicon_com_fallback(f"https://www.google.com/s2/favicons?domain={x['dominio_favicon']}&sz=64", x["nome_exibicao"], "w-5 h-5")
-                    linhas_html.append(f'''<a href="{slug_b}" class="grid grid-cols-[1fr_auto_auto] md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] items-center gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 hover:bg-white/5 transition-all">
-            <span class="flex items-center gap-2 min-w-0">{favicon}<span class="text-sm font-medium truncate">{x["nome_exibicao"]}</span></span>
-            <span class="hidden md:block text-xs text-slate-400 text-center">{_pct(x["taxa_am"])}% a.m.</span>
-            <span class="text-xs text-slate-300 text-right md:text-center whitespace-nowrap">{formatar_reais(x["parcela"])}</span>
-            <span class="hidden md:block text-xs text-slate-400 text-center whitespace-nowrap">{_reais_inteiros(x["total"])}</span>
-            <span class="text-sm text-sky-400 font-bold text-right whitespace-nowrap">CET {_pct(x["cet"])}%</span>
-        </a>''')
-                linhas_blocos = "\n".join(linhas_html)
-
-                outros_prazos = []
-                for p2 in PRAZOS_MESES:
-                    if p2 != prazo and pagina_comparacao_existe(categoria, valor, p2):
-                        l2 = linhas_comparacao(categoria, valor, p2)
-                        outros_prazos.append(f'<a href="{slug_comparacao(categoria, valor, p2)}" class="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 text-sm text-slate-300"><span>{vc} em {p2} meses</span><span class="text-xs text-slate-400">parcela a partir de {_reais_inteiros(min(y["parcela"] for y in l2))}</span></a>')
-                vizinhos = []
-                idx = valores.index(valor)
-                for j in (idx - 1, idx + 1):
-                    if 0 <= j < len(valores) and pagina_comparacao_existe(categoria, valores[j], prazo):
-                        v2 = valores[j]
-                        l2 = linhas_comparacao(categoria, v2, prazo)
-                        vizinhos.append(f'<a href="{slug_comparacao(categoria, v2, prazo)}" class="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 hover:border-sky-500/50 text-sm text-slate-300"><span>{formatar_valor_curto(v2)} em {prazo} meses</span><span class="text-xs text-slate-400">parcela a partir de {_reais_inteiros(min(y["parcela"] for y in l2))}</span></a>')
-
-                perguntas = [
-                    (f"Qual a parcela de um financiamento de {nome_cat} de {vc} em {prazo} meses?",
-                     f"Com entrada mínima de {entrada_pct}% ({formatar_reais(menor_p['entrada'])}), o valor financiado é {formatar_reais(menor_p['financiado'])}. A parcela mensal vai de {formatar_reais(menor_p['parcela'])} ({menor_p['nome_exibicao']}) a {formatar_reais(maior_p['parcela'])} ({maior_p['nome_exibicao']}), na tabela Price (parcela fixa). A diferença vem da taxa média de cada banco."),
-                    (f"Qual banco tem o menor CET para financiar {nome_cat} de {vc} em {prazo} meses?",
-                     f"Na nossa simulação, o CET vai de {_pct(menor_cet['cet'])}% a.a. ({menor_cet['nome_exibicao']}) a {_pct(maior_cet['cet'])}% a.a. ({maior_cet['nome_exibicao']}). O CET inclui juros, IOF, tarifa de registro e seguro prestamista estimados. A taxa final de cada cliente depende de relacionamento, histórico de crédito e entrada."),
-                    (f"Quanto vou pagar ao todo para financiar {vc} em {prazo} meses?",
-                     f"Somando as {prazo} parcelas, o total pago vai de {formatar_reais(min(x['total'] for x in linhas))} a {formatar_reais(max(x['total'] for x in linhas))}, para {formatar_reais(menor_p['financiado'])} financiados. A diferença é o custo do crédito (juros) em cada banco; não inclui IOF, tarifas nem seguros."),
-                ]
-                faq_html, schema_faq = render_faq_visual(perguntas)
-                schema_breadcrumb = {
-                    "@context": "https://schema.org", "@type": "BreadcrumbList",
-                    "itemListElement": [
-                        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
-                        {"@type": "ListItem", "position": 2, "name": "Financiamento de veículos por valor e prazo", "item": url_indice},
-                        {"@type": "ListItem", "position": 3, "name": f"{label} {vc} em {prazo} meses", "item": url_canonica},
-                    ],
-                }
-                schema_lista = {
-                    "@context": "https://schema.org", "@type": "ItemList",
-                    "name": f"Bancos para financiar {nome_cat} de {vc} em {prazo} meses, do menor ao maior CET",
-                    "numberOfItems": len(linhas),
-                    "itemListElement": [{"@type": "ListItem", "position": pos, "name": x["nome_exibicao"]}
-                                        for pos, x in enumerate(linhas, start=1)],
-                }
-                head = render_head(titulo, meta, url_canonica, [schema_breadcrumb, schema_faq, schema_lista])
-                breadcrumb = render_breadcrumb([("Datalab Global", "/"), ("Financiamento de veículos", "financiamento-veiculos"), (f"{label} {vc} em {prazo} meses", None)])
-
-                corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
-        {breadcrumb}
-        <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento de {nome_cat} de {vc} em {prazo} meses</h1>
-        <p class="text-slate-400 text-sm mb-2">Parcela e CET para financiar {vf} em {prazo} meses, com entrada mínima de {entrada_pct}%, nos {n} bancos que acompanhamos (ordenado por CET, do menor para o maior).</p>
-        <p class="text-slate-600 text-[10px] uppercase tracking-widest mb-6">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
-
-        <div class="hidden md:grid grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-3 px-3 mb-2 text-[11px] text-slate-400 uppercase tracking-widest"><span>Banco</span><span class="text-center">Taxa</span><span class="text-center">Parcela (Price)</span><span class="text-center">Total das parcelas</span><span class="text-right">CET</span></div>
-        <div class="grid gap-2">{linhas_blocos}</div>
-        <p class="text-slate-400 text-xs font-light leading-relaxed mt-4">Cada linha leva à simulação completa do banco, onde você ajusta valor, entrada e prazo. Valores de referência com a taxa média real apurada pelo Banco Central; a proposta final depende da análise de crédito.</p>
-
-        <section class="mt-10">
-            <h2 class="font-serif text-xl font-bold mb-2">Resumo para {vc} em {prazo} meses</h2>
-            <p class="text-slate-300 text-sm font-light leading-relaxed">Financiando {vf} em {prazo} meses, a parcela vai de <strong class="text-white">{formatar_reais(menor_p["parcela"])}</strong> ({menor_p["nome_exibicao"]}) a <strong class="text-white">{formatar_reais(maior_p["parcela"])}</strong> ({maior_p["nome_exibicao"]}). O CET varia de {_pct(menor_cet["cet"])}% a {_pct(maior_cet["cet"])}% ao ano. Com {entrada_pct}% de entrada, você financia {formatar_reais(menor_p["financiado"])}.</p>
-        </section>
-
-        <section class="mt-8 grid md:grid-cols-2 gap-6">
-            <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo valor, outros prazos</h2><div class="grid gap-2">{"".join(outros_prazos)}</div></div>
-            <div><h2 class="font-serif text-lg font-semibold mb-3">Mesmo prazo, valores próximos</h2><div class="grid gap-2">{"".join(vizinhos)}</div></div>
-        </section>
-
-        {_guias_html()}
-        {_cta_comparacao("Quer comparar propostas?")}
-        {faq_html}
-        <p class="text-center text-xs text-slate-400 mt-6"><a href="{slug_comparador(categoria)}" class="text-sky-400 underline">Ver o comparador de {nome_cat} →</a></p>
-    </main>'''
-                html = f'''<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    {head}
-</head>
-<body class="antialiased flex flex-col min-h-screen">
-    {render_nav()}
-    {corpo}
-    {render_footer()}
-</body>
-</html>'''
-                with open(os.path.join(pasta_saida, f"{slug}.html"), "w", encoding="utf-8") as f:
-                    f.write(corrigir_concordancia(html))
-                urls.append(url_canonica)
-
-    urls.append(gerar_indice_comparacao(pasta_saida, data_atualizacao))
-    return urls
+def gerar_paginas_comparacao(pasta_saida, data_atualizacao, lookup=None):
+    """Enxugamento (21/11/2026): as 80 páginas de comparação sem marca (categoria x valor x prazo) foram para 301 (ver gerar_redirects);
+    sobra o índice /financiamento-veiculos, cuja tabela leva ao simulador da home com o cenário preenchido. Retorna as URLs (sitemap)."""
+    return [gerar_indice_comparacao(pasta_saida, data_atualizacao)]
 
 
 def gerar_indice_comparacao(pasta_saida, data_atualizacao):
     """Índice (financiamento-veiculos.html): uma tabela valor x prazo por
     categoria, com a menor parcela entre os bancos em cada cenário; cada
-    célula leva à página de comparação."""
+    célula leva ao simulador da home com o cenário preenchido."""
     data_br = date.fromisoformat(data_atualizacao).strftime('%d/%m/%Y')
     url_canonica = f"{DOMINIO}/financiamento-veiculos"
     titulo = "Financiamento de veículo: parcela por valor e prazo | Datalab"
@@ -3545,7 +2894,8 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
             celulas = ""
             for p in prazos_validos[categoria]:
                 l = linhas_comparacao(categoria, valor, p)
-                celulas += f'<td class="px-3 py-2 text-right"><a href="{slug_comparacao(categoria, valor, p)}" class="text-sky-400 hover:underline">{_reais_inteiros(min(x["parcela"] for x in l))}</a></td>'
+                melhor = min(l, key=lambda x: x["parcela"])
+                celulas += f'<td class="px-3 py-2 text-right"><a href="{link_simulador(categoria, valor, melhor["entrada"], p, melhor["banco"])}" class="text-sky-400 hover:underline">{_reais_inteiros(melhor["parcela"])}</a></td>'
             corpo_tab += f'<tr class="border-t border-white/5"><th scope="row" class="px-3 py-2 text-left font-medium text-white">{formatar_valor_curto(valor)}</th>{celulas}</tr>'
         secoes.append(f'''<section class="mt-10">
             <h2 class="font-serif text-xl font-bold mb-3">{CATEGORIA_LABEL[categoria]}: menor parcela por valor e prazo</h2>
@@ -3556,7 +2906,7 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
         </section>''')
     perguntas = [
         ("Como ler estas tabelas?",
-         "Cada célula mostra a menor parcela mensal (tabela Price) entre os bancos para aquele valor de veículo e prazo, com a entrada mínima da categoria. Clique para ver todos os bancos lado a lado, com CET e total pago."),
+         "Cada célula mostra a menor parcela mensal (tabela Price) entre os bancos para aquele valor de veículo e prazo, com a entrada mínima da categoria. Clique para simular esse cenário no simulador, com o banco de menor parcela já escolhido."),
         ("De onde vêm as taxas?",
          "Da taxa média real praticada por cada banco em cada modalidade, apurada pelo Banco Central do Brasil. A taxa final de cada cliente varia com relacionamento, histórico de crédito e entrada."),
     ]
@@ -3573,7 +2923,7 @@ def gerar_indice_comparacao(pasta_saida, data_atualizacao):
     corpo = f'''<main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
         {breadcrumb}
         <h1 class="font-serif text-2xl sm:text-3xl font-bold mb-2">Financiamento de veículo: parcela por valor e prazo</h1>
-        <p class="text-slate-400 text-sm mb-2">Menor parcela entre os bancos para cada valor e prazo, em carro novo, carro usado e moto. Escolha um cenário para comparar todos os bancos.</p>
+        <p class="text-slate-400 text-sm mb-2">Menor parcela entre os bancos para cada valor e prazo, em carro novo, carro usado e moto. Escolha um cenário para abrir a simulação com CET e total pago.</p>
         <p class="text-slate-600 text-[10px] uppercase tracking-widest">Taxas atualizadas em {data_br} · Fonte: Banco Central do Brasil (BACEN)</p>
         {"".join(secoes)}
         {_guias_html()}
@@ -4644,7 +3994,10 @@ def gerar_pagina_sobre():
             "contactPoint": {"@type": "ContactPoint", "email": "contato@datalabglobal.com", "contactType": "customer service"},
         },
     }
-    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_sobre])
+    schema_bc_sobre = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Datalab Global", "item": f"{DOMINIO}/"},
+        {"@type": "ListItem", "position": 2, "name": "Sobre", "item": url_canonica}]}
+    head = render_head(titulo_pagina, meta_description, url_canonica, [schema_bc_sobre, schema_sobre])
     corpo = f'''<main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
         <h1 class="font-serif text-3xl font-bold mb-8">Sobre a Datalab Global</h1>
 
@@ -4763,13 +4116,13 @@ def gerar_robots_txt():
     )
 
 
-def gerar_llms_txt(total_paginas, data_atualizacao):
+def gerar_llms_txt(total_paginas, data_atualizacao):  # total_paginas = número de hubs por banco
     return f"""# Datalab Global — Financiamento de Veículos
 
 > Simulador de financiamento de veículos (carro novo, carro usado e moto) para os principais bancos do Brasil (Caixa, Banco do Brasil, Bradesco, Santander, Itaú, Banco Inter, C6 Bank, BV Financeira, Banco Pan, Omni Financeira, Banco Honda, Banco Yamaha). Taxas com base no Relatório de Taxas de Juros por Instituição Financeira do Banco Central. Calcula parcela (Tabela Price), CET estimado (incluindo IOF) e tabela de amortização.
 
 Dados atualizados em: {data_atualizacao}
-Total de páginas de simulação: {total_paginas}
+Páginas por banco (carro novo e usado, e moto): {total_paginas}
 
 ## Páginas
 - [Home]({DOMINIO}/)
@@ -4807,6 +4160,84 @@ def gerar_verificacao_yandex(pasta_saida):
 CSP_HOME = ("default-src 'self'; script-src 'self' https://cloud.umami.is; style-src 'self'; img-src 'self' data:; font-src 'self'; "
             "connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://gateway.umami.is; frame-ancestors 'none'; "
             "base-uri 'self'; form-action 'self'; object-src 'none'")
+
+
+# ---------------------------------------------------------------------------
+# Enxugamento (21/11/2026): páginas que saíram e para onde redirecionam (301). Ver AVALIACAO-SUBPAGINAS.md.
+# Cloudflare Pages: _redirects aceita 2.000 regras estáticas e 100 com asterisco ou :placeholder; vale a primeira regra que casar.
+# ---------------------------------------------------------------------------
+LIMITE_REDIRECTS_ESTATICOS = 2000
+LIMITE_REDIRECTS_DINAMICOS = 100
+
+
+def regras_redirect():
+    """[(origem, destino)] na ordem de avaliação. Os endereços com .html (que o Google chegou a indexar) casam nas mesmas regras de asterisco;
+    as regras estáticas ganham também a variante .html."""
+    regras = []
+    for categoria in CATEGORIAS:
+        for banco in bancos_para_categoria(categoria):
+            regras.append((f"/financiamento-{CATEGORIA_SLUG[categoria]}-{slugificar_banco(banco)}-*", "/" + slug_hub(categoria, banco)))
+    estaticas = []
+    for banco in bancos_para_categoria("usado"):
+        estaticas.append((f"/hub-{slugificar_banco(banco)}-carro-usado", "/" + slug_hub("usado", banco)))
+    for categoria in CATEGORIAS:
+        regras.append((f"/financiamento-{CATEGORIA_SLUG[categoria]}-*", "/" + slug_comparador(categoria)))
+        regras.append((f"/renda-para-financiar-{CATEGORIA_SLUG[categoria]}-*", "/" + SLUG_INDICE_RENDA))
+    meses = sorted({r["mes_referencia"] for r in historico_cache()})
+    # Todo mês desde out/2024 (o primeiro que chegou a ser publicado, mesmo fora da série atual) até o último que perdeu a página.
+    if meses:
+        ano, mes = 2024, 10
+        limite = meses[-MESES_INDEXAVEIS_MENSAL - 1] if len(meses) > MESES_INDEXAVEIS_MENSAL else "2024-10"
+        while f"{ano}-{mes:02d}" <= limite:
+            estaticas.append(("/" + slug_mes(f"{ano}-{mes:02d}"), "/" + SLUG_INDICE_MENSAL))
+            ano, mes = (ano + 1, 1) if mes == 12 else (ano, mes + 1)
+    # Regras estáticas primeiro: no Cloudflare Pages toda regra que vem DEPOIS de uma com asterisco passa a contar no limite de 100 das dinâmicas
+    # (achado no wrangler pages dev em 21/11/2026: com as estáticas no fim, 5 regras foram descartadas). As origens estáticas não casam com os asteriscos.
+    primeiras = []
+    for origem, destino in estaticas:
+        primeiras.append((origem, destino))
+        primeiras.append((origem + ".html", destino))
+    return primeiras + regras
+
+
+def gerar_redirects():
+    regras = regras_redirect()
+    din = [r for r in regras if "*" in r[0] or ":" in r[0]]
+    est = [r for r in regras if r not in din]
+    assert len(din) <= LIMITE_REDIRECTS_DINAMICOS and len(est) <= LIMITE_REDIRECTS_ESTATICOS, (len(din), len(est))
+    linhas = ["# Gerado por gerador_veiculos.py (regras_redirect). Páginas removidas no enxugamento de 21/11/2026 (ver AVALIACAO-SUBPAGINAS.md).",
+              "# Ordem importa: vale a primeira regra que casar. Nenhuma URL do sitemap aparece como origem."]
+    # O Cloudflare Pages redireciona /arquivo.html para /arquivo (308); o Yandex quer o 200 direto no endereço com .html: regra de reescrita (200).
+    linhas.append(f"/yandex_{YANDEX_VERIFICACAO}.html /yandex_{YANDEX_VERIFICACAO} 200")
+    linhas += [f"{o} {d} 301" for o, d in regras]
+    return "\n".join(linhas) + "\n"
+
+
+def _arquivo_removido(nome):
+    """True para o nome de um .html de página que saiu do site (e agora redireciona)."""
+    base = nome[:-5] if nome.endswith(".html") else nome
+    if re.match(r"financiamento-(carro-novo|carro-usado|moto)-.+", base):
+        return True
+    if re.match(r"renda-para-financiar-(carro-novo|carro-usado|moto)-.+", base):
+        return True
+    if re.match(r"hub-.+-carro-usado$", base):
+        return True
+    m = re.match(rf"{SLUG_INDICE_MENSAL}-([a-z]+)-(\d{{4}})$", base)
+    if m:
+        meses = sorted({r["mes_referencia"] for r in historico_cache()})
+        recentes = {slug_mes(x) for x in meses[-MESES_INDEXAVEIS_MENSAL:]}
+        return base not in recentes
+    return False
+
+
+def limpar_paginas_obsoletas(pasta_saida):
+    """Apaga os .html das páginas que viraram 301 (o gerador só escreve, nunca apagava)."""
+    apagados = []
+    for nome in sorted(os.listdir(pasta_saida)):
+        if nome.endswith(".html") and _arquivo_removido(nome):
+            os.remove(os.path.join(pasta_saida, nome))
+            apagados.append(nome)
+    return apagados
 
 
 def gerar_headers():
@@ -4870,20 +4301,16 @@ def gerar_site(pasta_saida='paginas_seo'):
     _MANIFESTO_LASTMOD = lastmod.carregar()
     data_atualizacao = obter_data_ultima_atualizacao()
 
+    # Enxugamento (21/11/2026): as páginas banco x valor x prazo (840) e comparação sem marca (80) não são mais geradas; a grade só alimenta os hubs.
     paginas = gerar_grade_paginas()
-    lookup = montar_lookup(paginas)
+    lookup = {}
 
     urls_sitemap = []
 
-    for p in paginas:
-        html = gerar_pagina_individual(p, paginas, lookup, data_atualizacao)
-        with open(os.path.join(pasta_saida, f"{p['slug']}.html"), "w", encoding="utf-8") as f:
-            f.write(corrigir_concordancia(html))
-        if pagina_valor_indexavel(p["categoria"], p["valor_veiculo"], p["prazo"]):
-            urls_sitemap.append(f"{DOMINIO}/{p['slug']}")
-
     hubs = {}
     for p in paginas:
+        if p["categoria"] == "usado":
+            continue  # o hub de carro usado é o de carro novo (mesma taxa por banco no Banco Central)
         hubs.setdefault((p["categoria"], p["banco"]), []).append(p)
     for (categoria, banco), paginas_banco in hubs.items():
         banco_exib = paginas_banco[0]["nome_exibicao"]
@@ -4941,7 +4368,17 @@ def gerar_site(pasta_saida='paginas_seo'):
 
     with open(os.path.join(pasta_saida, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(gerar_sitemap(urls_sitemap, data_atualizacao, pasta_saida))
+    # o manifesto de lastmod só guarda as URLs que ainda estão no sitemap (as páginas removidas no enxugamento saem dele)
+    vivas = {"url:" + u for u in [f"{DOMINIO}/"] + list(urls_sitemap)}
+    for chave in [k for k in _MANIFESTO_LASTMOD if k.startswith("url:") and k not in vivas]:
+        del _MANIFESTO_LASTMOD[chave]
     lastmod.salvar(_MANIFESTO_LASTMOD)
+
+    removidos = limpar_paginas_obsoletas(pasta_saida)
+    with open(os.path.join(pasta_saida, "_redirects"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(gerar_redirects())
+    if removidos:
+        print(f"Removidos {len(removidos)} arquivos de páginas que agora redirecionam (301).")
 
     with open(os.path.join(pasta_saida, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(gerar_robots_txt())
@@ -4950,13 +4387,13 @@ def gerar_site(pasta_saida='paginas_seo'):
         f.write(gerar_404())
 
     with open(os.path.join(pasta_saida, "llms.txt"), "w", encoding="utf-8") as f:
-        f.write(gerar_llms_txt(len(paginas), data_atualizacao))
+        f.write(gerar_llms_txt(len(hubs), data_atualizacao))
 
     with open(os.path.join(pasta_saida, "_headers"), "w", encoding="utf-8") as f:
         f.write(gerar_headers())
 
-    total_arquivos = len(paginas) + len(hubs) + len(CATEGORIAS) + 1
-    print(f"Gerado: {len(paginas)} páginas individuais, {len(hubs)} hubs, {len(CATEGORIAS)} comparadores, "
+    total_arquivos = len(hubs) + len(CATEGORIAS) + 1
+    print(f"Gerado: {len(hubs)} hubs, {len(CATEGORIAS)} comparadores, "
           f"1 index — {total_arquivos} páginas HTML no total, em '{pasta_saida}/'.")
     return paginas
 

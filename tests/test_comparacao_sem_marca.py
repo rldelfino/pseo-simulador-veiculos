@@ -53,19 +53,18 @@ def test_linhas_ordenadas_por_cet_e_batem_com_calculo_direto():
 
 
 @pytest.mark.skipif(not gerada, reason="paginas_seo/ não gerada")
-def test_paginas_existem_estao_no_sitemap_e_tem_meta_dentro_do_limite():
+def test_paginas_de_comparacao_viraram_301_e_o_indice_leva_ao_simulador():
+    """Enxugamento (21/11/2026): as 80 páginas de comparação sem marca saíram (301 para o comparador da categoria); sobra o índice."""
     sitemap = open(os.path.join(PASTA_SAIDA, "sitemap.xml"), encoding="utf-8").read()
     assert "/financiamento-veiculos</loc>" in sitemap
-    titulos = set()
     for c, v, p in _todas():
         slug = slug_comparacao(c, v, p)
-        html = open(os.path.join(PASTA_SAIDA, slug + ".html"), encoding="utf-8").read()
-        assert f"/{slug}</loc>" in sitemap, slug
-        t = re.search(r"<title>(.*?)</title>", html).group(1)
-        d = re.search(r'name="description" content="(.*?)"', html).group(1)
-        assert len(t) <= 60 and len(d) <= 160 and not d.endswith(("...", "…")), (t, d)
-        titulos.add(t)
-    assert len(titulos) == len(_todas()) > 70
+        assert not os.path.exists(os.path.join(PASTA_SAIDA, slug + ".html")), slug
+        assert f"/{slug}</loc>" not in sitemap, slug
+    indice = open(os.path.join(PASTA_SAIDA, "financiamento-veiculos.html"), encoding="utf-8").read()
+    assert 'href="/?tipo=novo&amp;valor=' in indice and "#simulador" in indice
+    t = re.search(r"<title>(.*?)</title>", indice).group(1)
+    assert len(t) <= 60
 
 
 # ---------------------------------------------------------------------------
@@ -190,6 +189,6 @@ def test_cada_guia_recebe_varios_links_contextuais_e_paginas_novas_sao_alcancave
     textos = {n: open(os.path.join(PASTA_SAIDA, n), encoding="utf-8").read() for n in os.listdir(PASTA_SAIDA) if n.endswith(".html")}
     for art in ARTIGOS_APRENDA:
         recebidos = sum(1 for n, t in textos.items() if n != art["slug"] + ".html" and (f'href="{art["slug"]}"' in t or f'href="/{art["slug"]}"' in t))
-        assert recebidos >= 20, (art["slug"], recebidos)
+        assert recebidos >= 2, (art["slug"], recebidos)  # com 49 páginas no sitemap (era ~1.000), cada guia recebe link de pelo menos 2
     for destino in ("incorporar", "imprensa"):
         assert f'href="{destino}"' in textos["index.html"] or f'href="/{destino}"' in textos["index.html"], destino  # rodapé da home

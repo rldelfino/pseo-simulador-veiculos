@@ -54,7 +54,7 @@ sem `unsafe-inline` (regra `/` em `_headers`); as demais páginas ainda usam o T
 Logo, ícones e imagem de compartilhamento: `python gerar_icones.py` (Playwright e Pillow, fora do CI). Testes fora do CI (Playwright, Chromium e WebKit,
 computador e celular): `python testar_navegador.py`, `python testar_aleatorio.py` (sessões aleatórias contra a conta de referência) e
 `python testar_links.py` (links internos e externos). Arquivo de verificação do Yandex Webmaster: `paginas_seo/yandex_90c15c3be650b0ed.html` (gerado a cada build).
-Avaliação das subpáginas e proposta de enxugamento: `AVALIACAO-SUBPAGINAS.md`.
+Avaliação das subpáginas e o enxugamento aprovado (de ~1.000 páginas para 49 URLs, o resto em 301): `AVALIACAO-SUBPAGINAS.md`. O `_redirects` sai do gerador (`regras_redirect`); para testá-lo no motor do Cloudflare: `npx wrangler@3 pages dev paginas_seo --port 8791` e `python testar_redirects.py`.
 
 ## Sobre
 
