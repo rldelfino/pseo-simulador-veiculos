@@ -508,7 +508,7 @@ input[type=range][data-p="98"]{--p:98%}
 input[type=range][data-p="99"]{--p:99%}
 input[type=range][data-p="100"]{--p:100%}
 
-/* v4 (19/11): visual do simulador no estilo do simulador de Pix no cartão — cartões por campo, número grande à direita,
+/* v4 (19/11): visual do simulador no estilo do simulador de Empréstimo com crédito do cartão — cartões por campo, número grande à direita,
    controle com botão brilhante, painel de resultado escuro com destaque e frase-resumo. Só aparência: a estrutura é a mesma. */
 .grid#simulador{padding:40px;gap:28px;border-radius:32px;background:rgba(15,23,42,.4);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,.06);box-shadow:0 30px 60px -15px rgba(0,0,0,.8)}
 .grid#simulador>.panel:first-child{background:none;border:0;box-shadow:none;padding:0;display:flex;flex-direction:column;gap:14px}

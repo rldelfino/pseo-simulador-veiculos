@@ -1014,7 +1014,7 @@ def render_footer():
             <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex items-center justify-center gap-4">
                 <a href="https://www.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Outros produtos Datalab</a>
-                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Pix no cartão</a>
+                <a href="https://emprestimo.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Empréstimo com crédito do cartão</a>
                 <a href="https://simulador.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Financiamento imobiliário</a>
                 <a href="https://homeequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Home Equity</a>
                 <a href="https://autoequity.datalabglobal.com/" class="hover:text-sky-400 transition-colors uppercase tracking-widest text-[10px]">Auto Equity</a>
@@ -4096,7 +4096,7 @@ def _rodape_home():
     legal = "".join([li("https://www.datalabglobal.com/privacidade/", "Privacidade"), li("https://www.datalabglobal.com/termos/", "Termos")])
     outros = "".join([li("https://homeequity.datalabglobal.com/", "Home Equity"), li("https://autoequity.datalabglobal.com/", "Auto Equity"),
                       li("https://condominio.datalabglobal.com/", "Empréstimo para Condomínios"), li("https://simulador.datalabglobal.com/", "Financiamento imobiliário"),
-                      li("https://emprestimo.datalabglobal.com/", "Pix no cartão"), li("https://dados.datalabglobal.com/", "Lente B2B: dados de empresas"),
+                      li("https://emprestimo.datalabglobal.com/", "Empréstimo com crédito do cartão"), li("https://dados.datalabglobal.com/", "Lente B2B: dados de empresas"),
                       li("https://www.datalabglobal.com/", "Todos os produtos Datalab")])
     return entenda, transp, legal, outros
 
