@@ -28,6 +28,13 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
+# No Windows o console cp1252 derrubava o script nos emojis, depois de o envio já ter ocorrido (21/11/2026).
+for _f in (sys.stdout, sys.stderr):
+    try:
+        _f.reconfigure(errors="replace")
+    except Exception:
+        pass
+
 HOST = "veiculos.datalabglobal.com"
 CHAVE = "1c5d2ac5ea7443060014bbe43cedbcf6"
 LOCAL_DA_CHAVE = f"https://{HOST}/{CHAVE}.txt"
