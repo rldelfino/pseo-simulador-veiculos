@@ -4389,6 +4389,12 @@ def gerar_site(pasta_saida='paginas_seo'):
     with open(os.path.join(pasta_saida, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(gerar_robots_txt())
 
+    # security.txt (RFC 9116): contato para quem achar uma falha; igual ao dos simuladores 005 a 008.
+    os.makedirs(os.path.join(pasta_saida, ".well-known"), exist_ok=True)
+    with open(os.path.join(pasta_saida, ".well-known", "security.txt"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("Contact: mailto:contato@datalabglobal.com\nExpires: " + date.today().replace(year=date.today().year + 1).isoformat()
+                + "T00:00:00.000Z\nPreferred-Languages: pt, en\nCanonical: " + DOMINIO + "/.well-known/security.txt\n")
+
     with open(os.path.join(pasta_saida, "404.html"), "w", encoding="utf-8") as f:
         f.write(gerar_404())
 
