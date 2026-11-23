@@ -1,0 +1,752 @@
+{
+  "bancos_veiculos.py": {
+    "mtime": 1794768042.615947,
+    "seen": 1794768135.6672256,
+    "ast_hash": "169b639faeea1e6e3684d632502f53d1",
+    "semantic_hash": ""
+  },
+  "etl_taxas_veiculos.py": {
+    "mtime": 1788914423.5973914,
+    "seen": 1794578177.1931007,
+    "ast_hash": "b7028526413aa80a4619f8fad80a8582",
+    "semantic_hash": ""
+  },
+  "gerador_veiculos.py": {
+    "mtime": 1795294688.6708212,
+    "seen": 1795294767.1674893,
+    "ast_hash": "00d80ec1cf1fe6d9d3b097f0d20de3dd",
+    "semantic_hash": ""
+  },
+  "icones.py": {
+    "mtime": 1789327185.255833,
+    "seen": 1794578177.1931033,
+    "ast_hash": "f83e650e3aa6861958ea9bb5af0837c9",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1788665366.1801505,
+    "seen": 1794578177.1931043,
+    "ast_hash": "c98b58555c6604363a6fbac16ce90f6e",
+    "semantic_hash": ""
+  },
+  "paginas_seo/calculo.js": {
+    "mtime": 1795292778.3129659,
+    "seen": 1795293084.9513805,
+    "ast_hash": "2b8b4a30659694f1996791749b69be97",
+    "semantic_hash": ""
+  },
+  "tailwind.config.js": {
+    "mtime": 1788665367.6855295,
+    "seen": 1794578177.193106,
+    "ast_hash": "32a5f7a612348dc0d4135badad36b095",
+    "semantic_hash": ""
+  },
+  "taxas_cache_veiculos.json": {
+    "mtime": 1795031847.8374944,
+    "seen": 1795292702.8884528,
+    "ast_hash": "f08f3bd7ec1790ca58297e9bc4812cd4",
+    "semantic_hash": ""
+  },
+  "tests/test_bancos_veiculos.py": {
+    "mtime": 1794768290.3082292,
+    "seen": 1795292702.8884656,
+    "ast_hash": "010cf45df73d9ee0e6983d2cb76d0b35",
+    "semantic_hash": ""
+  },
+  "tests/test_calculo_js.mjs": {
+    "mtime": 1788692961.856341,
+    "seen": 1794578177.1931083,
+    "ast_hash": "24d302e4b0c022d220427dd22570244b",
+    "semantic_hash": ""
+  },
+  "tests/test_calculos_veiculos.py": {
+    "mtime": 1795275383.870958,
+    "seen": 1795292702.8884728,
+    "ast_hash": "679e97110583653964d1bb29b2d1e668",
+    "semantic_hash": ""
+  },
+  "tests/test_paginas_geradas.py": {
+    "mtime": 1795275383.872467,
+    "seen": 1795292702.8884964,
+    "ast_hash": "59a3a498510041e6c7bd84d32b84bc2e",
+    "semantic_hash": ""
+  },
+  ".github/workflows/atualiza_taxas.yml": {
+    "mtime": 1794768042.6139386,
+    "seen": 1794768135.6673124,
+    "ast_hash": "0248536e2df6acc73ef20715ad98e076",
+    "semantic_hash": ""
+  },
+  "paginas_seo/404.html": {
+    "mtime": 1795294688.6817057,
+    "seen": 1795294767.1676388,
+    "ast_hash": "723082050e1ba63da4e5dcbf94b2c35a",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-amortizacao-extra-veiculo.html": {
+    "mtime": 1795294688.6884837,
+    "seen": 1795294767.1676445,
+    "ast_hash": "a5f49e98dcbe5fce58b842678f35827e",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-financiamento-x-consorcio-veiculo.html": {
+    "mtime": 1795294688.693487,
+    "seen": 1795294767.1676502,
+    "ast_hash": "b585408a3b641192805df9ade23cc62d",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-iof-financiamento-veiculo.html": {
+    "mtime": 1795294688.6964889,
+    "seen": 1795294767.167653,
+    "ast_hash": "9ffad35d71cfa69c033c70c2befb4f50",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-o-que-e-cdc.html": {
+    "mtime": 1795294688.698487,
+    "seen": 1795294767.1676557,
+    "ast_hash": "0b2c2d1595fa5ffe1b4198b9532686fc",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-o-que-e-cet.html": {
+    "mtime": 1795294688.7014966,
+    "seen": 1795294767.167658,
+    "ast_hash": "c44e350654528bb707740faee995932d",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-tabela-price.html": {
+    "mtime": 1795294688.7114973,
+    "seen": 1795294767.1676683,
+    "ast_hash": "27219c5dc2d93d149233ecfb698e6ae1",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda.html": {
+    "mtime": 1795294688.7134984,
+    "seen": 1795294767.1676707,
+    "ast_hash": "313c113ca720155fa19303885835ac07",
+    "semantic_hash": ""
+  },
+  "paginas_seo/comparador-carro-novo.html": {
+    "mtime": 1795294688.7196467,
+    "seen": 1795294767.1676755,
+    "ast_hash": "3877cc7f455e75cc5c56d9905b007be1",
+    "semantic_hash": ""
+  },
+  "paginas_seo/comparador-carro-usado.html": {
+    "mtime": 1795294688.722644,
+    "seen": 1795294767.1676776,
+    "ast_hash": "d1adc46e64166a126eefa5c382ab33b4",
+    "semantic_hash": ""
+  },
+  "paginas_seo/comparador-moto.html": {
+    "mtime": 1795294688.7261477,
+    "seen": 1795294767.1676805,
+    "ast_hash": "c07f63dbc1c03d28c7a1286fe58666b7",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-do-brasil-carro-novo.html": {
+    "mtime": 1795294688.7470803,
+    "seen": 1795294767.1676931,
+    "ast_hash": "e6fbadfcd588d049585c8686e12c83fa",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-do-brasil-moto.html": {
+    "mtime": 1795294688.7500813,
+    "seen": 1795294767.1676953,
+    "ast_hash": "631fa5ecfe61bdaf7c2f0a0464301098",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-honda-moto.html": {
+    "mtime": 1795294688.7520795,
+    "seen": 1795294767.1676977,
+    "ast_hash": "6546d76c0e4a748c93dc365d1f5ccf0a",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-inter-carro-novo.html": {
+    "mtime": 1795294688.7550776,
+    "seen": 1795294767.1677,
+    "ast_hash": "2e421fc707b29f644213324bd86e7973",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-inter-moto.html": {
+    "mtime": 1795294688.7580779,
+    "seen": 1795294767.1677024,
+    "ast_hash": "5250c0d1129488cc40a27783e7e570ef",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-pan-carro-novo.html": {
+    "mtime": 1795294688.7610745,
+    "seen": 1795294767.1677043,
+    "ast_hash": "820c18e33a55065003c0d9d330fc3c68",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-pan-moto.html": {
+    "mtime": 1795294688.7640746,
+    "seen": 1795294767.167707,
+    "ast_hash": "70253e994baad7dc73b11060b31d7235",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-banco-yamaha-moto.html": {
+    "mtime": 1795294688.7667468,
+    "seen": 1795294767.1677094,
+    "ast_hash": "c28df00e7d3f6d669a9855beb5e1b5de",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-bradesco-carro-novo.html": {
+    "mtime": 1795294688.7697508,
+    "seen": 1795294767.167712,
+    "ast_hash": "8a69656efc6a038afb1750d0f565b651",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-bradesco-moto.html": {
+    "mtime": 1795294688.7717519,
+    "seen": 1795294767.1677144,
+    "ast_hash": "fa200e314e5b7c7ecf5afa165d65cf80",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-bv-financeira-carro-novo.html": {
+    "mtime": 1795294688.7747521,
+    "seen": 1795294767.1677163,
+    "ast_hash": "acda43896c6aa0dc88f2f0ead1fd5165",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-bv-financeira-moto.html": {
+    "mtime": 1795294688.777752,
+    "seen": 1795294767.1677186,
+    "ast_hash": "dd3e4267c81c9d06e83059c06e5db24a",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-c6-bank-carro-novo.html": {
+    "mtime": 1795294688.780752,
+    "seen": 1795294767.167721,
+    "ast_hash": "042deaaabc032f3b3284b34a1890a5bc",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-c6-bank-moto.html": {
+    "mtime": 1795294688.7837515,
+    "seen": 1795294767.1677234,
+    "ast_hash": "090e1c2f06df3afc40c386889cfba762",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-caixa-carro-novo.html": {
+    "mtime": 1795294688.7857513,
+    "seen": 1795294767.1677258,
+    "ast_hash": "9b69b747503fec6e0a45960d130eb02d",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-caixa-moto.html": {
+    "mtime": 1795294688.7887514,
+    "seen": 1795294767.1677284,
+    "ast_hash": "d3991bfa77d69409885c9c63c6be290a",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-itau-carro-novo.html": {
+    "mtime": 1795294688.7917516,
+    "seen": 1795294767.1677306,
+    "ast_hash": "f61e50d4d3cbdeefd74e20d02a37778b",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-itau-moto.html": {
+    "mtime": 1795294688.7947516,
+    "seen": 1795294767.1677334,
+    "ast_hash": "fa4898df774c75586a72a830113611d5",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-omni-financeira-carro-novo.html": {
+    "mtime": 1795294688.7967474,
+    "seen": 1795294767.1677358,
+    "ast_hash": "13f9a7485c859af4b2d112426561be6b",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-omni-financeira-moto.html": {
+    "mtime": 1795294688.7997472,
+    "seen": 1795294767.1677382,
+    "ast_hash": "6256c4a8424a5f9ac76086a826c925a2",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-santander-carro-novo.html": {
+    "mtime": 1795294688.8029706,
+    "seen": 1795294767.1677403,
+    "ast_hash": "2c0b53d091de6fc95ac0047a346b7bac",
+    "semantic_hash": ""
+  },
+  "paginas_seo/hub-santander-moto.html": {
+    "mtime": 1795294688.8059726,
+    "seen": 1795294767.167743,
+    "ast_hash": "d2a476bb663be61a8fc2de98faf0db06",
+    "semantic_hash": ""
+  },
+  "paginas_seo/index.html": {
+    "mtime": 1795294688.81398,
+    "seen": 1795294767.1677504,
+    "ast_hash": "6cf95a99b8c96498f191f69443cf0f8f",
+    "semantic_hash": ""
+  },
+  "paginas_seo/llms.txt": {
+    "mtime": 1795292783.4253538,
+    "seen": 1795293084.9516137,
+    "ast_hash": "2a6755ff87ec1fbdc855ff365970911e",
+    "semantic_hash": ""
+  },
+  "paginas_seo/robots.txt": {
+    "mtime": 1795292783.4241288,
+    "seen": 1795293084.9516213,
+    "ast_hash": "040c91f625114d273ddb60dbf24574da",
+    "semantic_hash": ""
+  },
+  "paginas_seo/sobre.html": {
+    "mtime": 1795294688.8491433,
+    "seen": 1795294767.167766,
+    "ast_hash": "893a02e96f7f5f6224ffbeb72fec3061",
+    "semantic_hash": ""
+  },
+  "relatorio_atualizacao_taxas.txt": {
+    "mtime": 1795031847.8312783,
+    "seen": 1795292702.8886645,
+    "ast_hash": "68773636117dee6a6b8938a558d586ec",
+    "semantic_hash": ""
+  },
+  "requirements.txt": {
+    "mtime": 1788914074.3394423,
+    "seen": 1794578177.1937017,
+    "ast_hash": "39420dcf31a0e0bf351a8fb9ed5656ad",
+    "semantic_hash": ""
+  },
+  "ultima_atualizacao_taxas.txt": {
+    "mtime": 1795031847.851696,
+    "seen": 1795292702.8886714,
+    "ast_hash": "db6c4cade573fef1ca8123646522199f",
+    "semantic_hash": ""
+  },
+  "paginas_seo/apple-touch-icon.png": {
+    "mtime": 1795294688.6857047,
+    "seen": 1795294767.1678014,
+    "ast_hash": "dd2d783986d28eaebecee14f169e7a3e",
+    "semantic_hash": ""
+  },
+  "paginas_seo/favicon-192.png": {
+    "mtime": 1795294688.731077,
+    "seen": 1795294767.1678038,
+    "ast_hash": "aaf0d30620beb79e17fd3ec10568343d",
+    "semantic_hash": ""
+  },
+  "paginas_seo/favicon-32.png": {
+    "mtime": 1795294688.7330773,
+    "seen": 1795294767.1678057,
+    "ast_hash": "89aa6cbdc4af9340296b8b43d826140c",
+    "semantic_hash": ""
+  },
+  "paginas_seo/logo-full.png": {
+    "mtime": 1795294688.8169813,
+    "seen": 1795294767.1678107,
+    "ast_hash": "6e4f90b63292e69d4412dffe26bdf062",
+    "semantic_hash": ""
+  },
+  "paginas_seo/logo-header.webp": {
+    "mtime": 1795294688.8199825,
+    "seen": 1795294767.1678128,
+    "ast_hash": "99ae0f461a9be4c03390ca3f785adad7",
+    "semantic_hash": ""
+  },
+  "paginas_seo/logo-schema.png": {
+    "mtime": 1795294688.8259816,
+    "seen": 1795294767.1678152,
+    "ast_hash": "d1e1ccdcf6d17e53f73950c74b78174b",
+    "semantic_hash": ""
+  },
+  "paginas_seo/og-image.png": {
+    "mtime": 1795294688.8411212,
+    "seen": 1795294767.1678193,
+    "ast_hash": "35b89f5e069d77881814c5dbd56e32e3",
+    "semantic_hash": ""
+  },
+  "exemplos_guias.py": {
+    "mtime": 1794768042.615947,
+    "seen": 1794768135.6672444,
+    "ast_hash": "fa951470256122459e1a13f9e49deb1c",
+    "semantic_hash": ""
+  },
+  "historico_taxas_veiculos.py": {
+    "mtime": 1795031843.0765789,
+    "seen": 1795292702.888396,
+    "ast_hash": "d31d6830543c365a94547748338e8794",
+    "semantic_hash": ""
+  },
+  "indexnow.py": {
+    "mtime": 1794768042.6250525,
+    "seen": 1794768135.667257,
+    "ast_hash": "45583d42a37985ffdd08f056cc362f83",
+    "semantic_hash": ""
+  },
+  "lastmod.py": {
+    "mtime": 1794768042.6250525,
+    "seen": 1794768135.6672592,
+    "ast_hash": "1a3532f3bfaa8e69a1a8bbaa32847a5d",
+    "semantic_hash": ""
+  },
+  "lastmod_manifest.json": {
+    "mtime": 1795294688.67582,
+    "seen": 1795294767.167513,
+    "ast_hash": "1ce82f8178fd847a169381b44fc4f9fb",
+    "semantic_hash": ""
+  },
+  "paginas_seo/dados/datapackage.json": {
+    "mtime": 1795292778.165449,
+    "seen": 1795293084.9513834,
+    "ast_hash": "7102f746dd50e02665e173b51ed1d424",
+    "semantic_hash": ""
+  },
+  "paginas_seo/dados/taxas-financiamento-veiculos.json": {
+    "mtime": 1795292778.1639392,
+    "seen": 1795293084.9513867,
+    "ast_hash": "42dc8245cf92e8d2ea8dce517ce9cbb2",
+    "semantic_hash": ""
+  },
+  "paginas_seo/medicao.js": {
+    "mtime": 1795292778.2581232,
+    "seen": 1795293084.9513922,
+    "ast_hash": "5f49bfb3503a64d537f7486635843de5",
+    "semantic_hash": ""
+  },
+  "publicacao.py": {
+    "mtime": 1794768043.447834,
+    "seen": 1794768135.667275,
+    "ast_hash": "826519c96552ed11df79e8b93f4e1b2c",
+    "semantic_hash": ""
+  },
+  "publicacao/kaggle/dataset-metadata.json": {
+    "mtime": 1795292808.2798927,
+    "seen": 1795293084.9514008,
+    "ast_hash": "73d7b6a54da415ca128c29d2d85ee78d",
+    "semantic_hash": ""
+  },
+  "tests/test_cache_versao.py": {
+    "mtime": 1795275383.8699577,
+    "seen": 1795292702.8884678,
+    "ast_hash": "a3c48f5abdd48dd65adfe7312a656d79",
+    "semantic_hash": ""
+  },
+  "tests/test_comparacao_sem_marca.py": {
+    "mtime": 1795275383.8714626,
+    "seen": 1795292702.8884754,
+    "ast_hash": "2a333b393f4e19579672aca692bbe922",
+    "semantic_hash": ""
+  },
+  "tests/test_concordancia_e_metas.py": {
+    "mtime": 1795274512.5857623,
+    "seen": 1795292702.8884773,
+    "ast_hash": "b9767e0ab150096c4bd926655601b5ab",
+    "semantic_hash": ""
+  },
+  "tests/test_indexnow.py": {
+    "mtime": 1794768043.4573543,
+    "seen": 1794768135.6672983,
+    "ast_hash": "6586e32242a29c84ea7551a07572ccee",
+    "semantic_hash": ""
+  },
+  "tests/test_lastmod_e_fontes.py": {
+    "mtime": 1795275383.8714626,
+    "seen": 1795292702.8884895,
+    "ast_hash": "d5b09857e521ad4b8b0dc44e30be1325",
+    "semantic_hash": ""
+  },
+  "tests/test_motor_v3.py": {
+    "mtime": 1795275383.872467,
+    "seen": 1795292702.8884938,
+    "ast_hash": "5acca8d6d8560b6c6eaa8e8cc4c00e76",
+    "semantic_hash": ""
+  },
+  "tests/test_publicacao.py": {
+    "mtime": 1794768043.4593544,
+    "seen": 1794768135.6673062,
+    "ast_hash": "5985cb10049dae2562355704255c9c0a",
+    "semantic_hash": ""
+  },
+  "tests/test_verifica_saude.py": {
+    "mtime": 1794768043.460354,
+    "seen": 1794768135.6673083,
+    "ast_hash": "17b88093801890b529e6c7aa009f524f",
+    "semantic_hash": ""
+  },
+  "verifica_saude.py": {
+    "mtime": 1794768043.460354,
+    "seen": 1794768135.66731,
+    "ast_hash": "773ffa2706994e2ea8b4250b1965c4de",
+    "semantic_hash": ""
+  },
+  ".github/workflows/saude_semanal.yml": {
+    "mtime": 1795275383.8253093,
+    "seen": 1795292702.888511,
+    "ast_hash": "c4341170bc3c29258e0f7c21ddec3c9b",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1795275383.8294933,
+    "seen": 1795292702.888516,
+    "ast_hash": "210ad1b2482b1fea05a824c6126ba181",
+    "semantic_hash": ""
+  },
+  "paginas_seo/1c5d2ac5ea7443060014bbe43cedbcf6.txt": {
+    "mtime": 1794768042.626567,
+    "seen": 1794768135.6673179,
+    "ast_hash": "d114b4e725872c78ae92d207b90bc089",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-entrada-ideal-financiamento-veiculo.html": {
+    "mtime": 1795294688.6904836,
+    "seen": 1795294767.167647,
+    "ast_hash": "89617efbf7beac8902ef50ef6a8ea330",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-portabilidade-financiamento-veiculo.html": {
+    "mtime": 1795294688.7034957,
+    "seen": 1795294767.1676602,
+    "ast_hash": "a981d9074d9317fc8580fa25f5d855f8",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-quitacao-antecipada-financiamento-veiculo.html": {
+    "mtime": 1795294688.7064974,
+    "seen": 1795294767.1676626,
+    "ast_hash": "752c5107f38c40a5750419163fb30a99",
+    "semantic_hash": ""
+  },
+  "paginas_seo/aprenda-score-e-taxa-financiamento-veiculo.html": {
+    "mtime": 1795294688.7084959,
+    "seen": 1795294767.1676657,
+    "ast_hash": "bed0a8281718ddfdb6d807595a867cfc",
+    "semantic_hash": ""
+  },
+  "paginas_seo/atualizacoes.html": {
+    "mtime": 1795294688.716006,
+    "seen": 1795294767.1676729,
+    "ast_hash": "e51fbd369d76ccf09efdb2c6bb2b6636",
+    "semantic_hash": ""
+  },
+  "paginas_seo/dados-abertos.html": {
+    "mtime": 1795294688.7280748,
+    "seen": 1795294767.1676826,
+    "ast_hash": "cb3969d5a78e23b8cf21d61203bb3952",
+    "semantic_hash": ""
+  },
+  "paginas_seo/dados/README.md": {
+    "mtime": 1795292778.1664581,
+    "seen": 1795293084.9515438,
+    "ast_hash": "1802aa3cc35dbfb474f0f859095069bf",
+    "semantic_hash": ""
+  },
+  "paginas_seo/embed.html": {
+    "mtime": 1795292778.1731298,
+    "seen": 1795293084.9515467,
+    "ast_hash": "b4f62b5058a02b3ee14fe13fb3f30e9f",
+    "semantic_hash": ""
+  },
+  "paginas_seo/financiamento-veiculos.html": {
+    "mtime": 1795294688.7400794,
+    "seen": 1795294767.1676908,
+    "ast_hash": "007abfd38950f3492de887316f162c2f",
+    "semantic_hash": ""
+  },
+  "paginas_seo/imprensa.html": {
+    "mtime": 1795294688.807974,
+    "seen": 1795294767.1677454,
+    "ast_hash": "ff8087549f09e9bc796f7a96f144ad39",
+    "semantic_hash": ""
+  },
+  "paginas_seo/incorporar.html": {
+    "mtime": 1795294688.8109808,
+    "seen": 1795294767.1677475,
+    "ast_hash": "b0567db4092a77db913820fdc29a83dc",
+    "semantic_hash": ""
+  },
+  "paginas_seo/llms-full.txt": {
+    "mtime": 1795292778.2581232,
+    "seen": 1795293084.9516113,
+    "ast_hash": "793123ea865d57fb2cfe7c1f790972cb",
+    "semantic_hash": ""
+  },
+  "paginas_seo/metodologia.html": {
+    "mtime": 1795294688.8305066,
+    "seen": 1795294767.1677582,
+    "ast_hash": "faa4cebc8f56ecb4288a884c29dfeee5",
+    "semantic_hash": ""
+  },
+  "paginas_seo/renda-para-financiar-veiculo.html": {
+    "mtime": 1795294688.8431225,
+    "seen": 1795294767.1677608,
+    "ast_hash": "324a1a9f365d871156fafbe0bdbcba63",
+    "semantic_hash": ""
+  },
+  "paginas_seo/taxas-financiamento-veiculos-outubro-2026.html": {
+    "mtime": 1795294688.8546548,
+    "seen": 1795294767.1677682,
+    "ast_hash": "3d9e861a18386e0c412281a7d4cc7051",
+    "semantic_hash": ""
+  },
+  "paginas_seo/taxas-financiamento-veiculos-setembro-2026.html": {
+    "mtime": 1795294688.857656,
+    "seen": 1795294767.1677709,
+    "ast_hash": "ce9d8dc18f1ce9711d2edb41b41a459a",
+    "semantic_hash": ""
+  },
+  "paginas_seo/taxas-financiamento-veiculos.html": {
+    "mtime": 1795294688.8596587,
+    "seen": 1795294767.167773,
+    "ast_hash": "19574cd1f3258fc8ac721de1e239ad58",
+    "semantic_hash": ""
+  },
+  "publicacao/LEIA-ME.md": {
+    "mtime": 1795292808.2914293,
+    "seen": 1795293084.9516363,
+    "ast_hash": "f4d89114b623d4f25ed7d13972b07de8",
+    "semantic_hash": ""
+  },
+  "publicacao/dados-gov-br/cadastro.md": {
+    "mtime": 1795292808.2874193,
+    "seen": 1795293084.9516387,
+    "ast_hash": "07455e7ca899c675d35251d1af2289f9",
+    "semantic_hash": ""
+  },
+  "publicacao/huggingface/README.md": {
+    "mtime": 1795292808.2839031,
+    "seen": 1795293084.9516413,
+    "ast_hash": "3dd1621156185730de3d43f5c33b0746",
+    "semantic_hash": ""
+  },
+  "publicacao/nota-imprensa-2026-10.md": {
+    "mtime": 1795292808.2904303,
+    "seen": 1795293084.9516437,
+    "ast_hash": "2bec04c90deacd384a33bae6d21bd52c",
+    "semantic_hash": ""
+  },
+  "gerar_icones.py": {
+    "mtime": 1795294688.6738224,
+    "seen": 1795294767.1674955,
+    "ast_hash": "9863b76aae15881baf51a9c96e640142",
+    "semantic_hash": ""
+  },
+  "layout_home.py": {
+    "mtime": 1795294688.678695,
+    "seen": 1795294767.1675158,
+    "ast_hash": "d417125c20afdaf41987f1d2d5234941",
+    "semantic_hash": ""
+  },
+  "paginas_seo/home.js": {
+    "mtime": 1795292778.2818594,
+    "seen": 1795293084.9513896,
+    "ast_hash": "0737b8dc6644f267425866f3db8c55e0",
+    "semantic_hash": ""
+  },
+  "paginas_seo/menu.js": {
+    "mtime": 1795292778.2848687,
+    "seen": 1795293084.951395,
+    "ast_hash": "0486d5a4656c1cfab8eafa1101a1fba1",
+    "semantic_hash": ""
+  },
+  "servidor_local.py": {
+    "mtime": 1795274512.5806198,
+    "seen": 1795292702.888442,
+    "ast_hash": "90c2065185e4926299d19b69ecedbfe0",
+    "semantic_hash": ""
+  },
+  "src/home.js": {
+    "mtime": 1795274512.5816212,
+    "seen": 1795292702.8884444,
+    "ast_hash": "0737b8dc6644f267425866f3db8c55e0",
+    "semantic_hash": ""
+  },
+  "src/menu.js": {
+    "mtime": 1795274512.5826201,
+    "seen": 1795292702.8884468,
+    "ast_hash": "0486d5a4656c1cfab8eafa1101a1fba1",
+    "semantic_hash": ""
+  },
+  "testar_aleatorio.py": {
+    "mtime": 1795274512.5837512,
+    "seen": 1795292702.888455,
+    "ast_hash": "28aaeadb2a70fc8fa8457d19ad5ee0fc",
+    "semantic_hash": ""
+  },
+  "testar_links.py": {
+    "mtime": 1795274512.5837512,
+    "seen": 1795292702.8884573,
+    "ast_hash": "26f39e625d438eea8311d26f47a5208e",
+    "semantic_hash": ""
+  },
+  "testar_navegador.py": {
+    "mtime": 1795275383.868958,
+    "seen": 1795292702.8884592,
+    "ast_hash": "5e29297f72c580f31c1a63c00d292c12",
+    "semantic_hash": ""
+  },
+  "testar_redirects.py": {
+    "mtime": 1795275383.868958,
+    "seen": 1795292702.888461,
+    "ast_hash": "963d98a8cadae34616334aa05f52a947",
+    "semantic_hash": ""
+  },
+  "tests/test_analise_do_mes.py": {
+    "mtime": 1795031847.838783,
+    "seen": 1795292702.8884628,
+    "ast_hash": "ee8ba213388a7d6f3805101ec16cb734",
+    "semantic_hash": ""
+  },
+  "tests/test_historico_janela_mais_recente.py": {
+    "mtime": 1795031847.8488739,
+    "seen": 1795292702.8884804,
+    "ast_hash": "7e8368c79dda94b1cc1566269b6966cb",
+    "semantic_hash": ""
+  },
+  "tests/test_home_nova.py": {
+    "mtime": 1795274512.5857623,
+    "seen": 1795292702.888482,
+    "ast_hash": "72616ca7215de5d611bb73015bc959a5",
+    "semantic_hash": ""
+  },
+  "tests/test_marca.py": {
+    "mtime": 1795294688.867178,
+    "seen": 1795294767.1676044,
+    "ast_hash": "df856f350a4c675a5df863bca07c7845",
+    "semantic_hash": ""
+  },
+  "tests/test_redirects.py": {
+    "mtime": 1795275383.8734672,
+    "seen": 1795292702.8885014,
+    "ast_hash": "820560593d3ad800526197425f876142",
+    "semantic_hash": ""
+  },
+  "AVALIACAO-SUBPAGINAS.md": {
+    "mtime": 1795275383.8268769,
+    "seen": 1795292702.8885133,
+    "ast_hash": "07e020a575f56d293c417fa67559a002",
+    "semantic_hash": ""
+  },
+  "paginas_seo/analise-do-mes.html": {
+    "mtime": 1795294688.6837046,
+    "seen": 1795294767.1676416,
+    "ast_hash": "0bc9baf84fd5a1f99452dfd3e6e120f2",
+    "semantic_hash": ""
+  },
+  "paginas_seo/yandex_90c15c3be650b0ed.html": {
+    "mtime": 1795292778.291391,
+    "seen": 1795293084.9516335,
+    "ast_hash": "221739af8fd5e8e507c7dc33319b60a9",
+    "semantic_hash": ""
+  },
+  "src/og-image.html": {
+    "mtime": 1795274512.5826201,
+    "seen": 1795292702.8886693,
+    "ast_hash": "a7a6e835620d241b7b7e99b2db9ed49c",
+    "semantic_hash": ""
+  },
+  "paginas_seo/favicon.svg": {
+    "mtime": 1795294688.7380786,
+    "seen": 1795294767.1678083,
+    "ast_hash": "d385322bf2871436857ab6ddcb4145bc",
+    "semantic_hash": ""
+  },
+  "paginas_seo/logo.svg": {
+    "mtime": 1795294688.8274963,
+    "seen": 1795294767.167817,
+    "ast_hash": "8ad9d719b9054a44c6c0111b50579b3e",
+    "semantic_hash": ""
+  }
+}
