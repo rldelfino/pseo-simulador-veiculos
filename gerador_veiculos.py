@@ -770,13 +770,13 @@ def render_faq_visual(perguntas):
     de fora. Extraído aqui pra essas 3 não duplicarem o bloco 3x cada."""
     itens_html = "\n".join(f'''<details class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden open:border-sky-500/30 transition-colors">
                     <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
-                        <h4 class="text-sky-400 font-bold text-sm">{q}</h4>
+                        <h3 class="text-sky-400 font-bold text-sm">{q}</h3>
                         <span class="faq-toggle-icon shrink-0 text-slate-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
                     </summary>
                     <p class="text-slate-300 text-sm font-light leading-relaxed px-5 pb-5">{a}</p>
                 </details>''' for q, a in perguntas)
     html = f'''<div class="mt-16 mb-8">
-            <h3 class="text-2xl font-serif text-white mb-6 text-center">Perguntas Frequentes</h3>
+            <h2 class="text-2xl font-serif text-white mb-6 text-center">Perguntas Frequentes</h2>
             <div class="space-y-3 max-w-3xl mx-auto">
                 {itens_html}
             </div>
@@ -3418,7 +3418,7 @@ def _cartoes_categoria_home():
              "moto": "Inclui as financeiras da Honda e da Yamaha (prazo até 48 meses)."}
     for c in CATEGORIAS:
         n = len(bancos_para_categoria(c))
-        cartoes.append(f'<a class="card" href="/{slug_comparador(c)}"><h4>{CATEGORIA_LABEL[c]}</h4>'
+        cartoes.append(f'<a class="card" href="/{slug_comparador(c)}"><h3>{CATEGORIA_LABEL[c]}</h3>'
                        f'<p>Compare {n} bancos pelo CET e pela parcela. {descr[c]}</p><span class="go">Ver comparador →</span></a>')
     return "".join(cartoes)
 
@@ -3430,7 +3430,7 @@ def _cartoes_guias_home():
     for sl in escolhidos:
         a = por_slug.get(sl)
         if a:
-            cartoes.append(f'<a class="card" href="/{sl}"><h4>{a["titulo_h1"]}</h4><p>{a["resumo_card"]}</p><span class="go">Ler o guia →</span></a>')
+            cartoes.append(f'<a class="card" href="/{sl}"><h3>{a["titulo_h1"]}</h3><p>{a["resumo_card"]}</p><span class="go">Ler o guia →</span></a>')
     return "".join(cartoes)
 
 
@@ -4163,8 +4163,8 @@ def gerar_verificacao_yandex(pasta_saida):
         f.write(conteudo)
 
 
-CSP_HOME = ("default-src 'self'; script-src 'self' https://cloud.umami.is; style-src 'self'; img-src 'self' data:; font-src 'self'; "
-            "connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://gateway.umami.is; frame-ancestors 'none'; "
+CSP_HOME = ("default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://cloud.umami.is; style-src 'self'; img-src 'self' data:; font-src 'self'; "
+            "connect-src 'self' https://cloudflareinsights.com https://cloud.umami.is https://api-gateway.umami.dev https://gateway.umami.is; frame-ancestors 'none'; "
             "base-uri 'self'; form-action 'self'; object-src 'none'")
 
 

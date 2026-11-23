@@ -1,8 +1,8 @@
 /* Simulador de Financiamento de Veículos — Datalab Global. Tema escuro, destaque azul. CSS escrito à mão (sem Tailwind), o gerador copia este arquivo para paginas_seo/home.css.
    Mesmo template do Home Equity (006), Auto Equity (007) e Condomínio (008). Sem atributo style no HTML: barras são SVG e o preenchimento dos controles usa data-p (definido por JS).
    Fontes servidas pelo próprio site (/fonts). Inter e Playfair Display: licença SIL OFL 1.1. */
-@font-face{font-family:'Inter';font-style:normal;font-weight:300 700;font-display:swap;src:url('/fonts/inter-latin.woff2') format('woff2')}
-@font-face{font-family:'Playfair Display';font-style:normal;font-weight:600 700;font-display:swap;src:url('/fonts/playfair-display-latin.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:300 700;font-display:optional;src:url('/fonts/inter-latin.woff2') format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:600 700;font-display:optional;src:url('/fonts/playfair-display-latin.woff2') format('woff2')}
 
 :root{--ac:#0ea5e9;--acsoft:rgba(14,165,233,.10);--acline:rgba(14,165,233,.35);--acink:#031c2b;--aclt:#7dd3fc;
   --bg:#020617;--tx:#f8fafc;--tx2:#a3b1c6;--tx3:#8a99ae;--ln:rgba(255,255,255,.09);--pn:rgba(15,23,42,.55);--pn2:rgba(30,41,59,.45);--warn:#fbbf24}
@@ -140,7 +140,7 @@ section.blk>p.lead{color:var(--tx2);font-size:14px;margin-bottom:16px;max-width:
 .note b{color:var(--tx)}
 .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .card{background:var(--pn2);border:1px solid var(--ln);border-radius:14px;padding:16px;font-size:13px;color:var(--tx2)}
-.card h4{color:var(--tx);font-size:14px;margin-bottom:6px;font-family:'Inter',system-ui,sans-serif;font-weight:600}
+.card h3{color:var(--tx);font-size:14px;margin-bottom:6px;font-family:'Inter',system-ui,sans-serif;font-weight:600}
 .card li{margin-left:16px;margin-top:3px}
 a.card{text-decoration:none;display:block}
 a.card:hover{border-color:var(--acline)}
@@ -315,7 +315,7 @@ section.blk>.kicker,.band>.kicker,.split-t>.kicker{margin-bottom:6px}
 .qgrid>*{min-width:0}
 .qgrid .alts{margin-top:0}
 .qviz{margin-top:18px;display:grid;gap:16px}
-.qg h4{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:2px}
+.qg h3{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:2px}
 .qg .r{display:grid;grid-template-columns:110px 1fr 92px;gap:10px;align-items:center;font-size:12.5px;color:var(--tx2);margin-top:8px}
 .qg .r svg{width:100%;height:12px;display:block}
 .qg .r .vv{text-align:right;color:var(--tx)}
@@ -327,12 +327,12 @@ section.blk>.kicker,.band>.kicker,.split-t>.kicker{margin-bottom:6px}
 .li3{display:flex;gap:16px;padding:18px 0 18px 22px;border-bottom:1px solid var(--ln)}
 .li3:last-child{border-bottom:0}
 .li3 .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--acsoft);border:1px solid var(--acline);color:var(--ac);display:grid;place-items:center;font-weight:700;font-size:14px}
-.li3 h4{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:15px;color:var(--tx);margin-bottom:4px}
+.li3 h3{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:15px;color:var(--tx);margin-bottom:4px}
 .li3 ul{list-style:none;color:var(--tx2);font-size:14px;display:grid;gap:4px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .st{border-top:2px solid var(--acline);padding-top:16px}
 .sn{display:block;font-family:'Playfair Display',Georgia,serif;font-size:46px;line-height:1;color:var(--ac);margin-bottom:10px}
-.st h4{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:16px;color:var(--tx);margin-bottom:6px}
+.st h3{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:16px;color:var(--tx);margin-bottom:6px}
 .st ul{margin-left:18px;color:var(--tx2);font-size:14px;display:grid;gap:4px}
 .faqs .split-t{position:sticky;top:90px}
 .faqs .faq{max-width:none}

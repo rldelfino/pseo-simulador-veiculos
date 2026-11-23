@@ -34,7 +34,7 @@ def test_csp_da_home_nao_tem_unsafe_inline_e_o_resto_do_site_segue_igual():
     headers = gv.gerar_headers()
     bloco_home = headers.split("\n/\n", 1)[1].split("\n\n", 1)[0]
     assert "! Content-Security-Policy" in bloco_home and "unsafe-inline" not in bloco_home
-    assert "script-src 'self' https://cloud.umami.is" in bloco_home and "object-src 'none'" in bloco_home
+    assert "script-src 'self' https://static.cloudflareinsights.com https://cloud.umami.is" in bloco_home and "object-src 'none'" in bloco_home
     assert "frame-ancestors 'none'" in bloco_home
     primeira = headers.split("\n\n", 1)[0]
     assert "X-Frame-Options: DENY" in primeira and "X-Content-Type-Options: nosniff" in primeira and "Strict-Transport-Security" in primeira
