@@ -3584,9 +3584,9 @@ def gerar_index(data_atualizacao, versoes_assets=None):
         main = main.replace(k, v)
     dados_json = json.dumps(dados_simulador_home(), ensure_ascii=False, separators=(",", ":"))
     scripts = (f'<script type="application/json" id="dados-sim">{dados_json}</script>\n'
-               f'<script src="/calculo.js?v={VERSAO_BUILD}"></script>\n'
-               f'<script src="/home.js?v={versoes["home.js"]}"></script>\n'
-               f'<script src="/menu.js?v={versoes["menu.js"]}"></script>\n')
+               f'<script defer src="/calculo.js?v={VERSAO_BUILD}"></script>\n'
+               f'<script defer src="/home.js?v={versoes["home.js"]}"></script>\n'
+               f'<script defer src="/menu.js?v={versoes["menu.js"]}"></script>\n')
     pagina = LAYOUT
     trocas = {
         "@@TITLE@@": html.escape(titulo_pagina), "@@DESC@@": html.escape(meta_description), "@@CANONICAL@@": url_home,
