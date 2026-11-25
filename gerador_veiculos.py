@@ -1011,7 +1011,7 @@ SCRIPT_AJUSTA_TOOLTIPS = '''
 def render_footer():
     return f'''<footer class="border-t border-white/5 mt-16 py-8">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-400 leading-relaxed">
-            <p>Datalab Global — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
+            <p><a href="https://www.datalabglobal.com/" class="underline hover:text-sky-400">Datalab Global</a> — simulações educativas de financiamento de veículos, não são uma oferta de crédito nem substituem a proposta oficial do banco.</p>
             <p class="mt-1">Taxas com base em dados reais do Banco Central do Brasil (Relatório de Taxas de Juros por Instituição Financeira). CET estimado inclui IOF (alíquota de lei), tarifa de registro de contrato e seguro prestamista típicos de mercado — a taxa final de cada cliente varia com relacionamento bancário, histórico de crédito e seguradora escolhida.</p>
             <p class="mt-1">Datalab Global é uma marca de {EMPRESA_RODAPE}. Contato: contato@datalabglobal.com · <a href="https://www.datalabglobal.com/privacidade/" class="underline hover:text-sky-400">Privacidade</a> · <a href="https://www.datalabglobal.com/termos/" class="underline hover:text-sky-400">Termos</a> · <a href="incorporar" class="underline hover:text-sky-400">Simulador para o seu site</a> · <a href="imprensa" class="underline hover:text-sky-400">Imprensa</a></p>
             <p class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -4102,7 +4102,7 @@ def gerar_404():
 <body class="antialiased flex flex-col min-h-screen items-center justify-center text-center px-6">
     <div class="mb-10 flex justify-center">{marca_cabecalho()}</div>
     <h1 class="font-serif text-3xl md:text-4xl font-bold mb-4">Página não encontrada</h1>
-    <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida.</p>
+    <p class="text-slate-400 max-w-md mx-auto mb-8">Essa simulação não existe (ou não existe mais). Talvez o valor, prazo ou banco que você buscou não esteja na nossa grade — ou a página tenha sido removida. Conheça os outros simuladores da <a href="https://www.datalabglobal.com/" class="underline hover:text-sky-400">Datalab Global</a>.</p>
     <div class="flex flex-wrap gap-3 justify-center">
         <a href="/" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-3 rounded-full font-bold text-sm transition-all">Ir pra home</a>
         <a href="/comparador-carro-novo" class="border border-white/10 hover:border-sky-500/50 px-6 py-3 rounded-full font-bold text-sm transition-all">Ver comparador de carro novo</a>
