@@ -84,7 +84,7 @@ LAYOUT = """<!doctype html>
     </div>
     <div class="base">
       <p>Taxas atualizadas em @@ATUALIZADO@@ (Banco Central do Brasil, semana de @@PERIODO@@).</p>
-      <p>Datalab Global é marca de @@RAZAO@@. Contato: <a href="mailto:contato@datalabglobal.com">contato@datalabglobal.com</a>.</p>
+      <p><a href="https://www.datalabglobal.com/">Datalab Global</a> é marca de @@RAZAO@@. Contato: <a href="mailto:contato@datalabglobal.com">contato@datalabglobal.com</a>.</p>
       <p>A simulação é uma estimativa educativa, não é oferta nem proposta de crédito. A taxa final depende da análise do banco, sem garantia de aprovação.</p>
     </div>
   </div>
